@@ -1,0 +1,89 @@
+import { IControleVeiculo, IControleVeiculoCadastro, IFecharSolicitacaoVeiculo } from "../../interfaces/IControleVeiculo";
+import { conexaoAPI } from "../../servicos/API";
+import { IUsuario } from "../../interfaces/IControleVeiculo";
+
+export class ModeloSolicitacaoVeiculo {
+    async deletarSolicitacaoVeiculo(tokenJWT: string, id: number): Promise<IControleVeiculo | null> {
+        try {
+            const solicitacaoVeiculoJSON = await conexaoAPI.delete<IControleVeiculo>(`controleVeiculo/deletarControleVeiculo/${id}`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` },
+            });
+            return solicitacaoVeiculoJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async listarTodasSolicitacaoVeiculos(tokenJWT: string): Promise<IControleVeiculo | null> {
+        try {
+            const solicitacaoVeiculoJSON = await conexaoAPI.get<IControleVeiculo>(`/controleVeiculo/listarTodosVeiculos`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+
+            return solicitacaoVeiculoJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async listarSolicitacaoVeiculoPorID(tokenJWT: string, id: number): Promise<IControleVeiculo | null> {
+        try {
+            const solicitacaoVeiculoPorIDJSON = await conexaoAPI.get<IControleVeiculo>(`/controleVeiculo/listarVeiculoPorId/${id}`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return solicitacaoVeiculoPorIDJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculoCadastro): Promise<IControleVeiculo | null> {
+        try {
+            const cadastroSolicitacaoJSON = await conexaoAPI.post<IControleVeiculo>(`/controleVeiculo/cadastroControleVeiculo`, dadosFormulario, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return cadastroSolicitacaoJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async editarSolicitacaoVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo, id: number): Promise<IControleVeiculo | null> {
+        
+        try {
+            const edicaoSolicitacaoJSON = await conexaoAPI.put<IControleVeiculo>(`/controleVeiculo/editarSolicitacao/${id}`, dadosFormulario, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return edicaoSolicitacaoJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async contarSolicitacaoVeiculosAberto(tokenJWT: string): Promise<number | null> {
+        try {
+            const solicitacaoVeiculosAbertoJSON = await conexaoAPI.get<number>(`controleVeiculo/contarSolicitacoesEmAberto`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return solicitacaoVeiculosAbertoJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async listarPessoal(tokenJWT: string, termo?: string): Promise<IUsuario[] | null> {
+        try {
+            const listarPessoalJSON = await conexaoAPI.get<IUsuario[]>(
+                `controleVeiculo/listarPessoal`,
+                {
+                    headers: { Authorization: `Bearer ${tokenJWT}` },
+                    params: { termo }
+                }
+            );
+            return listarPessoalJSON.data;
+        } catch (error) {
+            console.error("Erro ao listar pessoal:", error);
+            return null;
+        }
+    }
+}

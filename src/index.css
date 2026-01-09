@@ -1,0 +1,22 @@
+@font-face {
+    font-family: "Gotham";
+    src: url("/public/fonts/Gotham.ttf") format("woff2"),
+        url("/public/fonts/Gotham.ttf") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Gotham";
+    src: url("/public/fonts/Gotham.ttf") format("woff2"),
+        url("/public/fonts/Gotham.ttf") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+
+body,
+button,
+input,
+textarea {
+    font-family: "Gotham", Arial, sans-serif !important;
+}

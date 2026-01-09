@@ -17,8 +17,7 @@ type DoughnutChartProps = {
 };
 
 const DoughnutChart: React.FC<DoughnutChartProps> = ({ labels, values, titulo }) => {
-  const data = {
-    labels,
+  const data = { labels,
     datasets: [
       {
         label: 'Total',
