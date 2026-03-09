@@ -1,4 +1,4 @@
-import { IPonto } from "../../interfaces/IPonto";
+import { IPonto, IPontoTabela } from "../../interfaces/IPonto";
 import { ModeloPonto } from "./modeloPonto";
 
 export class VisaoModeloPonto {
@@ -10,8 +10,8 @@ export class VisaoModeloPonto {
         return await this.modeloPonto.deletarControlePonto(tokenJWT, id);
     }
 
-    async listarTodosPontos(tokenJWT: string): Promise<IPonto | null> {
-        return await this.modeloPonto.listarTodosControlesPontos(tokenJWT);
+    async listarTodosPontos(tokenJWT: string, inicio?: string, fim?: string): Promise<IPontoTabela[]> {
+        return await this.modeloPonto.listarTodosControlesPontos(tokenJWT, inicio, fim);
     }
 
     async listarPontoPorID(tokenJWT: string, id: number): Promise<IPonto | null> {
@@ -21,7 +21,7 @@ export class VisaoModeloPonto {
     async cadastrarPonto(tokenJWT: string, dadosFormulario: string): Promise<IPonto | null> {
         return await this.modeloPonto.cadastrarPonto(tokenJWT, dadosFormulario);
     }
-    
+
     async fecharPonto(tokenJWT: string, id: number): Promise<IPonto | null> {
         return await this.modeloPonto.fecharPonto(tokenJWT, id);
     }

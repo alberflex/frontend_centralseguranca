@@ -6,6 +6,7 @@ import { useAutenticacao } from "../../../contextos/useAutenticacao";
 import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeiculo/visaoModeloSolicitacaoVeiculo";
 import { IControleVeiculoTabela } from "../../../interfaces/IControleVeiculo";
 import { ILayoutTabela } from "../../../componentes/tabelas/tabela";
+import { formatarDataISO } from "../../../utils/converteDataISO";
 
 export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
     const navegacao = useNavigate();
@@ -15,19 +16,32 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
     const IconeAdicionar = IoAddCircleOutline as unknown as React.FC<{ size?: number, className?: string; }>;
 
     const [solicitacaoVeiculo, setSolicitacaoVeiculo] = useState<IControleVeiculoTabela[]>([])
+    const [dataInicio, setDataInicio] = useState("");
+    const [dataFim, setDataFim] = useState("");
 
-    const buscarSolicitacaoVeiculo = async () => {
+    const buscarSolicitacaoVeiculo = async (inicio?: string, fim?: string) => {
         if (!tokenJWT) return;
         try {
-            const informacoesSolicitacoesVeiculo = await objVisaoModeloSolicitacaoVeiculo.listarTodosVeiculos(tokenJWT);
+            const informacoesSolicitacoesVeiculo = await objVisaoModeloSolicitacaoVeiculo.listarTodosVeiculos(tokenJWT, inicio, fim);
             if (informacoesSolicitacoesVeiculo && Array.isArray(informacoesSolicitacoesVeiculo)) {
-                setSolicitacaoVeiculo(informacoesSolicitacoesVeiculo);
+                const informacoesFormatadas = informacoesSolicitacoesVeiculo.map(item => ({
+                    ...item,
+                    data_solicitacao: item.data_solicitacao ? formatarDataISO(item.data_solicitacao) : null,
+                    data_chegada: item.data_chegada ? formatarDataISO(item.data_chegada) : null,
+                }));
+                setSolicitacaoVeiculo(informacoesFormatadas);
             } else {
                 setSolicitacaoVeiculo([]);
             }
         } catch (error) {
             console.error("Erro ao buscar veiculos cadastrados:", error);
         }
+    };
+
+    const limparFiltro = async () => {
+        setDataInicio("");
+        setDataFim("");
+        await buscarSolicitacaoVeiculo();
     };
 
     const deletarSolicitacaoVeiculo = async (id: number) => {
@@ -93,6 +107,14 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         deletarSolicitacaoVeiculo,
         selecionarSolicitacaoVeiculo,
         colunasTabela, toast, setToast,
-        abrirConfirmacaoExclusao, IconeAdicionar, vaiParaFormularioSolicitacaoVeiculo
+        abrirConfirmacaoExclusao,
+        IconeAdicionar,
+        vaiParaFormularioSolicitacaoVeiculo,
+        limparFiltro,
+        dataInicio,
+        dataFim,
+        setDataFim,
+        setDataInicio,
+        buscarSolicitacaoVeiculo
     }
 }

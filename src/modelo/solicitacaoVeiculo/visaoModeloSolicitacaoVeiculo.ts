@@ -10,8 +10,8 @@ export class VisaoModeloSolicitacaoVeiculo {
         return await this.modeloSolicitacaoVeiculo.deletarSolicitacaoVeiculo(tokenJWT, id);
     }
 
-    async listarTodosVeiculos(tokenJWT: string): Promise<IControleVeiculo | null> {
-        return await this.modeloSolicitacaoVeiculo.listarTodasSolicitacaoVeiculos(tokenJWT);
+    async listarTodosVeiculos(tokenJWT: string, inicio?: string, fim?: string): Promise<IControleVeiculo | null> {
+        return await this.modeloSolicitacaoVeiculo.listarTodasSolicitacaoVeiculos(tokenJWT, inicio, fim);
     }
 
     async listarVeiculosPorID(tokenJWT: string, id: number): Promise<IControleVeiculo | null> {
@@ -30,7 +30,7 @@ export class VisaoModeloSolicitacaoVeiculo {
         return await this.modeloSolicitacaoVeiculo.listarPessoal(tokenJWT, termo);
     }
 
-    async editarSolicitacaoVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo, id:number): Promise<IControleVeiculo | null> {
+    async editarSolicitacaoVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo, id: number): Promise<IControleVeiculo | null> {
         return await this.modeloSolicitacaoVeiculo.editarSolicitacaoVeiculo(tokenJWT, dadosFormulario, id);
     }
 }

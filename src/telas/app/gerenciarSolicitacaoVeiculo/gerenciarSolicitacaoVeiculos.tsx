@@ -1,19 +1,26 @@
 import { Container } from "react-bootstrap";
 import { useVisaoControllerListagemSolicitacaoVeiculo } from "./visaoControllerGerenciarSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function ControleSolicitacaoVeiculo() {
-    const { 
-        colunasTabela, 
-        solicitacaoVeiculo, 
-        selecionarSolicitacaoVeiculo, 
-        abrirConfirmacaoExclusao, 
-        setToast, 
-        toast, 
-        IconeAdicionar, 
-        vaiParaFormularioSolicitacaoVeiculo 
+    const {
+        colunasTabela,
+        solicitacaoVeiculo,
+        selecionarSolicitacaoVeiculo,
+        abrirConfirmacaoExclusao,
+        setToast,
+        toast,
+        IconeAdicionar,
+        vaiParaFormularioSolicitacaoVeiculo,
+        dataFim,
+        dataInicio,
+        setDataFim,
+        setDataInicio,
+        limparFiltro,
+        buscarSolicitacaoVeiculo
     } = useVisaoControllerListagemSolicitacaoVeiculo();
     return (
         <Container fluid>
@@ -26,6 +33,39 @@ export default function ControleSolicitacaoVeiculo() {
                 </div>
 
             </div>
+            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
+                <Col xs={12} md={3}>
+                    <Form.Group>
+                        <Form.Label>Data Início</Form.Label>
+                        <Form.Control
+                            type="date"
+                            value={dataInicio}
+                            onChange={(e) => setDataInicio(e.target.value)}
+                        />
+                    </Form.Group>
+                </Col>
+
+                <Col xs={12} md={3}>
+                    <Form.Group>
+                        <Form.Label>Data Fim</Form.Label>
+                        <Form.Control
+                            type="date"
+                            value={dataFim}
+                            onChange={(e) => setDataFim(e.target.value)}
+                        />
+                    </Form.Group>
+                </Col>
+
+                <Col xs={12} md={3} className="d-flex gap-2">
+                    <Button variant="primary" className="flex-fill" onClick={() => buscarSolicitacaoVeiculo(dataInicio, dataFim)}>
+                        Filtrar
+                    </Button>
+                    <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>
+                        Limpar
+                    </Button>
+                </Col>
+            </Row>
+
             <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} />
             <GenericToast
                 show={toast.show}

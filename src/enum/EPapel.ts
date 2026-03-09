@@ -1,0 +1,4 @@
+export enum EPapel {
+    ADMINISTRADOR = "ADMINISTRADOR",
+    PORTEIRO = "PORTEIRO"
+}

@@ -1,4 +1,4 @@
-import { IPonto } from "../../interfaces/IPonto";
+import { IPonto, IPontoTabela } from "../../interfaces/IPonto";
 import { conexaoAPI } from "../../servicos/API";
 
 export class ModeloPonto {
@@ -13,13 +13,28 @@ export class ModeloPonto {
         }
     }
 
-    async listarTodosControlesPontos(tokenJWT: string): Promise<IPonto | null> {
+    async listarTodosControlesPontos(
+        tokenJWT: string,
+        inicio?: string,
+        fim?: string
+    ): Promise<IPontoTabela[]> {
         try {
-            const controlePontosListadosJSON = await conexaoAPI.get<IPonto>(`/controlePonto/listarTodosPontos`, {
-                headers: { Authorization: `Bearer ${tokenJWT}` },
+            let url = "/controlePonto/listarTodosPontos";
+
+            if (inicio && fim) {
+                url += `?dataInicio=${inicio}&dataFim=${fim}`;
+            }
+
+            const resposta = await conexaoAPI.get<IPontoTabela[]>(url, {
+                headers: {
+                    Authorization: `Bearer ${tokenJWT}`,
+                },
             });
-            return controlePontosListadosJSON.data;
+            console.log(resposta.data);
+            return resposta.data;
+
         } catch (error) {
+            console.error("Erro na API:", error);
             throw error;
         }
     }
@@ -46,11 +61,11 @@ export class ModeloPonto {
         }
     }
 
-     async fecharPonto(tokenJWT: string, id: number): Promise<IPonto | null> {
+    async fecharPonto(tokenJWT: string, id: number): Promise<IPonto | null> {
         try {
             const pontoFechadoJSON = await conexaoAPI.put<IPonto>(
                 `/controlePonto/fecharPonto/${id}`,
-                {}, 
+                {},
                 {
                     headers: { Authorization: `Bearer ${tokenJWT}` },
                 }

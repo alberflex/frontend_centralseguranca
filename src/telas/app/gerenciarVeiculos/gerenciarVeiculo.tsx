@@ -1,11 +1,12 @@
 import { Container } from "react-bootstrap";
 import { useVisaoControllerGerenciarVeiculo } from "./visaoControllerGerenciarVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
+import { EPapel } from "../../../enum/EPapel";
 import Tabela from "../../../componentes/tabelas/tabela";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function ListagemVeiculo() {
-    const { colunasTabela, veiculo, selecionarVeiculo, toast, setToast, abrirConfirmacaoExclusao, IconeAdicionar, vaiParaFormularioVeiculo } = useVisaoControllerGerenciarVeiculo();
+    const { colunasTabela, veiculo, selecionarVeiculo, toast, setToast, abrirConfirmacaoExclusao, IconeAdicionar, vaiParaFormularioVeiculo, informacoesUsuario } = useVisaoControllerGerenciarVeiculo();
     return (
         <Container fluid>
             <MenuSuperiorIniciar />
@@ -16,7 +17,8 @@ export default function ListagemVeiculo() {
                     <span>Formulário de veículo</span>
                 </div>
             </div>
-            <Tabela colunas={colunasTabela} dados={veiculo} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarVeiculo} />
+            <Tabela colunas={colunasTabela} dados={veiculo} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarVeiculo} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}
+            />
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}

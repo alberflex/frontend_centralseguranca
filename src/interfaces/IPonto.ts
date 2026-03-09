@@ -13,5 +13,5 @@ export interface IPontoTabela {
     nome_porteiro: string;
     horarioEntrada: string;
     horarioSaida: string;
-    data: Date;
+    data: string;
 }

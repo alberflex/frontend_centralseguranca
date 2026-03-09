@@ -12,13 +12,15 @@ interface TabelaProps<T> {
     dados: T[];
     aoDeletar?: (linha: number) => void;
     aoEditar?: (linha: number) => void;
+    podeDeletar?: boolean;
 }
 
 export default function Tabela<T extends Record<string, any>>({
     colunas,
     dados,
     aoDeletar,
-    aoEditar
+    aoEditar,
+    podeDeletar = true
 }: TabelaProps<T>) {
     const IconeLixeira = GoTrash as unknown as React.FC<{ size?: number, className?: string; onClick?: () => void; }>;
     const IconeLapis = HiOutlinePencil as unknown as React.FC<{ size?: number, className?: string; onClick?: () => void; }>;
@@ -30,32 +32,37 @@ export default function Tabela<T extends Record<string, any>>({
                     <tr>
                         {colunas.map((col, index) => (
                             <th key={index}>{col.label}</th>
-
                         ))}
                         <th>Editar</th>
-                        <th>Excluir</th>
+                        {podeDeletar && <th>Excluir</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {dados?.map((linha, i) => (
                         <tr key={i}>
                             {colunas?.map((col, j) => (
-                                <td key={j} style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{String(linha[col.key] ?? '')}</td>
+                                <td key={j}>
+                                    {String(linha[col.key] ?? '')}
+                                </td>
                             ))}
+
                             <td style={{ cursor: 'pointer' }}>
                                 <IconeLapis
                                     size={20}
-                                    className='d-flex mx-auto cursor-pointer'
+                                    className='d-flex mx-auto'
                                     onClick={() => aoEditar?.(linha.id)}
                                 />
                             </td>
-                            <td style={{ cursor: 'pointer' }}>
-                                <IconeLixeira
-                                    size={20}
-                                    className='d-flex mx-auto '
-                                    onClick={() => aoDeletar?.(linha.id)}
-                                />
-                            </td>
+
+                            {podeDeletar && (
+                                <td style={{ cursor: 'pointer' }}>
+                                    <IconeLixeira
+                                        size={20}
+                                        className='d-flex mx-auto'
+                                        onClick={() => aoDeletar?.(linha.id)}
+                                    />
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>

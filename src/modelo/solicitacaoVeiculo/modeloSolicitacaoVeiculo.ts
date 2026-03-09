@@ -14,12 +14,18 @@ export class ModeloSolicitacaoVeiculo {
         }
     }
 
-    async listarTodasSolicitacaoVeiculos(tokenJWT: string): Promise<IControleVeiculo | null> {
+    async listarTodasSolicitacaoVeiculos(tokenJWT: string, inicio?: string, fim?: string): Promise<IControleVeiculo | null> {
         try {
-            const solicitacaoVeiculoJSON = await conexaoAPI.get<IControleVeiculo>(`/controleVeiculo/listarTodosVeiculos`, {
+            let url = "/controleVeiculo/listarTodosVeiculos";
+            
+            if (inicio && fim) {
+                url += `?dataInicio=${inicio}&dataFim=${fim}`;
+            }
+
+            const solicitacaoVeiculoJSON = await conexaoAPI.get<IControleVeiculo>(url, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
-
+            console.log(solicitacaoVeiculoJSON.data);
             return solicitacaoVeiculoJSON.data;
         } catch (error) {
             throw error;

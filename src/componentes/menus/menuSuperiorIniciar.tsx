@@ -1,10 +1,11 @@
 import { Navbar, Container, Offcanvas, Nav, Button, Dropdown, Image } from "react-bootstrap";
 import { useVisaoControllerMenuSuperior } from "./visaoControllerMenuSuperior";
+import { EPapel } from "../../enum/EPapel";
 
 export default function MenuSuperiorIniciar() {
   const { informacoesUsuario, menuItens, logout, vaiParaIntroducao } = useVisaoControllerMenuSuperior();
 
-  const permissao = informacoesUsuario?.papel ?? "PORTEIRO";
+  const permissao = (informacoesUsuario?.papel as EPapel) ?? EPapel.PORTEIRO; 
   const menuVisivel = menuItens.filter(item => item.permissoes.includes(permissao));
 
   return (

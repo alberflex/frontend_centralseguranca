@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAutenticacao } from "../../contextos/useAutenticacao";
+import { EPapel } from "../../enum/EPapel";
 
 export const useVisaoControllerMenuSuperior = () => {
     const navigate = useNavigate();
@@ -13,12 +14,12 @@ export const useVisaoControllerMenuSuperior = () => {
     const vaiParaGerenciamentoPontos = () => navigate("/ControlePonto")
 
     const menuItens = [
-        { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: ["PORTEIRO", "SUPERVISOR", "ADMINISTRADOR"] },
-        { label: "Gerenciar usuários", onClick: vaiParaGerenciamentoUsuarios, permissoes: ["PORTEIRO", "ADMINISTRADOR", "SUPERVISOR"] },
-        { label: "Gerenciar veículos", onClick: vaiParaGerenciamentoVeiculos, permissoes: ["PORTEIRO", "SUPERVISOR", "ADMINISTRADOR"] },
-        { label: "Gerenciar pontos", onClick: vaiParaGerenciamentoPontos, permissoes: ["PORTEIRO", "SUPERVISOR", "ADMINISTRADOR"] },
-        { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: ["PORTEIRO", "SUPERVISOR", "ADMINISTRADOR"] },
-        { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: ["PORTEIRO", "ADMINISTRADOR", "SUPERVISOR"] },
+        { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar usuários", onClick: vaiParaGerenciamentoUsuarios, permissoes: [EPapel.ADMINISTRADOR] },
+        { label: "Gerenciar veículos", onClick: vaiParaGerenciamentoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar pontos", onClick: vaiParaGerenciamentoPontos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
     ];
 
     return {

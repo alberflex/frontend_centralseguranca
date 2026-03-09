@@ -11,7 +11,7 @@ export const useVisaoControllerGerenciarVeiculo = () => {
     const navegacao = useNavigate();
     const vaiParaFormularioVeiculo = () => { navegacao("/FormularioVeiculo") }
     const objVisaoModeloVeiculo = new VisaoModeloVeiculo();
-    const { tokenJWT } = useAutenticacao();
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const colunasTabela: ILayoutTabela<IVeiculo>[] = [{ key: 'id', label: 'ID' }, { key: 'placa', label: 'Placa' }, { key: 'modelo', label: 'Modelo' }, { key: 'km_atual', label: 'KM Atual' }];
     const IconeAdicionar = IoAddCircleOutline as unknown as React.FC<{ size?: number, className?: string; }>;
 
@@ -80,6 +80,8 @@ export const useVisaoControllerGerenciarVeiculo = () => {
         colunasTabela,
         veiculo,
         toast, setToast,
-        abrirConfirmacaoExclusao, IconeAdicionar
+        abrirConfirmacaoExclusao, 
+        IconeAdicionar,
+        informacoesUsuario
     }
 }
