@@ -10,8 +10,8 @@ export class VisaoModeloSolicitacaoAcesso {
         return await this.modeloSolicitacaoAcesso.deletarSolicitacaoAcesso(tokenJWT, id);
     }
 
-    async listarTodasSolicitacoesAcesso(tokenJWT: string): Promise<IControleAcesso | null> {
-        return await this.modeloSolicitacaoAcesso.listarTodasSolicitacaoAcesso(tokenJWT);
+    async listarTodasSolicitacoesAcesso(tokenJWT: string, inicio?: string, fim?: string): Promise<IControleAcesso | null> {
+        return await this.modeloSolicitacaoAcesso.listarTodasSolicitacaoAcesso(tokenJWT, inicio, fim);
     }
 
     async listarSolicitacaoAcessoPorID(tokenJWT: string, id: number): Promise<IControleAcesso | null> {

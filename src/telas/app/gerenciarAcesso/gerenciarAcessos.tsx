@@ -1,6 +1,7 @@
 import { Container } from 'react-bootstrap';
 import { useVisaoControllerGerenciarAcessos } from './visaoControllerGerenciarAcessos';
 import { GenericToast } from '../../../componentes/toast/toast';
+import { Row, Col, Form, Button } from "react-bootstrap";
 import MenuSuperiorIniciar from '../../../componentes/menus/menuSuperiorIniciar';
 import Tabela from '../../../componentes/tabelas/tabela';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,9 +16,15 @@ export default function ControleAcesso() {
         selecionarAcesso,
         setToast,
         abrirConfirmacaoExclusao,
-        vaiParaFormularioAcesso
+        vaiParaFormularioAcesso,
+        setDataFim,
+        setDataInicio,
+        dataFim,
+        dataInicio,
+        buscarAcessos,
+        limparFiltro
     } = useVisaoControllerGerenciarAcessos();
-    
+
     return (
         <Container fluid>
             <MenuSuperiorIniciar />
@@ -28,6 +35,40 @@ export default function ControleAcesso() {
                     <span>Formulário solicitação de acesso</span>
                 </div>
             </div>
+
+            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
+                <Col xs={12} md={3}>
+                    <Form.Group>
+                        <Form.Label>Data Início</Form.Label>
+                        <Form.Control
+                            type="date"
+                            value={dataInicio}
+                            onChange={(e) => setDataInicio(e.target.value)}
+                        />
+                    </Form.Group>
+                </Col>
+
+                <Col xs={12} md={3}>
+                    <Form.Group>
+                        <Form.Label>Data Fim</Form.Label>
+                        <Form.Control
+                            type="date"
+                            value={dataFim}
+                            onChange={(e) => setDataFim(e.target.value)}
+                        />
+                    </Form.Group>
+                </Col>
+
+                <Col xs={12} md={3} className="d-flex gap-2">
+                    <Button variant="primary" className="flex-fill" onClick={() => buscarAcessos(dataInicio, dataFim)}>
+                        Filtrar
+                    </Button>
+                    <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>
+                        Limpar
+                    </Button>
+                </Col>
+            </Row>
+
             <Tabela colunas={colunasTabela} dados={acessos} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarAcesso} />
 
             <GenericToast

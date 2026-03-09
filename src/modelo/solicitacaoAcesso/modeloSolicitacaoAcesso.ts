@@ -13,11 +13,14 @@ export class ModeloSolicitacaoAcesso {
         }
     }
 
-    async listarTodasSolicitacaoAcesso(tokenJWT: string): Promise<IControleAcesso | null> {
+    async listarTodasSolicitacaoAcesso(tokenJWT: string, inicio?: string, fim?: string): Promise<IControleAcesso | null> {
         try {
-            const solicitacaoAcessosJSON = await conexaoAPI.get<IControleAcesso>(`/controleAcesso/listarControleAcesso`, {
-                headers: { Authorization: `Bearer ${tokenJWT}` }
-            });
+            let url = "/controleAcesso/listarControleAcesso";
+
+            if (inicio && fim) { url += `?dataInicio=${inicio}&dataFim=${fim}`; }
+
+            const solicitacaoAcessosJSON = await conexaoAPI.get<IControleAcesso>(url, { headers: { Authorization: `Bearer ${tokenJWT}` } });
+    
             return solicitacaoAcessosJSON.data;
         } catch (error) {
             throw error;

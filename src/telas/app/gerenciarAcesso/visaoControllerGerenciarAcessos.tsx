@@ -9,15 +9,17 @@ import { ILayoutTabela } from '../../../componentes/tabelas/tabela';
 export const useVisaoControllerGerenciarAcessos = () => {
     const { tokenJWT } = useAutenticacao();
     const [acessos, setAcessos] = useState<IControleAcessoTabela[]>([]);
+    const [dataInicio, setDataInicio] = useState("");
+    const [dataFim, setDataFim] = useState("");
     const objVisaoModeloAcessos = new VisaoModeloSolicitacaoAcesso();
     const IconeAdicionar = IoAddCircleOutline as unknown as React.FC<{ size?: number, className?: string; }>;
     const navegacao = useNavigate();
     const vaiParaFormularioAcesso = () => { navegacao("/FormularioControleAcesso"); }
 
-    const buscarAcessos = async () => {
+    const buscarAcessos = async (inicio?: string, fim?: string) => {
         if (!tokenJWT) return;
         try {
-            const informacoesAcessos = await objVisaoModeloAcessos.listarTodasSolicitacoesAcesso(tokenJWT);
+            const informacoesAcessos = await objVisaoModeloAcessos.listarTodasSolicitacoesAcesso(tokenJWT, inicio, fim);
             if (informacoesAcessos && Array.isArray(informacoesAcessos)) {
                 setAcessos(informacoesAcessos);
             } else {
@@ -26,6 +28,12 @@ export const useVisaoControllerGerenciarAcessos = () => {
         } catch (error) {
             console.error("Erro ao buscar acessos:", error);
         }
+    };
+    
+    const limparFiltro = async () => {
+        setDataInicio("");
+        setDataFim("");
+        await buscarAcessos();
     };
 
     const deletarAcesso = async (id: number) => {
@@ -83,7 +91,19 @@ export const useVisaoControllerGerenciarAcessos = () => {
 
     return {
         selecionarAcesso,
-        deletarAcesso, acessos, colunasTabela,
-        toast, setToast, abrirConfirmacaoExclusao, IconeAdicionar, vaiParaFormularioAcesso
+        deletarAcesso,
+        acessos,
+        colunasTabela,
+        toast,
+        setToast,
+        abrirConfirmacaoExclusao,
+        IconeAdicionar,
+        vaiParaFormularioAcesso,
+        dataInicio,
+        dataFim,
+        setDataFim,
+        setDataInicio,
+        buscarAcessos,
+        limparFiltro
     }
 }   
