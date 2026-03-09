@@ -69,6 +69,7 @@ export default function GerenciarPontos() {
                     </Form.Group>
                 </Col>
             </Row>
+            
             <Row className="px-4 mt-3 mb-3 align-items-end g-2">
                 <Col xs={12} md={3} className="d-flex gap-2">
                 <Button variant="primary" className="flex-fill" onClick={() => buscarPontos(dataInicio, dataFim)}>
@@ -82,6 +83,8 @@ export default function GerenciarPontos() {
                     </Button>
                 </Col>
             </Row>
+
+
             <Tabela
                 colunas={colunasTabela}
                 dados={pontos}

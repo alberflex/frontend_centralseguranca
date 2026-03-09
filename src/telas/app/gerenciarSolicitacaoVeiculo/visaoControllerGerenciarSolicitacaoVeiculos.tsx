@@ -59,9 +59,19 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
             doc.addImage(img, "PNG", pageWidth - imgWidth - 10, 5, imgWidth, imgHeight);
 
             const colunas = [
-                "ID", "Placa", "Data Solicitação", "Hora Saída", "Km Inicial",
-                "Data Chegada", "Hora Chegada", "Km Final", "Solicitante",
-                "Responsável", "Localização", "Porteiro Saída", "Porteiro Entrada"
+                "ID", 
+                "Placa", 
+                "Data Solicitação", 
+                "Hora Saída", 
+                "Km Inicial",
+                "Data Chegada", 
+                "Hora Chegada", 
+                "Km Final", 
+                "Solicitante",
+                "Responsável", 
+                "Localização", 
+                "Porteiro Saída", 
+                "Porteiro Entrada"
             ];
 
             const linhas = solicitacaoVeiculo.map(d => [
@@ -74,6 +84,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                 d.horario_chegada ? new Date(d.horario_chegada).toLocaleTimeString() : "",
                 d.km_final_veiculo || "",
                 d.nome_responsavel,
+                d.nome_responsavel_autorizacao,
                 d.localizacao,
                 d.nome_porteiro_saida,
                 d.nome_porteiro_entrada

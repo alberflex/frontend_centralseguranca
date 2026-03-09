@@ -5,6 +5,10 @@ import { useAutenticacao } from '../../../contextos/useAutenticacao';
 import { IControleAcessoTabela } from '../../../interfaces/IControleAcesso';
 import { VisaoModeloSolicitacaoAcesso } from '../../../modelo/solicitacaoAcesso/visaoModeloSolicitacaoAcesso';
 import { ILayoutTabela } from '../../../componentes/tabelas/tabela';
+import { formatarDataISO } from '../../../utils/converteDataISO';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 export const useVisaoControllerGerenciarAcessos = () => {
     const { tokenJWT } = useAutenticacao();
@@ -29,7 +33,65 @@ export const useVisaoControllerGerenciarAcessos = () => {
             console.error("Erro ao buscar acessos:", error);
         }
     };
-    
+
+    const gerarPDF = () => {
+        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const titulo = "Relatório de Controle de Acessos";
+        doc.setFontSize(18);
+        const textWidth = doc.getTextWidth(titulo);
+        doc.text(titulo, (pageWidth - textWidth) / 2, 20);
+
+        const logoUrl = `${window.location.origin}/images/alberflex.png`;
+        const imgWidth = 40;
+        const imgHeight = 15;
+        const img = new Image();
+        img.src = logoUrl;
+        img.onload = () => {
+            doc.addImage(img, "PNG", pageWidth - imgWidth - 10, 5, imgWidth, imgHeight);
+
+            const colunas = [
+                "ID",
+                "Nome visitante",
+                "Porteiro entrada",
+                "Porteiro saída",
+                "Data entrada",
+                "Hora entrada",
+                "Data saída",
+                "Hora final",
+                "Placa veiculo",
+                "Numero cartão",
+                "Responsável",
+            ];
+
+            const linhas = acessos.map(d => [
+                d.id,
+                d.nomeVisitante,
+                d.nomePorteiroEntrada,
+                d.nomePorteiroSaida,
+                formatarDataISO(d.data_entrada),
+                d.hora_entrada,
+                d.data_saida,
+                formatarDataISO(d.hora_saida),
+                d.placaVeiculo,
+                d.numeroCartao,
+                d.responsavel
+            ]);
+
+            autoTable(doc, {
+                head: [colunas],
+                body: linhas,
+                startY: 30,
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [0, 123, 255], textColor: 255 }
+            });
+
+            doc.save("RelatorioControleAcesso.pdf");
+        };
+    };
+
+
     const limparFiltro = async () => {
         setDataInicio("");
         setDataFim("");
@@ -104,6 +166,7 @@ export const useVisaoControllerGerenciarAcessos = () => {
         setDataFim,
         setDataInicio,
         buscarAcessos,
-        limparFiltro
+        limparFiltro,
+        gerarPDF
     }
 }   

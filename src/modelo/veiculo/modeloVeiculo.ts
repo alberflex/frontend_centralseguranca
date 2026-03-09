@@ -13,9 +13,15 @@ export class ModeloVeiculo {
         }
     }
 
-    async listarTodosVeiculos(tokenJWT: string): Promise<IVeiculo | null> {
+    async listarTodosVeiculos(tokenJWT: string, placa?: string): Promise<IVeiculo[] | null> {
         try {
-            const veiculosListadosJSON = await conexaoAPI.get<IVeiculo>(`/veiculo/listarTodosVeiculos`, {
+            let url = "/veiculo/listarTodosVeiculos";
+
+            if (placa) {
+                url += `?placa=${placa}`;
+            }
+
+            const veiculosListadosJSON = await conexaoAPI.get<IVeiculo[]>(url, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return veiculosListadosJSON.data;

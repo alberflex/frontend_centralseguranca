@@ -22,17 +22,30 @@ export default function ControleAcesso() {
         dataFim,
         dataInicio,
         buscarAcessos,
-        limparFiltro
+        limparFiltro,
+        gerarPDF
     } = useVisaoControllerGerenciarAcessos();
 
     return (
         <Container fluid>
             <MenuSuperiorIniciar />
+
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
-                <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar solicitações de acesso.</h4>
-                <div className="d-flex text-center px-2 mb-2 mb-md-0" onClick={vaiParaFormularioAcesso} style={{ display: 'flex', cursor: "pointer", alignItems: 'center', justifyContent: 'center' }}>
+                <h4 className="text-center text-md-start mb-3 mb-md-0">
+                    Gerenciar solicitações de acesso.
+                </h4>
+
+                <div
+                    className="d-flex text-center px-2 mb-2 mb-md-0"
+                    onClick={vaiParaFormularioAcesso}
+                    style={{
+                        cursor: "pointer",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                >
                     <IconeAdicionar size={22} />
-                    <span>Formulário solicitação de acesso</span>
+                    <span className="ms-2">Formulário solicitação de acesso</span>
                 </div>
             </div>
 
@@ -58,18 +71,42 @@ export default function ControleAcesso() {
                         />
                     </Form.Group>
                 </Col>
+            </Row>
 
+            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
                 <Col xs={12} md={3} className="d-flex gap-2">
-                    <Button variant="primary" className="flex-fill" onClick={() => buscarAcessos(dataInicio, dataFim)}>
-                        Filtrar
+                    <Button
+                        variant="primary"
+                        className="flex-fill"
+                        onClick={() => buscarAcessos(dataInicio, dataFim)}
+                    >
+                        Filtrar dados
                     </Button>
-                    <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>
-                        Limpar
+
+                    <Button
+                        variant="primary"
+                        className="flex-fill"
+                        onClick={gerarPDF}
+                    >
+                        Gerar relatório
+                    </Button>
+
+                    <Button
+                        variant="secondary"
+                        className="flex-fill"
+                        onClick={limparFiltro}
+                    >
+                        Limpar filtro
                     </Button>
                 </Col>
             </Row>
 
-            <Tabela colunas={colunasTabela} dados={acessos} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarAcesso} />
+            <Tabela
+                colunas={colunasTabela}
+                dados={acessos}
+                aoDeletar={abrirConfirmacaoExclusao}
+                aoEditar={selecionarAcesso}
+            />
 
             <GenericToast
                 show={toast.show}
@@ -81,6 +118,6 @@ export default function ControleAcesso() {
                     { label: "Cancelar", onClick: () => setToast({ ...toast, show: false }), variant: "danger" },
                 ]}
             />
-        </Container >
+        </Container>
     );
 }

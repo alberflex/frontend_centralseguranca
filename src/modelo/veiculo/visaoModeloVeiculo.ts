@@ -10,8 +10,8 @@ export class VisaoModeloVeiculo {
         return await this.modeloVeiculo.deletarVeiculo(tokenJWT, id);
     }
 
-    async listarTodosVeiculos(tokenJWT: string): Promise<IVeiculo | null> {
-        return await this.modeloVeiculo.listarTodosVeiculos(tokenJWT);
+    async listarTodosVeiculos(tokenJWT: string, placa?: string): Promise<IVeiculo[] | null> {
+        return await this.modeloVeiculo.listarTodosVeiculos(tokenJWT, placa);
     }
 
     async listarVeiculosPorID(tokenJWT: string, id: number): Promise<IVeiculo | null> {
