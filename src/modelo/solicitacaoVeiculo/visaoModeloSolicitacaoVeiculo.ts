@@ -1,5 +1,6 @@
 import { ModeloSolicitacaoVeiculo } from "./modeloSolicitacaoVeiculo";
 import { IControleVeiculo, IControleVeiculoCadastro, IFecharSolicitacaoVeiculo, IUsuario } from "../../interfaces/IControleVeiculo";
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 
 export class VisaoModeloSolicitacaoVeiculo {
     private modeloSolicitacaoVeiculo: ModeloSolicitacaoVeiculo;
@@ -22,7 +23,7 @@ export class VisaoModeloSolicitacaoVeiculo {
         return await this.modeloSolicitacaoVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario);
     }
 
-    async contarSolicitacaoVeiculoAberto(tokenJWT: string): Promise<number | null> {
+    async contarSolicitacaoVeiculoAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {
         return await this.modeloSolicitacaoVeiculo.contarSolicitacaoVeiculosAberto(tokenJWT);
     }
 

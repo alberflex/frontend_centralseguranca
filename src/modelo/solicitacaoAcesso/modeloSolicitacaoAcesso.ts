@@ -1,4 +1,5 @@
 import { IControleAcesso, IControleAcessoCadastro } from "../../interfaces/IControleAcesso";
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 import { conexaoAPI } from "../../servicos/API";
 
 export class ModeloSolicitacaoAcesso {
@@ -63,9 +64,9 @@ export class ModeloSolicitacaoAcesso {
         }
     }
 
-    async contarSolicitacoesAcessoAberto(tokenJWT: string): Promise<number | null> {
+    async contarSolicitacoesAcessoAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {
         try {
-            const solicitacaoAcessoJSON = await conexaoAPI.get<number>(`controleAcesso/contarSolicitacoesEmAberto`, {
+            const solicitacaoAcessoJSON = await conexaoAPI.get<ITotalizadorDashboard>(`controleAcesso/contarSolicitacoesAcessoEmAberto`, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoAcessoJSON.data;

@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { ILayoutTabela } from "../../../componentes/tabelas/tabela";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { formatarDataISO } from "../../../utils/converteDataISO";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 export const useVisaoControllerGerenciarPontos = () => {
     const { tokenJWT } = useAutenticacao();
@@ -37,6 +40,47 @@ export const useVisaoControllerGerenciarPontos = () => {
         } catch (error) {
             console.error("Erro ao buscar pontos:", error);
         }
+    };
+
+    const gerarPDF = () => {
+        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const titulo = "Relatório de Controle de Pontos";
+        doc.setFontSize(18);
+        const textWidth = doc.getTextWidth(titulo);
+        doc.text(titulo, (pageWidth - textWidth) / 2, 20);
+
+        const logoUrl = `${window.location.origin}/images/alberflex.png`;
+        const imgWidth = 40;
+        const imgHeight = 15;
+
+        const img = new Image();
+        img.src = logoUrl;
+        img.onload = () => {
+            doc.addImage(img, "PNG", pageWidth - imgWidth - 10, 5, imgWidth, imgHeight);
+
+            const colunas = ["ID", "Nome colaborador", "Porteiro", "Horario entrada", "Horario saída", "Data"];
+
+            const linhas = pontos.map(d => [
+                d.id,
+                d.nome_colaborador,
+                d.nome_porteiro,
+                d.horarioEntrada,
+                d.horarioSaida,
+                formatarDataISO(d.data)
+            ]);
+
+            autoTable(doc, {
+                head: [colunas],
+                body: linhas,
+                startY: 30,
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [0, 123, 255], textColor: 255 }
+            });
+
+            doc.save("RelatorioControlePontos.pdf");
+        };
     };
 
     const limparFiltro = async () => {
@@ -114,5 +158,6 @@ export const useVisaoControllerGerenciarPontos = () => {
         setDataFim,
         setDataInicio,
         buscarPontos,
+        gerarPDF
     }
 }

@@ -1,3 +1,4 @@
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 import { IPonto, IPontoTabela } from "../../interfaces/IPonto";
 import { conexaoAPI } from "../../servicos/API";
 
@@ -76,9 +77,9 @@ export class ModeloPonto {
         }
     }
 
-    async contarPontosAbertos(tokenJWT: string): Promise<number | null> {
+    async contarPontosAbertos(tokenJWT: string): Promise<ITotalizadorDashboard> {
         try {
-            const pontoFechadoJSON = await conexaoAPI.put<number>(`controlePonto/contarSolicitacoesEmAberto`, {
+            const pontoFechadoJSON = await conexaoAPI.get<ITotalizadorDashboard>(`controlePonto/contarPontosEmAberto`, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return pontoFechadoJSON.data;

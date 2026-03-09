@@ -1,3 +1,4 @@
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 import { IPonto, IPontoTabela } from "../../interfaces/IPonto";
 import { ModeloPonto } from "./modeloPonto";
 
@@ -26,7 +27,7 @@ export class VisaoModeloPonto {
         return await this.modeloPonto.fecharPonto(tokenJWT, id);
     }
 
-    async contarPontosAberto(tokenJWT: string): Promise<number | null> {
+    async contarPontosAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {
         return await this.modeloPonto.contarPontosAbertos(tokenJWT);
     }
 }

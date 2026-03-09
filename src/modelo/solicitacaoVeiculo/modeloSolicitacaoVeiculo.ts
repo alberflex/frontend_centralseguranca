@@ -1,6 +1,7 @@
 import { IControleVeiculo, IControleVeiculoCadastro, IFecharSolicitacaoVeiculo } from "../../interfaces/IControleVeiculo";
 import { conexaoAPI } from "../../servicos/API";
 import { IUsuario } from "../../interfaces/IControleVeiculo";
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 
 export class ModeloSolicitacaoVeiculo {
     async deletarSolicitacaoVeiculo(tokenJWT: string, id: number): Promise<IControleVeiculo | null> {
@@ -66,9 +67,9 @@ export class ModeloSolicitacaoVeiculo {
         }
     }
 
-    async contarSolicitacaoVeiculosAberto(tokenJWT: string): Promise<number | null> {
+    async contarSolicitacaoVeiculosAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {
         try {
-            const solicitacaoVeiculosAbertoJSON = await conexaoAPI.get<number>(`controleVeiculo/contarSolicitacoesEmAberto`, {
+            const solicitacaoVeiculosAbertoJSON = await conexaoAPI.get<ITotalizadorDashboard>(`controleVeiculo/contarSolicitacoesVeiculosEmAberto`, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoVeiculosAbertoJSON.data;

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { TelaConsolidador } from '../telas/app/introducao/introducao';
 import TelaLogin from '../telas/login/login';
 import ControleAcesso from '../telas/app/gerenciarAcesso/gerenciarAcessos';
 import FormularioAcesso from '../telas/app/gerenciarAcesso/formularioAcessos';
@@ -11,7 +12,6 @@ import ListagemVeiculo from '../telas/app/gerenciarVeiculos/gerenciarVeiculo';
 import FormularioVeiculo from '../telas/app/gerenciarVeiculos/formularioVeiculos';
 import GerenciarPontos from '../telas/app/gerenciarPonto/gerenciarPontos';
 import FormularioPontos from '../telas/app/gerenciarPonto/formularioPontos';
-import TelaIntroducao from '../telas/app/introducao/introducao';
 
 const rotaConfig = [
   { path: '/', element: <TelaLogin />, title: 'Login - Central de segurança.' },
@@ -25,7 +25,7 @@ const rotaConfig = [
   { path: '/FormularioVeiculo', element: <FormularioVeiculo />, title: 'Formulário de veículo - Alberflex' },
   { path: '/ControlePonto', element: <GerenciarPontos />, title: 'Listagem de pontos - Alberflex' },
   { path: '/FormularioPonto', element: <FormularioPontos />, title: 'Formulário de pontos - Alberflex' },
-  { path: '/Introducao', element: <TelaIntroducao />, title: 'Introdução - Alberflex' }
+  { path: '/Introducao', element: <TelaConsolidador />, title: 'Introdução - Alberflex' }
 ];
 
 export default function Rotas() {

@@ -20,7 +20,8 @@ export default function ControleSolicitacaoVeiculo() {
         setDataFim,
         setDataInicio,
         limparFiltro,
-        buscarSolicitacaoVeiculo
+        buscarSolicitacaoVeiculo,
+        gerarPDF
     } = useVisaoControllerListagemSolicitacaoVeiculo();
     return (
         <Container fluid>
@@ -55,17 +56,20 @@ export default function ControleSolicitacaoVeiculo() {
                         />
                     </Form.Group>
                 </Col>
-
+            </Row>
+            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
                 <Col xs={12} md={3} className="d-flex gap-2">
                     <Button variant="primary" className="flex-fill" onClick={() => buscarSolicitacaoVeiculo(dataInicio, dataFim)}>
-                        Filtrar
+                        Filtrar dados
+                    </Button>
+                    <Button variant="primary" className="flex-fill" onClick={gerarPDF}>
+                        Gerar relatório
                     </Button>
                     <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>
-                        Limpar
+                        Limpar filtro
                     </Button>
                 </Col>
             </Row>
-
             <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} />
             <GenericToast
                 show={toast.show}

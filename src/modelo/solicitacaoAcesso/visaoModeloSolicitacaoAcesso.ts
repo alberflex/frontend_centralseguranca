@@ -1,5 +1,6 @@
 import { ModeloSolicitacaoAcesso } from "./modeloSolicitacaoAcesso";
 import { IControleAcesso, IControleAcessoCadastro } from "../../interfaces/IControleAcesso";
+import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 
 export class VisaoModeloSolicitacaoAcesso {
     private modeloSolicitacaoAcesso: ModeloSolicitacaoAcesso;
@@ -26,7 +27,7 @@ export class VisaoModeloSolicitacaoAcesso {
         return await this.modeloSolicitacaoAcesso.cadastrarSolicitacaoAcesso(tokenJWT, dadosFormulario);
     }
 
-    async contarSolicitacaoAcessoAberto(tokenJWT: string): Promise<number | null> {
+    async contarSolicitacaoAcessoAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {
         return await this.modeloSolicitacaoAcesso.contarSolicitacoesAcessoAberto(tokenJWT);
     }
 
