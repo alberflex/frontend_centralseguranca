@@ -30,6 +30,8 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                     ...item,
                     data_solicitacao: item.data_solicitacao ? formatarDataISO(item.data_solicitacao) : null,
                     data_chegada: item.data_chegada ? formatarDataISO(item.data_chegada) : null,
+                    horario_saida: item.horario_saida ? new Date(item.horario_saida).toLocaleTimeString() : "",
+                    horario_chegada: item.horario_chegada ? new Date(item.horario_chegada).toLocaleTimeString(): ""
                 }));
                 setSolicitacaoVeiculo(informacoesFormatadas);
             } else {

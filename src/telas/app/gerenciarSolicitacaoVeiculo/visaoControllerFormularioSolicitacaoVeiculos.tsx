@@ -19,7 +19,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             idVeiculo: 0,
             idPorteiroEntrada: 0,
             idPorteiroSaida: 0,
-            km_final_veiculo: undefined 
+            km_final_veiculo: undefined
         }
     });
 
@@ -33,7 +33,8 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const [modalAberto, setModalAberto] = useState(false);
     const [termoPesquisa, setTermoPesquisa] = useState("");
     const [campoSelecionado, setCampoSelecionado] = useState<"idResponsavel" | "idResponsavelAutorizacao" | "idVeiculo" | null>(null);
-    
+    const [carregando, setCarregando] = useState(false);
+
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
     const { tokenJWT } = useAutenticacao();
     const estadoFormulario = useLocation();
@@ -50,7 +51,6 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             onConfirm: async () => {
                 setToast((prev) => ({ ...prev, show: false }));
                 if (ehEdicao) {
-                    console.log(data);
                     await editarNoticia(data)
                 } else {
                     await cadastrarSolicitacao(data);
@@ -63,21 +63,28 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const cadastrarSolicitacao = async (dadosFormulario: IControleVeiculoCadastro) => {
         if (!tokenJWT) return;
         try {
-            console.log(dadosFormulario);
+            if (carregando) return;
+            setCarregando(true);
             if (await objVisaoModeloSolicitacaoVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario)) vaiParaSolicitacoesVeiculos();
         } catch (error) {
             alert("Erro ao cadastrar noticia")
+        } finally {
+            setCarregando(false);
         }
     }
 
     const editarNoticia = async (dadosFormulario: IControleVeiculo) => {
         if (!tokenJWT) return;
         try {
+            if (carregando) return;
+            setCarregando(true);
             if (await objVisaoModeloSolicitacaoVeiculo.editarSolicitacaoVeiculo(tokenJWT, dadosFormulario, editarObjeto.id)) {
                 vaiParaSolicitacoesVeiculos();
             }
         } catch (error) {
             alert("Erro ao editar noticia");
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -113,7 +120,6 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         if (!tokenJWT) return;
         try {
             const informacoesUsuarios = await objVisaoModeloSolicitacaoVeiculo.listarPessoal(tokenJWT, termo);
-            console.log('dados', informacoesUsuarios);
             if (informacoesUsuarios && Array.isArray(informacoesUsuarios)) {
                 setPessoal(informacoesUsuarios);
             } else {
@@ -160,6 +166,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         toast,
         setToast,
         abrirConfirmacaoSalvar,
-        ehEdicao
+        ehEdicao,
+        carregando
     };
 }
