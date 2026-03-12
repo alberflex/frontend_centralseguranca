@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 export const useVisaoControllerFormularioPontos = () => {
     const { tokenJWT } = useAutenticacao();
     const { control, handleSubmit, register, setValue, formState: { errors } } = useForm<IUsuarioPonto>();
-    const [usuariosPontos, setUsuariosPontos] = useState<IUsuarioPonto[]>([]);
     const visaoModeloUsuarioPonto = new VisaoModeloUsuarioPonto();
     const visaoModeloPonto = new VisaoModeloPonto();
     const estadoFormulario = useLocation();
@@ -17,7 +16,10 @@ export const useVisaoControllerFormularioPontos = () => {
     const navegacao = useNavigate();
     const vaiParaPontos = () => { navegacao("/ControlePonto") }
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
-    
+    const [carregando, setCarregando] = useState(false);
+    const [usuariosPontos, setUsuariosPontos] = useState<IUsuarioPonto[]>([]);
+
+
     const abrirConfirmacaoSalvar = (data: any) => {
         setToast({
             show: true,
@@ -53,18 +55,26 @@ export const useVisaoControllerFormularioPontos = () => {
     const cadastrarPonto = async (dadosFormulario: string) => {
         if (!tokenJWT) return;
         try {
+            if (carregando) return;
+            setCarregando(true);
             if (await visaoModeloPonto.cadastrarPonto(tokenJWT, dadosFormulario)) vaiParaPontos();
         } catch (error) {
             alert("Erro ao cadastrar ponto")
+        } finally {
+            setCarregando(false);
         }
     }
 
     const fecharPonto = async (id: number) => {
         if (!tokenJWT) return;
         try {
+            if (carregando) return;
+            setCarregando(true);
             if (await visaoModeloPonto.fecharPonto(tokenJWT, id)) vaiParaPontos();
         } catch (error) {
             alert("Erro ao editar ponto")
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -83,7 +93,15 @@ export const useVisaoControllerFormularioPontos = () => {
 
     return {
         usuariosPontos,
-        abrirConfirmacaoSalvar, toast, setToast,
-        control, handleSubmit, register, setValue, errors, ehEdicao
+        abrirConfirmacaoSalvar, 
+        toast, 
+        setToast,
+        control, 
+        handleSubmit, 
+        register, 
+        setValue, 
+        errors, 
+        ehEdicao,
+        carregando
     }
 }

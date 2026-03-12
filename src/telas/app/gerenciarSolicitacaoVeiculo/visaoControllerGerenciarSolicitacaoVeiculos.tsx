@@ -6,6 +6,7 @@ import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeicul
 import { IControleVeiculoTabela } from "../../../interfaces/IControleVeiculo";
 import { ILayoutTabela } from "../../../componentes/tabelas/tabela";
 import { formatarDataISO } from "../../../utils/converteDataISO";
+import { extrairHoraISO } from "../../../utils/FormataHora";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
@@ -28,10 +29,11 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
             if (informacoesSolicitacoesVeiculo && Array.isArray(informacoesSolicitacoesVeiculo)) {
                 const informacoesFormatadas = informacoesSolicitacoesVeiculo.map(item => ({
                     ...item,
-                    data_solicitacao: item.data_solicitacao ? formatarDataISO(item.data_solicitacao) : null,
-                    data_chegada: item.data_chegada ? formatarDataISO(item.data_chegada) : null,
-                    horario_saida: item.horario_saida ? new Date(item.horario_saida).toLocaleTimeString() : "",
-                    horario_chegada: item.horario_chegada ? new Date(item.horario_chegada).toLocaleTimeString(): ""
+                    data_solicitacao: item.data_solicitacao ? formatarDataISO(item.data_solicitacao) : "",
+                    data_chegada: item.data_chegada ? formatarDataISO(item.data_chegada) : "",
+                    horario_saida: item.horario_saida ? extrairHoraISO(item.horario_saida) : "",
+                    horario_chegada: item.horario_chegada ? extrairHoraISO(item.horario_chegada) : "",
+                    km_inicial_veiculo: item.km_inicial_veiculo ?? 0
                 }));
                 setSolicitacaoVeiculo(informacoesFormatadas);
             } else {
@@ -60,19 +62,10 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         img.onload = () => {
             doc.addImage(img, "PNG", pageWidth - imgWidth - 10, 5, imgWidth, imgHeight);
 
-            const colunas = [
-                "ID", 
-                "Placa", 
-                "Data Solicitação", 
-                "Hora Saída", 
-                "Km Inicial",
-                "Data Chegada", 
-                "Hora Chegada", 
-                "Km Final", 
-                "Solicitante",
-                "Responsável", 
-                "Localização", 
-                "Porteiro Saída", 
+            const colunas = ["ID", "Placa", "Data Solicitação",
+                "Hora Saída", "Km Inicial", "Data Chegada",
+                "Hora Chegada", "Km Final", "Solicitante",
+                "Responsável", "Localização", "Porteiro Saída",
                 "Porteiro Entrada"
             ];
 
@@ -80,10 +73,10 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                 d.id,
                 d.placa,
                 d.data_solicitacao ? new Date(d.data_solicitacao).toLocaleDateString("pt-BR") : "",
-                d.horario_saida ? new Date(d.horario_saida).toLocaleTimeString() : "",
+                d.horario_saida,
                 d.km_inicial_veiculo,
                 d.data_chegada ? new Date(d.data_chegada).toLocaleDateString("pt-BR") : "",
-                d.horario_chegada ? new Date(d.horario_chegada).toLocaleTimeString() : "",
+                d.horario_chegada,
                 d.km_final_veiculo || "",
                 d.nome_responsavel,
                 d.nome_responsavel_autorizacao,
@@ -170,15 +163,17 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
 
     return {
         solicitacaoVeiculo,
-        deletarSolicitacaoVeiculo,
-        selecionarSolicitacaoVeiculo,
-        colunasTabela, toast, setToast,
-        abrirConfirmacaoExclusao,
         IconeAdicionar,
-        vaiParaFormularioSolicitacaoVeiculo,
-        limparFiltro,
+        colunasTabela, 
+        toast, 
         dataInicio,
         dataFim,
+        setToast,
+        abrirConfirmacaoExclusao,
+        deletarSolicitacaoVeiculo,
+        selecionarSolicitacaoVeiculo,
+        vaiParaFormularioSolicitacaoVeiculo,
+        limparFiltro,
         setDataFim,
         setDataInicio,
         buscarSolicitacaoVeiculo,

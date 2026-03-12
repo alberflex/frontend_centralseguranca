@@ -5,7 +5,7 @@ import { IVeiculo } from "../../../interfaces/IVeiculo";
 import { VisaoModeloPorteiro } from "../../../modelo/porteiro/visaoModeloPorteiro";
 import { IPorteiro } from "../../../interfaces/IPorteiro";
 import { useForm } from "react-hook-form";
-import { IControleVeiculo, IControleVeiculoCadastro, IUsuario } from "../../../interfaces/IControleVeiculo";
+import { IControleVeiculo, IUsuario } from "../../../interfaces/IControleVeiculo";
 import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeiculo/visaoModeloSolicitacaoVeiculo";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -60,11 +60,13 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         });
     };
 
-    const cadastrarSolicitacao = async (dadosFormulario: IControleVeiculoCadastro) => {
+    const cadastrarSolicitacao = async (dadosFormulario: IControleVeiculo) => {
         if (!tokenJWT) return;
         try {
             if (carregando) return;
             setCarregando(true);
+            const veiculoSelecionado = veiculo.find(v => v.id === dadosFormulario.idVeiculo);
+            if (veiculoSelecionado) { dadosFormulario.km_inicial_veiculo = veiculoSelecionado.km_atual; }
             if (await objVisaoModeloSolicitacaoVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario)) vaiParaSolicitacoesVeiculos();
         } catch (error) {
             alert("Erro ao cadastrar noticia")

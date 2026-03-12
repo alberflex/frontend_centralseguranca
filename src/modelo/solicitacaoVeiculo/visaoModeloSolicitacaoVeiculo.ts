@@ -19,7 +19,7 @@ export class VisaoModeloSolicitacaoVeiculo {
         return await this.modeloSolicitacaoVeiculo.listarSolicitacaoVeiculoPorID(tokenJWT, id);
     }
 
-    async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculoCadastro): Promise<IControleVeiculo | null> {
+    async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo): Promise<IControleVeiculo | null> {
         return await this.modeloSolicitacaoVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario);
     }
 

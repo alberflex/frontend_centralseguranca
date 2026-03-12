@@ -30,7 +30,7 @@ export interface IControleVeiculoTabela {
     placa: string;
     destino: string;
     data_solicitacao: Date;
-    horario_saida: Date;
+    horario_saida: string;
     km_inicial_veiculo: number;
     data_chegada: string;
     horario_chegada: string;

@@ -1,10 +1,10 @@
 import { Fragment, useEffect } from "react";
-import { Form, Button, Row, Col, Container, Dropdown } from "react-bootstrap";
+import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioSolicitacaoVeiculo } from "./visaoControllerFormularioSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
-import Spinner from "react-bootstrap/Spinner";
+import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 
 export default function FormularioSaidaVeiculo() {
 
@@ -40,20 +40,9 @@ export default function FormularioSaidaVeiculo() {
     return (
         <Fragment>
             <MenuSuperiorIniciar />
-            {carregando && (
-                <div
-                    className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                    style={{
-                        backgroundColor: "rgba(0,0,0,0.4)",
-                        zIndex: 2000
-                    }}
-                >
-                    <div className="text-center text-white">
-                        <Spinner animation="border" />
-                        <div className="mt-2">Carregando...</div>
-                    </div>
-                </div>
-            )}
+            <SpinnerComponente
+                estado={carregando}
+            />
 
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="mb-4 text-center">Solicitação de veículo</h4>
