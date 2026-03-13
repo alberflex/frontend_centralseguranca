@@ -68,7 +68,7 @@ export const useVisaoControllerGerenciarPontos = () => {
                 d.nome_porteiro,
                 d.horarioEntrada,
                 d.horarioSaida,
-                formatarDataISO(d.data)
+                d.data
             ]);
 
             autoTable(doc, {

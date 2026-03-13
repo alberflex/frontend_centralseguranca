@@ -75,11 +75,7 @@ export default function ControleAcesso() {
 
             <Row className="px-4 mt-3 mb-3 align-items-end g-2">
                 <Col xs={12} md={3} className="d-flex gap-2">
-                    <Button
-                        variant="primary"
-                        className="flex-fill"
-                        onClick={() => buscarAcessos(dataInicio, dataFim)}
-                    >
+                    <Button variant="primary" className="flex-fill" onClick={() => buscarAcessos(dataInicio, dataFim)} >
                         Filtrar dados
                     </Button>
 
