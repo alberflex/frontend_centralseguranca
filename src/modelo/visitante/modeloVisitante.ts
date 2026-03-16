@@ -40,6 +40,7 @@ export class ModeloVisitante {
             const visitanteSelecionadoPorCPF = await conexaoAPI.get<IVisitante>(`/visitante/selecionaPorCPF/${cpf}`, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
+            
             return visitanteSelecionadoPorCPF.data;
         } catch (error) {
             throw error;
@@ -54,7 +55,6 @@ export class ModeloVisitante {
             formData.append("empresa", dadosFormulario.empresa);
 
             if (dadosFormulario.caminho_foto_visitante instanceof File) formData.append("caminho_foto_visitante", dadosFormulario.caminho_foto_visitante);
-            if (dadosFormulario.caminho_imagem_assinatura instanceof File) formData.append("caminho_imagem_assinatura", dadosFormulario.caminho_imagem_assinatura);
 
             const cadastroVisitanteJSON = await conexaoAPI.post<IVisitante>(`/visitante/cadastroVisitante`, formData, { headers: { Authorization: `Bearer ${tokenJWT}`, "Content-Type": "multipart/form-data" } });
             return cadastroVisitanteJSON.data;
@@ -71,7 +71,6 @@ export class ModeloVisitante {
             formData.append("empresa", dadosFormulario.empresa);
 
             if (dadosFormulario.caminho_foto_visitante instanceof File) formData.append("caminho_foto_visitante", dadosFormulario.caminho_foto_visitante);
-            if (dadosFormulario.caminho_imagem_assinatura instanceof File) formData.append("caminho_imagem_assinatura", dadosFormulario.caminho_imagem_assinatura);
 
             const cadastroVisitanteJSON = await conexaoAPI.put<IVisitante>(`/visitante/editarVisitante/${id}`, formData, { headers: { Authorization: `Bearer ${tokenJWT}`, "Content-Type": "multipart/form-data" } });
             return cadastroVisitanteJSON.data;

@@ -6,6 +6,7 @@ import { IControleAcessoTabela } from '../../../interfaces/IControleAcesso';
 import { VisaoModeloSolicitacaoAcesso } from '../../../modelo/solicitacaoAcesso/visaoModeloSolicitacaoAcesso';
 import { ILayoutTabela } from '../../../componentes/tabelas/tabela';
 import { formatarDataISO } from '../../../utils/converteDataISO';
+import { extrairHoraISO } from '../../../utils/FormataHora';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
@@ -25,7 +26,14 @@ export const useVisaoControllerGerenciarAcessos = () => {
         try {
             const informacoesAcessos = await objVisaoModeloAcessos.listarTodasSolicitacoesAcesso(tokenJWT, inicio, fim);
             if (informacoesAcessos && Array.isArray(informacoesAcessos)) {
-                setAcessos(informacoesAcessos);
+                const informacoesFormatadas = informacoesAcessos.map(item => ({
+                    ...item,
+                    data_entrada: item.data_entrada ? formatarDataISO(item.data_entrada) : "",
+                    data_saida: item.data_saida ? formatarDataISO(item.data_saida) : "",
+                    hora_entrada: item.hora_entrada ? extrairHoraISO(item.hora_entrada) : "",
+                    hora_saida: item.hora_saida ? extrairHoraISO(item.hora_saida) : "",
+                }));
+                setAcessos(informacoesFormatadas);
             } else {
                 setAcessos([]);
             }
@@ -70,10 +78,10 @@ export const useVisaoControllerGerenciarAcessos = () => {
                 d.nomeVisitante,
                 d.nomePorteiroEntrada,
                 d.nomePorteiroSaida,
-                formatarDataISO(d.data_entrada),
+                d.data_entrada,
                 d.hora_entrada,
                 d.data_saida,
-                formatarDataISO(d.hora_saida),
+                d.hora_saida,
                 d.placaVeiculo,
                 d.numeroCartao,
                 d.responsavel

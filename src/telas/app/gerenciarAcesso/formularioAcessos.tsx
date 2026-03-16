@@ -2,7 +2,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Form, Button, Row, Col, Container, Card, Dropdown } from "react-bootstrap";
 import { useVisaoControllerFormularioAcesso } from "./visaoControllerFormularioAcessos";
 import { GenericToast } from "../../../componentes/toast/toast";
-import SignatureCanvas from "react-signature-canvas";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 import Webcam from "react-webcam";
@@ -16,19 +15,6 @@ export default function FormularioAcesso() {
     } = useVisaoControllerFormularioAcesso();
 
     useEffect(() => { buscarPessoal(); buscarPorteiros(); }, []);
-
-    const sigRef = useRef<SignatureCanvas>(null);
-    const salvarAssinatura = () => {
-        if (!sigRef.current) return;
-
-        if (sigRef.current.isEmpty()) {
-            setValue("caminho_imagem_assinatura", null);
-        } else {
-            const assinaturaBase64 = sigRef.current.toDataURL();
-            setValue("caminho_imagem_assinatura", assinaturaBase64);
-        }
-    };
-    const assinatura = watch("caminho_imagem_assinatura");
 
     return (
         <Fragment>
@@ -75,9 +61,9 @@ export default function FormularioAcesso() {
                         </Col>
                     </Row>
                     <Row className="mb-3">
-                        <Col md={6}>
+                        <Col md={12}>
                             <Form.Label>Imagem do visitante:</Form.Label>
-                            <div style={{ width: "100%", height: "220px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "#f8f9fa", marginBottom: "15px", borderStyle: 'solid', borderWidth: '0.1px', borderColor: '#e0e0e0ff' }} >
+                            <div style={{ width: "100%", height: "450px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "#f8f9fa", marginBottom: "15px", borderStyle: 'solid', borderWidth: '0.1px', borderColor: '#e0e0e0ff' }} >
                                 {cameraAberta ? (
                                     <Webcam
                                         ref={webcamRef}
@@ -118,7 +104,7 @@ export default function FormularioAcesso() {
                             </Row>
                         </Col>
 
-                        <Col md={6}>
+                        {/*<Col md={6}>
                             <Form.Label>Assinatura:</Form.Label>
 
                             {ehEdicao ? (
@@ -169,7 +155,7 @@ export default function FormularioAcesso() {
                             >
                                 Limpar assinatura
                             </Button>
-                        </Col>
+                        </Col>*/}
                     </Row>
                     <Row className="mb-3">
                         <Col md={6}>
@@ -286,7 +272,6 @@ export default function FormularioAcesso() {
                         type="submit"
                         variant="success"
                         className="w-100"
-                        onClick={salvarAssinatura}
                     >
                         Salvar informações
                     </Button>

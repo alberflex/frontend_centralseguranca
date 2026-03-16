@@ -22,12 +22,7 @@ export const useVisaoControllerFormularioAcesso = () => {
         watch,
         handleSubmit,
     } = useForm<IFormularioAcesso>({
-        defaultValues:
-        {
-            cpf: "", nome: "", empresa: "",
-            caminho_foto_visitante: "", caminho_imagem_assinatura: ""
-        }
-    });
+        defaultValues: { cpf: "", nome: "", empresa: "", caminho_foto_visitante: ""} });
 
     const { tokenJWT } = useAutenticacao();
 
@@ -65,10 +60,8 @@ export const useVisaoControllerFormularioAcesso = () => {
             onConfirm: async () => {
                 setToast((prev) => ({ ...prev, show: false }));
                 if (ehEdicao) {
-                    console.log(data);
                     await fecharAcesso(data)
                 } else {
-                    console.log(data);
                     await cadastrarAcesso(data);
                 }
             },
@@ -85,7 +78,6 @@ export const useVisaoControllerFormularioAcesso = () => {
 
         try {
             const acessoFechado = await objVisaoModeloSolicitacaoAcesso.fecharSolicitacaoAcesso(tokenJWT, editarObjeto.id, data.porteiroSaida);
-
             if (acessoFechado) {
                 vaiParaGerenciarAcessos();
             }
@@ -100,7 +92,6 @@ export const useVisaoControllerFormularioAcesso = () => {
 
         try {
             const visitanteRegistrado = await verificaCadastroDeVisitante(data);
-            console.log('VISITANTE ', visitanteRegistrado);
             if (visitanteRegistrado?.id) {
                 const payload = {
                     idVisitante: visitanteRegistrado.id, idPorteiroEntrada: Number(data.porteiroEntrada), objetivo: data.motivo,
@@ -124,31 +115,18 @@ export const useVisaoControllerFormularioAcesso = () => {
         if (!tokenJWT) return;
 
         let foto: File | undefined;
-        let assinatura: File | undefined;
 
         if (typeof informacoesVisitante.caminho_foto_visitante === "string" && informacoesVisitante.caminho_foto_visitante.startsWith("data:image")) {
             foto = base64ParaArquivo(informacoesVisitante.caminho_foto_visitante, `foto_${informacoesVisitante.cpf}.jpg`);
         }
 
-        if (typeof informacoesVisitante.caminho_imagem_assinatura === "string" && informacoesVisitante.caminho_imagem_assinatura.startsWith("data:image")) {
-            assinatura = base64ParaArquivo(informacoesVisitante.caminho_imagem_assinatura, `assinatura_${informacoesVisitante.cpf}.png`);
-        }
-
         if (!visitanteExiste) {
-            console.log({
-                cpf: informacoesVisitante.cpf,
-                nome: informacoesVisitante.nome,
-                empresa: informacoesVisitante.empresa,
-                caminho_foto_visitante: foto as any,
-                caminho_imagem_assinatura: assinatura as any,
-            });
             const visitanteCadastrado =
                 await objVisaoModeloVisitante.cadastrarVisitante(tokenJWT, {
                     cpf: informacoesVisitante.cpf,
                     nome: informacoesVisitante.nome,
                     empresa: informacoesVisitante.empresa,
-                    caminho_foto_visitante: foto as any,
-                    caminho_imagem_assinatura: assinatura as any,
+                    caminho_foto_visitante: foto as any
                 });
 
 
@@ -172,8 +150,7 @@ export const useVisaoControllerFormularioAcesso = () => {
                     cpf: informacoesVisitante.cpf,
                     nome: informacoesVisitante.nome,
                     empresa: informacoesVisitante.empresa,
-                    caminho_foto_visitante: foto as any,
-                    caminho_imagem_assinatura: assinatura as any,
+                    caminho_foto_visitante: foto as any
                 },
                 visitanteParaEdicao.id
             );
@@ -216,12 +193,21 @@ export const useVisaoControllerFormularioAcesso = () => {
         if (!tokenJWT) return;
 
         const cpf = watch("cpf");
-        if (!cpf || cpf.length !== 14) { alert("Informe um CPF válido"); return; }
+
+        if (!cpf || cpf.length !== 14) {
+            alert("Informe um CPF válido");
+            return;
+        }
+
         try {
             const visitante = await objVisaoModeloVisitante.selecionarPorCPF(tokenJWT, cpf);
+            if (!visitante || (Array.isArray(visitante) && visitante.length === 0)) {
+                defineValoresPreenchidosVaziosParaVisitante();
+                return;
+            }
 
-            if (!visitante || Object.keys(visitante).length === 0) defineValoresPreenchidosVaziosParaVisitante();
-            if (visitante) defineValoresPreenchidosParaVisitante(visitante);
+            defineValoresPreenchidosParaVisitante(visitante);
+
         } catch (error) {
             console.error("Erro ao buscar visitante", error);
         }
@@ -236,7 +222,6 @@ export const useVisaoControllerFormularioAcesso = () => {
         setValue("nome", visitante.nome);
         setValue("empresa", visitante.empresa);
         setValue("caminho_foto_visitante", visitante.caminho_foto_visitante);
-        setValue("caminho_imagem_assinatura", visitante.caminho_imagem_assinatura);
         setVisitante(visitante);
     }
 
@@ -247,7 +232,6 @@ export const useVisaoControllerFormularioAcesso = () => {
         setValue("nome", "");
         setValue("empresa", "");
         setValue("caminho_foto_visitante", "");
-        setValue("caminho_imagem_assinatura", "");
         return;
     }
 
@@ -266,9 +250,7 @@ export const useVisaoControllerFormularioAcesso = () => {
                 setValue("responsavel", editarObjeto.responsavel);
                 setValue("placa", editarObjeto.placaVeiculo);
 
-                const porteiroEncontrado = porteiros.find(
-                    p => p.nome === editarObjeto.nomePorteiroEntrada
-                );
+                const porteiroEncontrado = porteiros.find(p => p.nome === editarObjeto.nomePorteiroEntrada);
 
                 if (porteiroEncontrado) {
                     setValue("porteiroEntrada", porteiroEncontrado.id);
@@ -312,13 +294,6 @@ export const useVisaoControllerFormularioAcesso = () => {
     };
 
     return {
-        control,
-        errors,
-        imagemPreview,
-        pessoal,
-        modalAberto,
-        termoPesquisa,
-        campoSelecionado,
         formatarCPF,
         buscarVisitantePorCPF,
         register,
@@ -329,18 +304,27 @@ export const useVisaoControllerFormularioAcesso = () => {
         setTermoPesquisa,
         setCampoSelecionado,
         buscarPessoal,
-        cameraAberta,
-        foto,
+        watch,
         abrirCamera,
         tirarFoto,
-        webcamRef, watch,
-        visitanteExiste,
+        buscarPorteiros,
         setVisitanteExiste,
+        setToast,
+        abrirConfirmacaoSalvar,
+        control,
+        errors,
+        imagemPreview,
+        pessoal,
+        modalAberto,
+        termoPesquisa,
+        campoSelecionado,
+        cameraAberta,
+        foto,
+        webcamRef,
+        visitanteExiste,
         camposBloqueados,
         porteiros,
-        ehEdicao, buscarPorteiros,
+        ehEdicao,
         toast,
-        setToast,
-        abrirConfirmacaoSalvar
     };
 };

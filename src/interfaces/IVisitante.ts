@@ -4,5 +4,4 @@ export interface IVisitante {
     nome: string;
     empresa: string;
     caminho_foto_visitante: File | string;
-    caminho_imagem_assinatura: File | string;
 }

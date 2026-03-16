@@ -42,7 +42,6 @@ export interface IFormularioAcesso {
     nome: string;
     empresa: string;
     caminho_foto_visitante: File | string;
-    caminho_imagem_assinatura: File | string | null;
     placa: string;
     motivo: string;
     empresaVisita: string;
