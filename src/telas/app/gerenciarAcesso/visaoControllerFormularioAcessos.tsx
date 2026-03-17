@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { IVisitante } from "../../../interfaces/IVisitante";
 import { useAutenticacao } from "../../../contextos/useAutenticacao";
 import { VisaoModeloVisitante } from "../../../modelo/visitante/visaoModeloVisitante";
-import { IFormularioAcesso } from "../../../interfaces/IControleAcesso";
+import { IEdicaoControleAcesso, IFormularioAcesso } from "../../../interfaces/IControleAcesso";
 import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeiculo/visaoModeloSolicitacaoVeiculo";
 import { IUsuario } from "../../../interfaces/IControleVeiculo";
 import { VisaoModeloSolicitacaoAcesso } from "../../../modelo/solicitacaoAcesso/visaoModeloSolicitacaoAcesso";
@@ -14,15 +14,9 @@ import { base64ParaArquivo } from "../../../utils/converteBase64ParaArquivo";
 import Webcam from "react-webcam";
 
 export const useVisaoControllerFormularioAcesso = () => {
-    const {
-        control,
-        formState: { errors },
-        register,
-        setValue,
-        watch,
-        handleSubmit,
-    } = useForm<IFormularioAcesso>({
-        defaultValues: { cpf: "", nome: "", empresa: "", caminho_foto_visitante: ""} });
+    const { control, formState: { errors }, register, setValue, watch, handleSubmit, } = useForm<IFormularioAcesso>({
+        defaultValues: { cpf: "", nome: "", empresa: "", caminho_foto_visitante: "", numeroCartao: "1" }
+    });
 
     const { tokenJWT } = useAutenticacao();
 
@@ -38,6 +32,7 @@ export const useVisaoControllerFormularioAcesso = () => {
     const [cameraAberta, setCameraAberta] = useState(false);
     const [foto, setFoto] = useState<string | null>(null);
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
+    const [carregando, setCarregando] = useState(false);
 
     const objVisaoModeloPorteiro = new VisaoModeloPorteiro();
     const objVisaoModeloVisitante = new VisaoModeloVisitante();
@@ -60,7 +55,7 @@ export const useVisaoControllerFormularioAcesso = () => {
             onConfirm: async () => {
                 setToast((prev) => ({ ...prev, show: false }));
                 if (ehEdicao) {
-                    await fecharAcesso(data)
+                    await editarAcesso(data)
                 } else {
                     await cadastrarAcesso(data);
                 }
@@ -68,22 +63,54 @@ export const useVisaoControllerFormularioAcesso = () => {
         });
     };
 
-    const fecharAcesso = async (data: IFormularioAcesso) => {
+    const editarAcesso = async (data: IFormularioAcesso) => {
         if (!tokenJWT) return;
 
-        if (!data.porteiroSaida) {
-            alert("Porteiro de saída não informado");
-            return;
-        }
-
         try {
-            const acessoFechado = await objVisaoModeloSolicitacaoAcesso.fecharSolicitacaoAcesso(tokenJWT, editarObjeto.id, data.porteiroSaida);
-            if (acessoFechado) {
-                vaiParaGerenciarAcessos();
+            if (carregando) return;
+            setCarregando(true);
+
+            // Log do objeto que está sendo editado
+            console.log("Editar objeto original:", editarObjeto);
+
+            // Construir objeto base
+            const objEdicaoBase: Partial<IEdicaoControleAcesso> = {
+                idVisitante: visitante?.id!
+            };
+
+            // Adiciona apenas campos preenchidos
+            if (data.porteiroSaida) objEdicaoBase.idPorteiroSaida = Number(data.porteiroSaida);
+            if (data.porteiroEntrada) objEdicaoBase.idPorteiroEntrada = Number(data.porteiroEntrada);
+            if (data.motivo) objEdicaoBase.objetivo = data.motivo;
+            if (data.placa) objEdicaoBase.placaVeiculo = data.placa;
+            if (data.numeroCartao) objEdicaoBase.numeroCartao = data.numeroCartao;
+            if (data.responsavel) objEdicaoBase.responsavel = data.responsavel;
+
+            // Remove propriedades undefined
+            const objEdicaoFinal = Object.fromEntries(
+                Object.entries(objEdicaoBase).filter(([_, v]) => v !== undefined)
+            );
+
+            console.log("Objeto final enviado:", objEdicaoFinal);
+
+            // Enviar para backend (cast necessário)
+            const acessoEditado = await objVisaoModeloSolicitacaoAcesso.editarSolicitacaoAcesso(
+                tokenJWT,
+                editarObjeto.id,
+                objEdicaoFinal as unknown as IEdicaoControleAcesso
+            );
+
+            if (!acessoEditado) {
+                alert("Erro ao editar acesso");
+                return;
             }
+
+            vaiParaGerenciarAcessos();
         } catch (error) {
-            console.error("Erro no fechamento do acesso:", error);
-            alert("Erro ao fechar o acesso");
+            console.error("Erro ao editar acesso:", error);
+            alert("Erro ao processar a edição");
+        } finally {
+            setCarregando(false);
         }
     };
 
@@ -91,7 +118,10 @@ export const useVisaoControllerFormularioAcesso = () => {
         if (!tokenJWT) return;
 
         try {
+            if (carregando) return;
+            setCarregando(true);
             const visitanteRegistrado = await verificaCadastroDeVisitante(data);
+
             if (visitanteRegistrado?.id) {
                 const payload = {
                     idVisitante: visitanteRegistrado.id, idPorteiroEntrada: Number(data.porteiroEntrada), objetivo: data.motivo,
@@ -99,15 +129,14 @@ export const useVisaoControllerFormularioAcesso = () => {
                 };
 
                 const acessoCadastrado = await objVisaoModeloSolicitacaoAcesso.cadastrarSolicitacaoAcesso(tokenJWT, payload);
-
                 if (!acessoCadastrado) { alert("Erro ao cadastrar acesso"); return; }
-
                 vaiParaGerenciarAcessos();
             }
-
         } catch (error) {
             console.error("Erro no cadastro:", error);
             alert("Erro ao processar o cadastro");
+        } finally {
+            setCarregando(false);
         }
     };
 
@@ -120,47 +149,47 @@ export const useVisaoControllerFormularioAcesso = () => {
             foto = base64ParaArquivo(informacoesVisitante.caminho_foto_visitante, `foto_${informacoesVisitante.cpf}.jpg`);
         }
 
-        if (!visitanteExiste) {
-            const visitanteCadastrado =
-                await objVisaoModeloVisitante.cadastrarVisitante(tokenJWT, {
-                    cpf: informacoesVisitante.cpf,
-                    nome: informacoesVisitante.nome,
-                    empresa: informacoesVisitante.empresa,
-                    caminho_foto_visitante: foto as any
-                });
+        try {
+            if (!visitanteExiste) {
+                const visitanteCadastrado =
+                    await objVisaoModeloVisitante.cadastrarVisitante(tokenJWT, {
+                        cpf: informacoesVisitante.cpf,
+                        nome: informacoesVisitante.nome,
+                        empresa: informacoesVisitante.empresa,
+                        caminho_foto_visitante: foto as any
+                    });
 
+                if (!visitanteCadastrado) {
+                    alert("Erro ao cadastrar visitante");
+                    return;
+                }
 
-            if (!visitanteCadastrado) {
-                alert("Erro ao cadastrar visitante");
-                return;
+                return visitanteCadastrado;
             }
 
-            return visitanteCadastrado;
-        }
-        if (visitante?.cpf) {
-            const visitanteParaEdicao = await objVisaoModeloVisitante.selecionarPorCPF(tokenJWT, visitante.cpf);
-            if (!visitanteParaEdicao?.id) {
-                alert("ID do visitante inválido");
-                return;
+            if (visitante?.id) {
+                const visitanteEditado = await objVisaoModeloVisitante.editarVisitante(
+                    tokenJWT,
+                    {
+                        cpf: informacoesVisitante.cpf,
+                        nome: informacoesVisitante.nome,
+                        empresa: informacoesVisitante.empresa,
+                        caminho_foto_visitante: foto as any
+                    },
+                    visitante.id
+                );
+
+                if (!visitanteEditado) {
+                    alert("Erro ao editar visitante");
+                    return;
+                }
+
+                return visitanteEditado;
             }
 
-            const visitanteEditado = await objVisaoModeloVisitante.editarVisitante(
-                tokenJWT,
-                {
-                    cpf: informacoesVisitante.cpf,
-                    nome: informacoesVisitante.nome,
-                    empresa: informacoesVisitante.empresa,
-                    caminho_foto_visitante: foto as any
-                },
-                visitanteParaEdicao.id
-            );
-
-            if (!visitanteEditado) {
-                alert("Erro ao editar visitante");
-                return;
-            }
-
-            return visitanteEditado;
+        } catch (error) {
+            console.error("Erro ao verificar visitante:", error);
+            alert("Erro ao processar visitante");
         }
     };
 
@@ -241,27 +270,40 @@ export const useVisaoControllerFormularioAcesso = () => {
         const carregarDadosEdicao = async () => {
             try {
                 const visitanteID = await objVisaoModeloSolicitacaoAcesso.descobreVisitanteID(tokenJWT, editarObjeto.id);
+
                 if (visitanteID) {
                     const visitante = await objVisaoModeloVisitante.listarVisitantePorID(tokenJWT, visitanteID);
                     if (visitante) defineValoresPreenchidosParaVisitante(visitante);
                 }
+
                 setValue("numeroCartao", editarObjeto.numeroCartao);
                 setValue("motivo", editarObjeto.objetivo);
-                setValue("responsavel", editarObjeto.responsavel);
                 setValue("placa", editarObjeto.placaVeiculo);
 
-                const porteiroEncontrado = porteiros.find(p => p.nome === editarObjeto.nomePorteiroEntrada);
+                const usuarioEncontrado = pessoal.find(p => p.nome === editarObjeto.responsavel);
+
+                if (usuarioEncontrado) {
+                    setValue("responsavel", String(usuarioEncontrado.chapa));
+                } else {
+                    console.warn("Responsável não encontrado na lista de pessoal");
+                    setValue("responsavel", "");
+                }
+
+                const porteiroEncontrado = porteiros.find(
+                    p => p.nome === editarObjeto.nomePorteiroEntrada
+                );
 
                 if (porteiroEncontrado) {
                     setValue("porteiroEntrada", porteiroEncontrado.id);
                 }
+
             } catch (error) {
                 console.error("Erro ao carregar dados de edição:", error);
             }
         };
 
         carregarDadosEdicao();
-    }, [ehEdicao, editarObjeto, porteiros, tokenJWT, setValue]);
+    }, [ehEdicao, editarObjeto, porteiros, pessoal, tokenJWT, setValue]);
 
 
 
@@ -326,5 +368,7 @@ export const useVisaoControllerFormularioAcesso = () => {
         porteiros,
         ehEdicao,
         toast,
+        carregando,
+        setCarregando
     };
 };

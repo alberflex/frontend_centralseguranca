@@ -1,5 +1,5 @@
 import { ModeloSolicitacaoAcesso } from "./modeloSolicitacaoAcesso";
-import { IControleAcesso, IControleAcessoCadastro } from "../../interfaces/IControleAcesso";
+import { IControleAcesso, IControleAcessoCadastro, IEdicaoControleAcesso } from "../../interfaces/IControleAcesso";
 import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 
 export class VisaoModeloSolicitacaoAcesso {
@@ -19,12 +19,12 @@ export class VisaoModeloSolicitacaoAcesso {
         return await this.modeloSolicitacaoAcesso.listarSolicitacaoAcessoPorID(tokenJWT, id);
     }
 
-    async fecharSolicitacaoAcesso(tokenJWT: string, id: number, idPorteiroSaida: number): Promise<IControleAcesso | null> {
-        return await this.modeloSolicitacaoAcesso.fecharSolicitacaoAcesso(tokenJWT, id, idPorteiroSaida);
-    }
-
     async cadastrarSolicitacaoAcesso(tokenJWT: string, dadosFormulario: IControleAcessoCadastro): Promise<IControleAcesso | null> {
         return await this.modeloSolicitacaoAcesso.cadastrarSolicitacaoAcesso(tokenJWT, dadosFormulario);
+    }
+
+    async editarSolicitacaoAcesso(tokenJWT: string, id: number, dados: IEdicaoControleAcesso): Promise<IEdicaoControleAcesso | null> {
+        return await this.modeloSolicitacaoAcesso.editarSolicitacaoAcesso(tokenJWT, id, dados);
     }
 
     async contarSolicitacaoAcessoAberto(tokenJWT: string): Promise<ITotalizadorDashboard> {

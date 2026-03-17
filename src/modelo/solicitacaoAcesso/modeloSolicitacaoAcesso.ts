@@ -1,4 +1,4 @@
-import { IControleAcesso, IControleAcessoCadastro } from "../../interfaces/IControleAcesso";
+import { IControleAcesso, IControleAcessoCadastro, IEdicaoControleAcesso } from "../../interfaces/IControleAcesso";
 import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
 import { conexaoAPI } from "../../servicos/API";
 
@@ -21,7 +21,7 @@ export class ModeloSolicitacaoAcesso {
             if (inicio && fim) { url += `?dataInicio=${inicio}&dataFim=${fim}`; }
 
             const solicitacaoAcessosJSON = await conexaoAPI.get<IControleAcesso>(url, { headers: { Authorization: `Bearer ${tokenJWT}` } });
-    
+
             return solicitacaoAcessosJSON.data;
         } catch (error) {
             throw error;
@@ -39,14 +39,9 @@ export class ModeloSolicitacaoAcesso {
         }
     }
 
-    async fecharSolicitacaoAcesso(tokenJWT: string, id: number, idPorteiroSaida: number): Promise<IControleAcesso | null> {
+    async editarSolicitacaoAcesso(tokenJWT: string, id: number, dados: IEdicaoControleAcesso): Promise<IEdicaoControleAcesso | null> {
         try {
-            const response = await conexaoAPI.put<IControleAcesso>(
-                `/controleAcesso/fecharControleAcesso/${id}`,
-                { idPorteiroSaida },
-                { headers: { Authorization: `Bearer ${tokenJWT}` } }
-            );
-
+            const response = await conexaoAPI.put<IEdicaoControleAcesso>(`/controleAcesso/editarControleAcesso/${id}`, dados, { headers: { Authorization: `Bearer ${tokenJWT}` } });
             return response.data;
         } catch (error) {
             throw error;
@@ -58,6 +53,7 @@ export class ModeloSolicitacaoAcesso {
             const cadastroSolicitacaoAcessoJSON = await conexaoAPI.post<IControleAcesso>(`/controleAcesso/cadastrarControleAcesso`, dadosFormulario, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
+
             return cadastroSolicitacaoAcessoJSON.data;
         } catch (error) {
             throw error;

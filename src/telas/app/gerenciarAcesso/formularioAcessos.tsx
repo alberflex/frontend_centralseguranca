@@ -1,7 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Form, Button, Row, Col, Container, Card, Dropdown } from "react-bootstrap";
+import { Fragment, useEffect } from "react";
+import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioAcesso } from "./visaoControllerFormularioAcessos";
 import { GenericToast } from "../../../componentes/toast/toast";
+import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
+import { Controller } from "react-hook-form";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 import Webcam from "react-webcam";
@@ -10,8 +12,9 @@ export default function FormularioAcesso() {
     const {
         register, handleSubmit, formatarCPF, buscarVisitantePorCPF,
         abrirConfirmacaoSalvar, setValue, modalAberto, setModalAberto, termoPesquisa, setCampoSelecionado,
-        setTermoPesquisa, campoSelecionado, pessoal, buscarPessoal, ehEdicao, toast, setToast,
-        abrirCamera, cameraAberta, foto, tirarFoto, webcamRef, watch, camposBloqueados, porteiros, buscarPorteiros
+        campoSelecionado, pessoal, buscarPessoal, ehEdicao, toast, setToast,
+        abrirCamera, cameraAberta, foto, tirarFoto, webcamRef, watch, camposBloqueados, porteiros, buscarPorteiros, carregando,
+        control, setTermoPesquisa
     } = useVisaoControllerFormularioAcesso();
 
     useEffect(() => { buscarPessoal(); buscarPorteiros(); }, []);
@@ -19,6 +22,7 @@ export default function FormularioAcesso() {
     return (
         <Fragment>
             <MenuSuperiorIniciar />
+            <SpinnerComponente estado={carregando} />
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="text-center mb-4">Solicitação de acesso</h4>
 
@@ -97,65 +101,11 @@ export default function FormularioAcesso() {
                                     className="w-100"
                                     onClick={tirarFoto}
                                     disabled={!cameraAberta}
-
                                 >
                                     Tirar foto
                                 </Button>
                             </Row>
                         </Col>
-
-                        {/*<Col md={6}>
-                            <Form.Label>Assinatura:</Form.Label>
-
-                            {ehEdicao ? (
-                                typeof assinatura === "string" && assinatura.trim() !== "" ? (
-                                    <div
-                                        className="border rounded d-flex align-items-center justify-content-center"
-                                        style={{ height: "175px", backgroundColor: "#fff" }}
-                                    >
-                                        <img
-                                            src={assinatura}
-                                            alt="Assinatura do visitante"
-                                            style={{
-                                                maxWidth: "100%",
-                                                maxHeight: "100%",
-                                                objectFit: "contain",
-                                                pointerEvents: "none"
-                                            }}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div
-                                        className="border rounded d-flex align-items-center justify-content-center text-muted"
-                                        style={{ height: "175px", backgroundColor: "#f8f9fa" }}
-                                    >
-                                        Assinatura não disponível
-                                    </div>
-                                )
-                            ) : (
-                                <SignatureCanvas
-                                    ref={sigRef}
-                                    penColor="black"
-                                    canvasProps={{
-                                        width: 500,
-                                        height: 175,
-                                        className: "border rounded w-100"
-                                    }}
-                                />
-                            )}
-
-                            <Button
-                                variant="primary"
-                                className="w-100 mt-2"
-                                disabled={ehEdicao}
-                                onClick={() => {
-                                    sigRef.current?.clear();
-                                    setValue("caminho_imagem_assinatura", null);
-                                }}
-                            >
-                                Limpar assinatura
-                            </Button>
-                        </Col>*/}
                     </Row>
                     <Row className="mb-3">
                         <Col md={6}>
@@ -167,17 +117,23 @@ export default function FormularioAcesso() {
                             />
                         </Col>
                         <Col md={6}>
-                            <Form.Label>Número do cartão:</Form.Label>
-                            <Form.Select {...register("numeroCartao")}>
-                                <option value="">Selecione</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="1">4</option>
-                                <option value="2">5</option>
-                            </Form.Select>
+                            <Form.Label>Placa do veículo:</Form.Label>
+                            <Controller
+                                name="numeroCartao"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Form.Select {...field}>
+                                        <option value="">Selecione</option>
+                                        <option value="01">001</option>
+                                        <option value="02">002</option>
+                                        <option value="03">003</option>
+                                        <option value="04">004</option>
+                                        <option value="05">005</option>
+                                    </Form.Select>
+                                )}
+                            />
                         </Col>
-
                     </Row>
 
                     <Row className="mb-3">
@@ -268,12 +224,8 @@ export default function FormularioAcesso() {
                         </Col>
                     </Row>
 
-                    <Button
-                        type="submit"
-                        variant="success"
-                        className="w-100"
-                    >
-                        Salvar informações
+                    <Button type="submit" variant="primary" className="w-100 mb-2" disabled={carregando}>
+                        {carregando ? (<><Spinner animation="border" size="sm" className="me-2" />Enviando...</>) : ("Salvar informações")}
                     </Button>
                 </Form>
             </Container>

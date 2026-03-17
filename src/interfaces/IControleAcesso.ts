@@ -10,7 +10,7 @@ export interface IControleAcesso {
     hora_saida: Date;
     objetivo: string;
     placaVeiculo: string;
-    numeroCartao: string;    
+    numeroCartao: string;
 }
 
 export interface IControleAcessoTabela {
@@ -53,3 +53,13 @@ export interface IFormularioAcesso {
     porteiroSaida: number;
 }
 
+export interface IEdicaoControleAcesso {
+    id?: number;
+    idPorteiroEntrada: number;
+    idPorteiroSaida: number;
+    responsavel: string;
+    objetivo: string;
+    placaVeiculo: string;
+    numeroCartao: string;
+    idVisitante: number;
+}
