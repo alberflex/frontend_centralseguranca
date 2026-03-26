@@ -5,7 +5,7 @@ export interface IControleVeiculoCadastro {
     idResponsavel: string;
     localizacao: string;
     idResponsavelAutorizacao: string;
-    placa: string
+    placa: string;
 }
 
 export interface IControleVeiculo {

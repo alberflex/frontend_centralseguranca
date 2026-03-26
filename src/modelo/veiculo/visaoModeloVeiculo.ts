@@ -1,5 +1,5 @@
 import { ModeloVeiculo } from "./modeloVeiculo";
-import { IVeiculo } from "../../interfaces/IVeiculo";
+import { IVeiculo, VeiculoUpdate } from "../../interfaces/IVeiculo";
 
 export class VisaoModeloVeiculo {
     private modeloVeiculo: ModeloVeiculo;
@@ -20,5 +20,9 @@ export class VisaoModeloVeiculo {
 
     async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IVeiculo): Promise<IVeiculo | null> {
         return await this.modeloVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario);
+    }
+
+    async editarVeiculo(tokenJWT: string, dadosFormulario: VeiculoUpdate, id: number): Promise<VeiculoUpdate | null> {
+        return await this.modeloVeiculo.editarVeiculo(tokenJWT, dadosFormulario, id);
     }
 }

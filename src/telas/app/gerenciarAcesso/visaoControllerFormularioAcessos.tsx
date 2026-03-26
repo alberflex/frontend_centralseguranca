@@ -46,6 +46,71 @@ export const useVisaoControllerFormularioAcesso = () => {
     const abrirCamera = () => { setFoto(null); setCameraAberta(true); };
     const vaiParaGerenciarAcessos = () => { navegacao("/ControleAcesso") }
 
+    /*
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+const abrirCamera = async () => {
+    if (isMobile) {
+        // Para mobile usamos getUserMedia direto
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" } // câmera traseira
+            });
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+
+            // Criar canvas para capturar foto quando precisar
+            video.onloadedmetadata = () => {
+                setCameraAberta(true);
+                document.body.appendChild(video); // opcional, você pode renderizar num container
+            };
+        } catch (error) {
+            console.error("Erro ao acessar câmera do celular:", error);
+            alert("Não foi possível acessar a câmera do dispositivo.");
+        }
+    } else {
+        // Desktop: usar react-webcam
+        setCameraAberta(true);
+    }
+};
+
+const tirarFoto = () => {
+    if (isMobile) {
+        // Para mobile capturamos do video element
+        const video = document.querySelector("video");
+        if (!video) return;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imagem = canvas.toDataURL("image/jpeg");
+        setFoto(imagem);
+        setValue("caminho_foto_visitante", imagem);
+        setCameraAberta(false);
+
+        // Parar o stream
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        video.remove();
+    } else {
+        // Desktop
+        if (!webcamRef.current) return;
+        const imagem = webcamRef.current.getScreenshot();
+        if (!imagem) return;
+
+        setFoto(imagem);
+        setValue("caminho_foto_visitante", imagem);
+        setCameraAberta(false);
+    }
+};
+
+    */
+
     const abrirConfirmacaoSalvar = (data: any) => {
         setToast({
             show: true,

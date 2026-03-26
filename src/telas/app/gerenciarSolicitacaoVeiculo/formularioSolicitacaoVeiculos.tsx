@@ -2,9 +2,9 @@ import { Fragment, useEffect } from "react";
 import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioSolicitacaoVeiculo } from "./visaoControllerFormularioSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
+import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
-import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 
 export default function FormularioSaidaVeiculo() {
 
@@ -29,7 +29,11 @@ export default function FormularioSaidaVeiculo() {
         watch,
         setToast,
         abrirConfirmacaoSalvar,
-        carregando
+        carregando,
+        estado,
+        cidades,
+        siglaSelecionada,
+        nomeEstadoSelecionado
     } = useVisaoControllerFormularioSolicitacaoVeiculo();
 
     useEffect(() => {
@@ -151,34 +155,49 @@ export default function FormularioSaidaVeiculo() {
                         </Row>
 
                         <Row className="mb-3">
-
                             <Col md={6}>
                                 <Form.Group>
-                                    <Form.Label>Destino:</Form.Label>
-                                    <Form.Control {...register("destino", { required: true })} />
+                                    <Form.Label>Estado:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        {...register("destino", { required: true })}
+                                        value={siglaSelecionada} // React Hook Form já controla isso
+                                    >
+                                        <option value="">{siglaSelecionada ? nomeEstadoSelecionado : "Selecione um estado"}</option>
+                                        {estado.map((estadoItem) => (
+                                            <option key={estadoItem.id} value={estadoItem.sigla}>
+                                                {estadoItem.nome}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
                                 </Form.Group>
                             </Col>
 
                             <Col md={6}>
                                 <Form.Group>
-                                    <Form.Label>Localização:</Form.Label>
-                                    <Form.Control {...register("localizacao", { required: true })} />
+                                    <Form.Label>Localização (Cidade):</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        {...register("localizacao", { required: true })}
+                                        disabled={!watch("destino")}
+                                    >
+                                        <option value="">Selecione uma cidade</option>
+                                        {cidades.map((cidadeItem) => (
+                                            <option key={cidadeItem.id} value={cidadeItem.nome}>
+                                                {cidadeItem.nome}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
                                 </Form.Group>
                             </Col>
-
                         </Row>
 
                         <Row className="mb-3">
                             <Col md={12}>
                                 <Form.Group>
                                     <Form.Label>Porteiro saída:</Form.Label>
-
                                     <Dropdown className="w-100">
-                                        <Dropdown.Toggle
-                                            className="w-100 text-start"
-                                            variant="outline-secondary"
-                                            disabled={ehEdicao}
-                                        >
+                                        <Dropdown.Toggle className="w-100 text-start" variant="outline-secondary" disabled={ehEdicao}>
                                             {porteiro.find(p => p.id === watch("idPorteiroSaida"))?.nome || "Selecionar porteiro"}
                                         </Dropdown.Toggle>
 

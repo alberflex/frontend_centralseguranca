@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { IVeiculo } from "../../../interfaces/IVeiculo";
+import { IVeiculo, VeiculoUpdate } from "../../../interfaces/IVeiculo";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAutenticacao } from "../../../contextos/useAutenticacao";
@@ -14,6 +14,7 @@ export const useVisaoControllerFormularioVeiculo = () => {
     const vaiParaVeiculos = () => { navegacao("/ControleVeiculo") }
     const visaoModeloVeiculo = new VisaoModeloVeiculo();
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
+    const [carregando, setCarregando] = useState(false);
 
     const abrirConfirmacaoSalvar = (data: any) => {
         setToast({
@@ -21,12 +22,47 @@ export const useVisaoControllerFormularioVeiculo = () => {
             onConfirm: async () => {
                 setToast((prev) => ({ ...prev, show: false }));
                 if (ehEdicao) {
-                    //await fecharPonto(editarObjeto.id);
+                    await editarVeiculo(data);
                 } else {
                     await cadastrarVeiculo(data);
                 }
             },
         });
+    };
+
+    const editarVeiculo = async (data: any) => {
+        if (!tokenJWT) return;
+
+        try {
+            if (carregando) return;
+            setCarregando(true);
+
+            const file = data.caminho_imagem_veiculo?.[0];
+
+            const objEdicao = {
+                modelo: data.modelo,
+                km_atual: data.km_atual,
+                caminho_imagem_veiculo: file
+            };
+
+            const veiculoEditado = await visaoModeloVeiculo.editarVeiculo(
+                tokenJWT,
+                objEdicao,
+                editarObjeto.id,
+            );
+
+            if (!veiculoEditado) {
+                alert("Erro ao editar acesso");
+                return;
+            }
+
+            vaiParaVeiculos();
+        } catch (error) {
+            console.error("Erro ao editar acesso:", error);
+            alert("Erro ao processar a edição");
+        } finally {
+            setCarregando(false);
+        }
     };
 
     const cadastrarVeiculo = async (dadosFormulario: IVeiculo) => {
@@ -43,12 +79,19 @@ export const useVisaoControllerFormularioVeiculo = () => {
             setValue("placa", editarObjeto.placa);
             setValue("km_atual", editarObjeto.km_atual);
             setValue("modelo", editarObjeto.modelo);
-            setValue("caminho_imagem_veiculo", editarObjeto.caminho_imagem_veiculo);
         }
     }, [ehEdicao, editarObjeto?.id, setValue]);
 
     return {
-        toast, setToast, abrirConfirmacaoSalvar,
-        register, handleSubmit, errors, ehEdicao, editarObjeto
+        toast,
+        setToast,
+        abrirConfirmacaoSalvar,
+        register,
+        handleSubmit,
+        errors,
+        ehEdicao,
+        editarObjeto,
+        carregando,
+        setCarregando
     }
 }   

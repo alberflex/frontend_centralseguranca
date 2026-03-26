@@ -1,11 +1,11 @@
 import { Fragment } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioVeiculo } from "./visaoControllerFormularioVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioVeiculo() {
-    const { toast, setToast, handleSubmit, register, errors, abrirConfirmacaoSalvar, editarObjeto, ehEdicao } = useVisaoControllerFormularioVeiculo();
+    const { toast, setToast, handleSubmit, register, errors, abrirConfirmacaoSalvar, editarObjeto, ehEdicao, carregando, setCarregando } = useVisaoControllerFormularioVeiculo();
 
     return (
         <Fragment>
@@ -69,8 +69,8 @@ export default function FormularioVeiculo() {
                                 <Form.Label>Imagem do Veículo:</Form.Label>
                                 <Form.Control
                                     type="file"
-                                    name="caminho_imagem_veiculo"
                                     accept="image/*"
+                                    {...register("caminho_imagem_veiculo")}
                                 />
                             </Form.Group>
                             {ehEdicao && editarObjeto?.caminho_imagem_veiculo && (
@@ -83,7 +83,9 @@ export default function FormularioVeiculo() {
                         </Col>
                     </Row>
 
-                    <Row><Col className="text-center"><Button variant="success" type="submit" className="w-50">Salvar informações</Button></Col></Row>
+                    <Button type="submit" variant="primary" className="w-100 mb-2" disabled={carregando}>
+                        {carregando ? (<><Spinner animation="border" size="sm" className="me-2" />Enviando...</>) : ("Salvar informações")}
+                    </Button>
                 </Form>
             </Container>
             <GenericToast

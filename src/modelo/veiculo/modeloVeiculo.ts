@@ -1,4 +1,4 @@
-import { IVeiculo } from "../../interfaces/IVeiculo";
+import { IVeiculo, VeiculoUpdate } from "../../interfaces/IVeiculo";
 import { conexaoAPI } from "../../servicos/API";
 
 export class ModeloVeiculo {
@@ -57,6 +57,26 @@ export class ModeloVeiculo {
             });
             return cadastroVeiculoJSON.data;
         } catch (error) {
+            throw error;
+        }
+    }
+
+    async editarVeiculo(tokenJWT: string, dadosFormulario: VeiculoUpdate, id: number): Promise<IVeiculo | null> {
+        try {
+            const formData = new FormData();
+            formData.append("modelo", String(dadosFormulario.modelo));
+            formData.append("km_atual", String(dadosFormulario.km_atual));
+
+            if (dadosFormulario.caminho_imagem_veiculo instanceof File) formData.append("caminho_imagem_veiculo", dadosFormulario.caminho_imagem_veiculo);
+
+            const response = await conexaoAPI.put<IVeiculo>(`/veiculo/editarVeiculo/${id}`, formData,
+                { headers: { Authorization: `Bearer ${tokenJWT}`, "Content-Type": "multipart/form-data" }, }
+            );
+
+            return response.data;
+        } catch (error: any) {
+            console.error("Erro completo:", error);
+            console.error("Erro backend:", error.response?.data);
             throw error;
         }
     }

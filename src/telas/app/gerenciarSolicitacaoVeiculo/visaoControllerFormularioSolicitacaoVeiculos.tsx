@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { IControleVeiculo, IUsuario } from "../../../interfaces/IControleVeiculo";
 import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeiculo/visaoModeloSolicitacaoVeiculo";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Estado } from "../../../types/Estado";
+import { Cidade } from "../../../types/Cidade";
 
 export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const { control, handleSubmit, register, setValue, formState: { errors }, watch } = useForm<IControleVeiculo>({
@@ -19,7 +21,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             idVeiculo: 0,
             idPorteiroEntrada: 0,
             idPorteiroSaida: 0,
-            km_final_veiculo: undefined
+            km_final_veiculo: undefined,
         }
     });
 
@@ -34,13 +36,68 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const [termoPesquisa, setTermoPesquisa] = useState("");
     const [campoSelecionado, setCampoSelecionado] = useState<"idResponsavel" | "idResponsavelAutorizacao" | "idVeiculo" | null>(null);
     const [carregando, setCarregando] = useState(false);
-
+    const [estado, setEstados] = useState<Estado[]>([]);
+    const [cidades, setCidades] = useState<Cidade[]>([]);
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
+
+    const siglaSelecionada = watch("destino");
+    const nomeEstadoSelecionado = estado.find(e => e.sigla === siglaSelecionada)?.nome || "";
     const { tokenJWT } = useAutenticacao();
     const estadoFormulario = useLocation();
     const { ehEdicao, editarObjeto } = estadoFormulario.state || {};
     const navegacao = useNavigate();
-    const vaiParaSolicitacoesVeiculos = () => { navegacao("/ControleSolicitacaoVeiculo") };
+
+    const vaiParaSolicitacoesVeiculos = () => {
+        navegacao("/ControleSolicitacaoVeiculo")
+    };
+
+    useEffect(() => {
+        fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+            .then(res => res.json())
+            .then((data: Estado[]) => {
+                const ordenados = data.sort((a, b) => a.nome.localeCompare(b.nome));
+                setEstados(ordenados);
+
+                if (ehEdicao && editarObjeto) {
+                    setValue("destino", editarObjeto.destino);
+                }
+            });
+    }, [ehEdicao, editarObjeto, setValue]);
+
+    useEffect(() => {
+        if (ehEdicao && editarObjeto) {
+            setValue("destino", editarObjeto.destino);
+
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
+                .then(res => res.json())
+                .then((data: Cidade[]) => {
+                    const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
+                    setCidades(ordenadas);
+                    setValue("localizacao", editarObjeto.localizacao);
+                });
+        }
+    }, [ehEdicao, editarObjeto, setValue]);
+
+    useEffect(() => {
+        const siglaEstado = watch("destino");
+        if (!siglaEstado) {
+            setCidades([]);
+            setValue("localizacao", "");
+            return;
+        }
+
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${siglaEstado}/municipios`)
+            .then(res => res.json())
+            .then((data: Cidade[]) => {
+                const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
+                setCidades(ordenadas);
+
+                if (ehEdicao && editarObjeto && editarObjeto.destino === siglaEstado) {
+                    setValue("localizacao", editarObjeto.localizacao);
+                }
+            });
+    }, [watch("destino")]);
+
 
     const abrirConfirmacaoSalvar = (data: any) => {
         setToast({
@@ -127,7 +184,6 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             } else {
                 setPessoal([]);
             }
-
         } catch (error) {
             console.error("Erro ao buscar pessoal:", error);
         }
@@ -135,15 +191,23 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
-            setValue("destino", editarObjeto.destino);
-            setValue("localizacao", editarObjeto.localizacao);
+
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
+                .then(res => res.json())
+                .then((data: Cidade[]) => {
+                    const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
+                    setCidades(ordenadas);
+                    setTimeout(() => { setValue("localizacao", editarObjeto.localizacao); }, 0);
+                });
+
             setValue("km_final_veiculo", editarObjeto.km_final_veiculo);
             setValue("idResponsavelAutorizacao", editarObjeto.idResponsavelAutorizacao);
             setValue("idResponsavel", editarObjeto.idResponsavel);
             setValue("idPorteiroSaida", editarObjeto.idPorteiroSaida);
             setValue("idVeiculo", editarObjeto.idVeiculo);
+            setValue("destino", editarObjeto.destino);
         }
-    }, [ehEdicao, editarObjeto?.id, setValue]);
+    }, [ehEdicao, editarObjeto, setValue]);
 
     return {
         control,
@@ -169,6 +233,10 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         setToast,
         abrirConfirmacaoSalvar,
         ehEdicao,
-        carregando
+        carregando,
+        estado,
+        cidades,
+        nomeEstadoSelecionado,
+        siglaSelecionada
     };
 }
