@@ -193,6 +193,39 @@ export default function FormularioSaidaVeiculo() {
                         </Row>
 
                         <Row className="mb-3">
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label>Condição de saída do veículo:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        {...register("condicao_saida", { required: true })}
+                                        defaultValue={"LIMPO"}
+                                    >
+                                        <option value="LIMPO">Limpo</option>
+                                        <option value="SUJO">Sujo</option>
+                                        <option value="MUITO_SUJO">Muito Sujo</option>
+                                    </Form.Control>
+                                </Form.Group>
+                            </Col>
+
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label>Condição de entrada do veículo:</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        {...register("condicao_entrada", { required: true })}
+                                        defaultValue={"LIMPO"}
+                                        disabled={ehEdicao ? false : true}
+                                    >
+                                        <option value="LIMPO">Limpo</option>
+                                        <option value="SUJO">Sujo</option>
+                                        <option value="MUITO_SUJO">Muito Sujo</option>
+                                    </Form.Control>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Row className="mb-3">
                             <Col md={12}>
                                 <Form.Group>
                                     <Form.Label>Porteiro saída:</Form.Label>

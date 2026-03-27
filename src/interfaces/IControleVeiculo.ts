@@ -23,6 +23,8 @@ export interface IControleVeiculo {
     localizacao: string;
     idPorteiroEntrada: number;
     idResponsavelAutorizacao: string;
+    condicao_entrada: string;
+    condicao_saida: string;
 }
 
 export interface IControleVeiculoTabela {
@@ -40,6 +42,8 @@ export interface IControleVeiculoTabela {
     localizacao: string;
     nome_porteiro_entrada: string;
     nome_responsavel_autorizacao: string;
+      condicao_entrada: string;
+    condicao_saida: string;
 }
 
 export interface IFecharSolicitacaoVeiculo {

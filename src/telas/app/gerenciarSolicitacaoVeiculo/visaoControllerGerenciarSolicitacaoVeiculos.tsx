@@ -64,7 +64,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
 
             const colunas = ["ID", "Placa", "Data Solicitação",
                 "Hora Saída", "Km Inicial", "Data Chegada",
-                "Hora Chegada", "Km Final", "Solicitante",
+                "Hora Chegada", "Cond. Entrada", "Cond. Saída", "Km Final", "Solicitante",
                 "Responsável", "Localização", "Porteiro Saída",
                 "Porteiro Entrada"
             ];
@@ -77,6 +77,8 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                 d.km_inicial_veiculo,
                 d.data_chegada ? new Date(d.data_chegada).toLocaleDateString("pt-BR") : "",
                 d.horario_chegada,
+                d.condicao_entrada,
+                d.condicao_saida,
                 d.km_final_veiculo || "",
                 d.nome_responsavel,
                 d.nome_responsavel_autorizacao,
@@ -132,6 +134,8 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         { key: 'km_inicial_veiculo', label: 'KM inicial' },
         { key: 'data_chegada', label: 'Data chegada' },
         { key: 'horario_chegada', label: 'Horario Chegada' },
+        { key: 'condicao_entrada', label: 'Cond. Entrada' },
+        { key: 'condicao_saida', label: 'Cond. Saída' },
         { key: 'km_final_veiculo', label: 'KM Final' },
         { key: 'nome_porteiro_saida', label: 'Porteiro saída' },
         { key: 'nome_responsavel', label: 'Responsável' },
@@ -164,8 +168,8 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
     return {
         solicitacaoVeiculo,
         IconeAdicionar,
-        colunasTabela, 
-        toast, 
+        colunasTabela,
+        toast,
         dataInicio,
         dataFim,
         setToast,

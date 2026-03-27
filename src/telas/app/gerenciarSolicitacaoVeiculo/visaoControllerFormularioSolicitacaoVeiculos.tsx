@@ -51,6 +51,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         navegacao("/ControleSolicitacaoVeiculo")
     };
 
+    console.log(editarObjeto);
     useEffect(() => {
         fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
             .then(res => res.json())
@@ -191,7 +192,6 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
-
             fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
                 .then(res => res.json())
                 .then((data: Cidade[]) => {
@@ -206,6 +206,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             setValue("idPorteiroSaida", editarObjeto.idPorteiroSaida);
             setValue("idVeiculo", editarObjeto.idVeiculo);
             setValue("destino", editarObjeto.destino);
+            setValue("condicao_saida", editarObjeto.condicao_saida);
         }
     }, [ehEdicao, editarObjeto, setValue]);
 
