@@ -4,7 +4,7 @@ import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar"
 import { BarChart } from "../../../componentes/graficos/graficoBarras";
 
 export const TelaConsolidador = () => {
-  const { pontosAbertos, veiculosAbertos, acessosAbertos, labelsVeiculos, valoresVeiculos } = useVisaoControllerIntroducao();
+  const { pontosAbertos, veiculosAbertos, acessosAbertos, labelsVeiculos, valoresVeiculos, labelsVisitantes, valoresVisitantes } = useVisaoControllerIntroducao();
 
   if (pontosAbertos === null) {
     return (
@@ -57,6 +57,16 @@ export const TelaConsolidador = () => {
               <Card.Title className="fw-bold">Veículos do mês</Card.Title>
               <Card.Text className="display-5 fw-bold text-warning">
                 <BarChart titulo="" arrNomes={labelsVeiculos} arrValores={valoresVeiculos} definicao="Número de uso por mês" />
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card className="shadow-sm border-0 text-center h-100">
+            <Card.Body>
+              <Card.Title className="fw-bold">Visitantes do mês</Card.Title>
+              <Card.Text className="display-5 fw-bold text-warning">
+                <BarChart titulo="" arrNomes={labelsVisitantes} arrValores={valoresVisitantes} definicao="Número de visitantes por mês" />
               </Card.Text>
             </Card.Body>
           </Card>

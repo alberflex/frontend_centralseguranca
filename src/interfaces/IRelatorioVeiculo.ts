@@ -10,3 +10,17 @@ export interface IRelatorioMensal {
 }
 
 export type IRelatorioMensalResponse = IRelatorioMensal[];
+
+
+export interface IVisitantes {
+    nome: string;
+    total_visitantes: number;
+}
+
+export interface IRelatorioMensalVisitante {
+    ano: number;
+    mes: string;
+    pessoas: IVisitantes[];
+}
+
+export type IRelatorioMensalResponseVisitantes = IRelatorioMensalVisitante[];

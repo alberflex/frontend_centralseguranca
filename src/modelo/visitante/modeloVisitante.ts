@@ -1,7 +1,21 @@
+import {  IRelatorioMensalVisitante } from "../../interfaces/IRelatorioVeiculo";
 import { IVisitante } from "../../interfaces/IVisitante";
 import { conexaoAPI } from "../../servicos/API";
 
 export class ModeloVisitante {
+
+    async visitantesMaisPresentes(tokenJWT: string): Promise<IRelatorioMensalVisitante[] | null> {
+            try {
+                const informacoesVisitantes = await conexaoAPI.get<IRelatorioMensalVisitante[]>(`/visitante/dashboardVisitante`, {
+                    headers: { Authorization: `Bearer ${tokenJWT}` },
+                });
+    
+                return informacoesVisitantes.data;
+            } catch (error) {
+                throw error;
+            }
+        }
+
     async deletarVisitante(tokenJWT: string, id: number): Promise<IVisitante | null> {
         try {
             const visitanteDeletadoJSON = await conexaoAPI.delete<IVisitante>(`/visitante/deletarVisitante/${id}`, {

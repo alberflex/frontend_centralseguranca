@@ -1,5 +1,6 @@
 import { ModeloVisitante } from "./modeloVisitante";
 import { IVisitante } from "../../interfaces/IVisitante";
+import { IRelatorioMensalVisitante } from "../../interfaces/IRelatorioVeiculo";
 
 export class VisaoModeloVisitante {
     private modeloVisitante: ModeloVisitante;
@@ -28,5 +29,9 @@ export class VisaoModeloVisitante {
 
     async editarVisitante(tokenJWT: string, dadosFormulario: IVisitante, id: number): Promise<IVisitante | null> {
         return await this.modeloVisitante.editarVisitante(tokenJWT, dadosFormulario, id);
+    }
+
+    async visitantesMaisPresentes(tokenJWT: string): Promise<IRelatorioMensalVisitante[] | null> {
+        return await this.modeloVisitante.visitantesMaisPresentes(tokenJWT);
     }
 }
