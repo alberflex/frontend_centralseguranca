@@ -1,14 +1,6 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +18,7 @@ type BarChartProps = {
   titulo: string;
 };
 
-const BarChart: React.FC<BarChartProps> = ({ titulo, definicao, arrNomes, arrValores,  }) => {
+export const BarChart: React.FC<BarChartProps> = ({ titulo, definicao, arrNomes, arrValores, }) => {
   const data = {
     labels: arrNomes,
     datasets: [
@@ -53,5 +45,3 @@ const BarChart: React.FC<BarChartProps> = ({ titulo, definicao, arrNomes, arrVal
 
   return <Bar options={options} data={data} />;
 };
-
-export default BarChart;

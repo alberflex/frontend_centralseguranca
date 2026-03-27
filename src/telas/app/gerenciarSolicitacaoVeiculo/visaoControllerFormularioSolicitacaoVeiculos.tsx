@@ -51,7 +51,6 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         navegacao("/ControleSolicitacaoVeiculo")
     };
 
-    console.log(editarObjeto);
     useEffect(() => {
         fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
             .then(res => res.json())

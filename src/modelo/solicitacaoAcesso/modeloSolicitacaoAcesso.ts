@@ -78,7 +78,6 @@ export class ModeloSolicitacaoAcesso {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             }
         );
-
         return response.data?.idVisitante ?? null;
     }
 }

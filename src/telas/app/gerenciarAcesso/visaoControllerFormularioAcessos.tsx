@@ -135,10 +135,6 @@ const tirarFoto = () => {
             if (carregando) return;
             setCarregando(true);
 
-            // Log do objeto que está sendo editado
-            console.log("Editar objeto original:", editarObjeto);
-
-            // Construir objeto base
             const objEdicaoBase: Partial<IEdicaoControleAcesso> = {
                 idVisitante: visitante?.id!
             };
@@ -151,14 +147,10 @@ const tirarFoto = () => {
             if (data.numeroCartao) objEdicaoBase.numeroCartao = data.numeroCartao;
             if (data.responsavel) objEdicaoBase.responsavel = data.responsavel;
 
-            // Remove propriedades undefined
             const objEdicaoFinal = Object.fromEntries(
                 Object.entries(objEdicaoBase).filter(([_, v]) => v !== undefined)
             );
 
-            console.log("Objeto final enviado:", objEdicaoFinal);
-
-            // Enviar para backend (cast necessário)
             const acessoEditado = await objVisaoModeloSolicitacaoAcesso.editarSolicitacaoAcesso(
                 tokenJWT,
                 editarObjeto.id,

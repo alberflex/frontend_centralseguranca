@@ -90,7 +90,6 @@ export const useVisaoControllerGerenciarVeiculo = () => {
         if (!tokenJWT) return;
         try {
             const veiculo = await objVisaoModeloVeiculo.listarVeiculosPorID(tokenJWT, id);
-            console.log(veiculo);
             navegacao('/FormularioVeiculo', {
                 state: { ehEdicao: true, editarObjeto: veiculo }
             });

@@ -31,7 +31,7 @@ export class ModeloPonto {
                     Authorization: `Bearer ${tokenJWT}`,
                 },
             });
-            console.log('retorno pontos',resposta.data);
+            
             return resposta.data;
 
         } catch (error) {

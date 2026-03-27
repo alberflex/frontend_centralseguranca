@@ -26,7 +26,6 @@ export class ModeloSolicitacaoVeiculo {
             const solicitacaoVeiculoJSON = await conexaoAPI.get<IControleVeiculo>(url, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
-            console.log(solicitacaoVeiculoJSON.data);
             return solicitacaoVeiculoJSON.data;
         } catch (error) {
             throw error;

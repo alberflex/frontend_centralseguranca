@@ -1,7 +1,21 @@
+import { IRelatorioMensal } from "../../interfaces/IRelatorioVeiculo";
 import { IVeiculo, VeiculoUpdate } from "../../interfaces/IVeiculo";
 import { conexaoAPI } from "../../servicos/API";
 
 export class ModeloVeiculo {
+
+    async solicitacoesVeiculos(tokenJWT: string): Promise<IRelatorioMensal[] | null> {
+        try {
+            const informacoesVeiculo = await conexaoAPI.get<IRelatorioMensal[]>(`/veiculo/dashboardVeiculo`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` },
+            });
+
+            return informacoesVeiculo.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async deletarVeiculo(tokenJWT: string, id: number): Promise<IVeiculo | null> {
         try {
             const veiculoDeletadoJSON = await conexaoAPI.delete<IVeiculo>(`/veiculo/deletarVeiculo/${id}`, {

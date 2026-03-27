@@ -19,7 +19,6 @@ export class ModeloPorteiro {
             const porteirosListadosJSON = await conexaoAPI.get<IPorteiro>(`/porteiro/listarTodosPorteiros`, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
-            console.log(porteirosListadosJSON.data);
             return porteirosListadosJSON.data;
         } catch (error) {
             throw error;
