@@ -12,7 +12,7 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 
 export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
-    const { tokenJWT } = useAutenticacao();
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const navegacao = useNavigate();
     const objVisaoModeloSolicitacaoVeiculo = new VisaoModeloSolicitacaoVeiculo();
     const vaiParaFormularioSolicitacaoVeiculo = () => { navegacao("/FormularioSolicitacaoVeiculo") };
@@ -181,6 +181,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         setDataFim,
         setDataInicio,
         buscarSolicitacaoVeiculo,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     }
 }

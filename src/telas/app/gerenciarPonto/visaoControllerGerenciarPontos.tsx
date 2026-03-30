@@ -11,7 +11,7 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 
 export const useVisaoControllerGerenciarPontos = () => {
-    const { tokenJWT } = useAutenticacao();
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const [pontos, setPontos] = useState<IPontoTabela[]>([]);
     const [dataInicio, setDataInicio] = useState("");
     const [dataFim, setDataFim] = useState("");
@@ -158,6 +158,7 @@ export const useVisaoControllerGerenciarPontos = () => {
         setDataFim,
         setDataInicio,
         buscarPontos,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     }
 }

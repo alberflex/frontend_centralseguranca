@@ -4,6 +4,7 @@ import { GenericToast } from "../../../componentes/toast/toast";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import Tabela from "../../../componentes/tabelas/tabela";
+import { EPapel } from "../../../enum/EPapel";
 
 export default function GerenciarPontos() {
     const {
@@ -21,7 +22,8 @@ export default function GerenciarPontos() {
         setDataInicio,
         setDataFim,
         buscarPontos,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     } = useVisaoControllerGerenciarPontos();
 
     return (
@@ -90,7 +92,7 @@ export default function GerenciarPontos() {
                 dados={pontos}
                 aoDeletar={abrirConfirmacaoExclusao}
                 aoEditar={selecionarPonto}
-                podeDeletar={false}
+                podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}
             />
 
             <GenericToast

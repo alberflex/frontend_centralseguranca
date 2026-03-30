@@ -4,6 +4,7 @@ import { GenericToast } from "../../../componentes/toast/toast";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
+import { EPapel } from "../../../enum/EPapel";
 
 export default function ControleSolicitacaoVeiculo() {
     const {
@@ -21,7 +22,8 @@ export default function ControleSolicitacaoVeiculo() {
         setDataInicio,
         limparFiltro,
         buscarSolicitacaoVeiculo,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     } = useVisaoControllerListagemSolicitacaoVeiculo();
     return (
         <Container fluid>
@@ -70,7 +72,7 @@ export default function ControleSolicitacaoVeiculo() {
                     </Button>
                 </Col>
             </Row>
-            <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} podeDeletar={false}/>
+            <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}/>
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}

@@ -8,7 +8,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 
 export const useVisaoControllerGerenciarUsuarios = () => {
     const objVisaoModeloPorteiro = new VisaoModeloPorteiro();
-    const { tokenJWT } = useAutenticacao();
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const [porteiro, setPorteiro] = useState<IPorteiro[]>([]);
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
     const colunasTabela: ILayoutTabela<IPorteiro>[] = [{ key: 'id', label: 'ID' }, { key: 'cpf', label: 'CPF' }, { key: 'nome', label: 'Nome' }, { key: 'papel', label: 'Papel' }];
@@ -74,6 +74,7 @@ export const useVisaoControllerGerenciarUsuarios = () => {
         colunasTabela,
         porteiro,
         IconeAdicionar,
-        vaiParaFormularioPortaria
+        vaiParaFormularioPortaria,
+        informacoesUsuario
     }
 }

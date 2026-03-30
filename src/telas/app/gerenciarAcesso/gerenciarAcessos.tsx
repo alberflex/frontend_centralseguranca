@@ -5,6 +5,7 @@ import { Row, Col, Form, Button } from "react-bootstrap";
 import MenuSuperiorIniciar from '../../../componentes/menus/menuSuperiorIniciar';
 import Tabela from '../../../componentes/tabelas/tabela';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { EPapel } from '../../../enum/EPapel';
 
 export default function ControleAcesso() {
     const {
@@ -103,7 +104,7 @@ export default function ControleAcesso() {
                 dados={acessos}
                 aoDeletar={abrirConfirmacaoExclusao}
                 aoEditar={selecionarAcesso}
-                podeDeletar={false}
+                podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}
             />
 
             <GenericToast

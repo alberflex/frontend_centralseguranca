@@ -2,13 +2,14 @@ import { Container } from "react-bootstrap";
 import { useVisaoControllerGerenciarUsuarios } from "./visaoControllerGerenciarUsuarios";
 import Tabela from "../../../componentes/tabelas/tabela";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
+import { EPapel } from "../../../enum/EPapel";
 
 export default function ListagemUsuarios() {
     const {
         selecionarPorteiro,
         abrirConfirmacaoExclusao,
         colunasTabela,
-        porteiro, IconeAdicionar, vaiParaFormularioPortaria
+        porteiro, IconeAdicionar, vaiParaFormularioPortaria, informacoesUsuario
     } = useVisaoControllerGerenciarUsuarios();
 
     return (
@@ -21,7 +22,7 @@ export default function ListagemUsuarios() {
                     <span>Formulário usuários</span>
                 </div>
             </div>
-            <Tabela colunas={colunasTabela} dados={porteiro} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarPorteiro} />
+            <Tabela colunas={colunasTabela} dados={porteiro} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarPorteiro} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR} />
         </Container >
     );
 }
