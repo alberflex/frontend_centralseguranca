@@ -2,6 +2,7 @@ import { IControleVeiculo, IControleVeiculoCadastro, IFecharSolicitacaoVeiculo }
 import { conexaoAPI } from "../../servicos/API";
 import { IUsuario } from "../../interfaces/IControleVeiculo";
 import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
+import { IRelatorioPorMes } from "../../interfaces/IRelatorioVeiculo";
 
 export class ModeloSolicitacaoVeiculo {
     async deletarSolicitacaoVeiculo(tokenJWT: string, id: number): Promise<IControleVeiculo | null> {
@@ -15,10 +16,21 @@ export class ModeloSolicitacaoVeiculo {
         }
     }
 
+    async listarRotasMaisAcessadas(tokenJWT: string): Promise<IRelatorioPorMes[]> {
+        try {
+            const listagemRotasMaisAcessadas = await conexaoAPI.get<IRelatorioPorMes[]>(`controleVeiculo/localizacoesMaisCadastradas`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return listagemRotasMaisAcessadas.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async listarTodasSolicitacaoVeiculos(tokenJWT: string, inicio?: string, fim?: string): Promise<IControleVeiculo | null> {
         try {
             let url = "/controleVeiculo/listarTodosVeiculos";
-            
+
             if (inicio && fim) {
                 url += `?dataInicio=${inicio}&dataFim=${fim}`;
             }
@@ -55,7 +67,7 @@ export class ModeloSolicitacaoVeiculo {
     }
 
     async editarSolicitacaoVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo, id: number): Promise<IControleVeiculo | null> {
-        
+
         try {
             const edicaoSolicitacaoJSON = await conexaoAPI.put<IControleVeiculo>(`/controleVeiculo/editarSolicitacao/${id}`, dadosFormulario, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }

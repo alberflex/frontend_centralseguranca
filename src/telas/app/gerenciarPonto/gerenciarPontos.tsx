@@ -90,6 +90,7 @@ export default function GerenciarPontos() {
                 dados={pontos}
                 aoDeletar={abrirConfirmacaoExclusao}
                 aoEditar={selecionarPonto}
+                podeDeletar={false}
             />
 
             <GenericToast

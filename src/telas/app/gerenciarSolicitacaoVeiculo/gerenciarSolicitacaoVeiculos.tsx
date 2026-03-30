@@ -70,7 +70,7 @@ export default function ControleSolicitacaoVeiculo() {
                     </Button>
                 </Col>
             </Row>
-            <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} />
+            <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} podeDeletar={false}/>
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}

@@ -9,6 +9,7 @@ import { VisaoModeloVisitante } from "../../../modelo/visitante/visaoModeloVisit
 
 export const useVisaoControllerIntroducao = () => {
     const { tokenJWT } = useAutenticacao();
+
     const objVisaoModeloPonto = new VisaoModeloPonto();
     const objVisaoModeloSolicitacaoVeiculo = new VisaoModeloSolicitacaoVeiculo();
     const objVisaoModeloAcesso = new VisaoModeloSolicitacaoAcesso();
@@ -18,14 +19,19 @@ export const useVisaoControllerIntroducao = () => {
     const [pontosAbertos, setPontosAbertos] = useState<number | null>(null);
     const [veiculosAbertos, setVeiculosAbertos] = useState<number | null>(null);
     const [acessosAbertos, setAcessosAbertos] = useState<number | null>(null);
+
     const [labelsVeiculos, setLabelsVeiculos] = useState<string[]>([]);
     const [valoresVeiculos, setValoresVeiculos] = useState<number[]>([]);
 
     const [labelsVisitantes, setLabelsVisitantes] = useState<string[]>([]);
     const [valoresVisitantes, setValoresVisitantes] = useState<number[]>([]);
 
+    const [labelsRotas, setLabelsRotas] = useState<string[]>([]);
+    const [valoresRotas, setValoresRotas] = useState<number[]>([]);
+
     const verificaDashboard = async (): Promise<void> => {
         if (!tokenJWT) return;
+
         try {
             const resultadoPontos: ITotalizadorDashboard = await objVisaoModeloPonto.contarPontosAberto(tokenJWT);
             const resultadoVeiculos: ITotalizadorDashboard = await objVisaoModeloSolicitacaoVeiculo.contarSolicitacaoVeiculoAberto(tokenJWT);
@@ -33,6 +39,7 @@ export const useVisaoControllerIntroducao = () => {
 
             const resultadoVeiculosPorMes = await objVisaoModeloVeiculo.solicitacoesVeiculos(tokenJWT);
             const resultadoVisitantesPorMes = await objVisaoModeloVisitante.visitantesMaisPresentes(tokenJWT);
+            const resultadoRotasMaisAcessadas = await objVisaoModeloSolicitacaoVeiculo.listarRotasMaisAcessadas(tokenJWT);
 
             setPontosAbertos(resultadoPontos.total);
             setVeiculosAbertos(resultadoVeiculos.total);
@@ -41,6 +48,7 @@ export const useVisaoControllerIntroducao = () => {
             if ((resultadoVeiculosPorMes && resultadoVeiculosPorMes.length > 0) && (resultadoVisitantesPorMes && resultadoVisitantesPorMes.length > 0)) {
                 const veiculos = resultadoVeiculosPorMes[0].veiculos;
                 const visitantes = resultadoVisitantesPorMes[0].pessoas;
+                const rotas = resultadoRotasMaisAcessadas[0].trajetos;
 
                 const labels = veiculos.map(v => v.placa);
                 const valores = veiculos.map(v => v.total_utilizacoes);
@@ -49,11 +57,17 @@ export const useVisaoControllerIntroducao = () => {
                 const valoresVisitantes = visitantes.map(v => v.total_visitantes);
 
 
+                const labelsRotas = rotas.map(v => v.localizacao);
+                const valoresRotas = rotas.map(v => v.rotas);
+
                 setLabelsVeiculos(labels);
                 setValoresVeiculos(valores);
 
                 setLabelsVisitantes(labelsVisitantes);
                 setValoresVisitantes(valoresVisitantes);
+
+                setLabelsRotas(labelsRotas);
+                setValoresRotas(valoresRotas);
             }
 
         } catch (erro) {
@@ -73,6 +87,8 @@ export const useVisaoControllerIntroducao = () => {
         labelsVeiculos,
         valoresVeiculos,
         labelsVisitantes,
-        valoresVisitantes
+        valoresVisitantes,
+        labelsRotas,
+        valoresRotas
     };
 };

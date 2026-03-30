@@ -12,7 +12,7 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 
 export const useVisaoControllerGerenciarAcessos = () => {
-    const { tokenJWT } = useAutenticacao();
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const [acessos, setAcessos] = useState<IControleAcessoTabela[]>([]);
     const [dataInicio, setDataInicio] = useState("");
     const [dataFim, setDataFim] = useState("");
@@ -175,6 +175,7 @@ export const useVisaoControllerGerenciarAcessos = () => {
         setDataInicio,
         buscarAcessos,
         limparFiltro,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     }
 }   

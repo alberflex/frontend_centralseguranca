@@ -6,5 +6,4 @@ export interface IVeiculo {
     modelo: string;
 }
 
-
 export type VeiculoUpdate = Partial<Omit<IVeiculo, 'placa' | 'id'>>;

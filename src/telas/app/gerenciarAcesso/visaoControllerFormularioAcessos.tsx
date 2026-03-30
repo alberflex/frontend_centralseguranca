@@ -426,6 +426,6 @@ const tirarFoto = () => {
         ehEdicao,
         toast,
         carregando,
-        setCarregando
+        setCarregando,
     };
 };

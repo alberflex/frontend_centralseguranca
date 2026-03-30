@@ -24,3 +24,15 @@ export interface IRelatorioMensalVisitante {
 }
 
 export type IRelatorioMensalResponseVisitantes = IRelatorioMensalVisitante[];
+
+
+export interface ITrajeto {
+    localizacao: string;
+    rotas: number;
+}
+
+export interface IRelatorioPorMes {
+    ano: number;
+    mes: string;
+    trajetos: ITrajeto[];
+}

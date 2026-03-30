@@ -1,6 +1,7 @@
 import { ModeloSolicitacaoVeiculo } from "./modeloSolicitacaoVeiculo";
 import { IControleVeiculo, IControleVeiculoCadastro, IFecharSolicitacaoVeiculo, IUsuario } from "../../interfaces/IControleVeiculo";
 import { ITotalizadorDashboard } from "../../interfaces/IDashboard";
+import { IRelatorioPorMes } from "../../interfaces/IRelatorioVeiculo";
 
 export class VisaoModeloSolicitacaoVeiculo {
     private modeloSolicitacaoVeiculo: ModeloSolicitacaoVeiculo;
@@ -33,5 +34,9 @@ export class VisaoModeloSolicitacaoVeiculo {
 
     async editarSolicitacaoVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo, id: number): Promise<IControleVeiculo | null> {
         return await this.modeloSolicitacaoVeiculo.editarSolicitacaoVeiculo(tokenJWT, dadosFormulario, id);
+    }
+
+    async listarRotasMaisAcessadas(tokenJWT: string): Promise<IRelatorioPorMes[]>{
+        return await this.modeloSolicitacaoVeiculo.listarRotasMaisAcessadas(tokenJWT);
     }
 }

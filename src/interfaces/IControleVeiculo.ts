@@ -42,7 +42,26 @@ export interface IControleVeiculoTabela {
     localizacao: string;
     nome_porteiro_entrada: string;
     nome_responsavel_autorizacao: string;
-      condicao_entrada: string;
+    condicao_entrada: string;
+    condicao_saida: string;
+}
+
+export interface IControleVeiculoTabelaView {
+    id: number;
+    placa: string;
+    destino: string;
+    data_solicitacao: string;
+    horario_saida: string;
+    km_inicial_veiculo: number;
+    data_chegada: string;
+    horario_chegada: string;
+    km_final_veiculo: number;
+    nome_porteiro_saida: string;
+    nome_responsavel: string;
+    localizacao: string;
+    nome_porteiro_entrada: string;
+    nome_responsavel_autorizacao: string;
+    condicao_entrada: string;
     condicao_saida: string;
 }
 

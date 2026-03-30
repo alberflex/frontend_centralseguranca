@@ -23,7 +23,8 @@ export default function ControleAcesso() {
         dataInicio,
         buscarAcessos,
         limparFiltro,
-        gerarPDF
+        gerarPDF,
+        informacoesUsuario
     } = useVisaoControllerGerenciarAcessos();
 
     return (
@@ -102,6 +103,7 @@ export default function ControleAcesso() {
                 dados={acessos}
                 aoDeletar={abrirConfirmacaoExclusao}
                 aoEditar={selecionarAcesso}
+                podeDeletar={false}
             />
 
             <GenericToast
