@@ -10,6 +10,7 @@ import { VisaoModeloSolicitacaoVeiculo } from "../../../modelo/solicitacaoVeicul
 import { useLocation, useNavigate } from "react-router-dom";
 import { Estado } from "../../../types/Estado";
 import { Cidade } from "../../../types/Cidade";
+import { VisaoModeloPessoal } from "../../../modelo/pessoal/visaoModeloPessoal";
 
 export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const { control, handleSubmit, register, setValue, formState: { errors }, watch } = useForm<IControleVeiculo>({
@@ -28,10 +29,12 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const objVisaoModeloVeiculo = new VisaoModeloVeiculo();
     const objVisaoModeloUsuario = new VisaoModeloPorteiro();
     const objVisaoModeloSolicitacaoVeiculo = new VisaoModeloSolicitacaoVeiculo();
+    const objVisaoModeloPessoal = new VisaoModeloPessoal();
 
     const [veiculo, setVeiculo] = useState<IVeiculo[]>([]);
     const [porteiro, setPorteiro] = useState<IPorteiro[]>([]);
     const [pessoal, setPessoal] = useState<IUsuario[]>([]);
+    const [aprovadores, setAprovadores] = useState<IUsuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [termoPesquisa, setTermoPesquisa] = useState("");
     const [campoSelecionado, setCampoSelecionado] = useState<"idResponsavel" | "idResponsavelAutorizacao" | "idVeiculo" | null>(null);
@@ -39,6 +42,9 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const [estado, setEstados] = useState<Estado[]>([]);
     const [cidades, setCidades] = useState<Cidade[]>([]);
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
+
+    const [nomeResponsavel, setNomeResponsavel] = useState("");
+    const [nomeAutorizador, setNomeAutorizador] = useState("");
 
     const siglaSelecionada = watch("destino");
     const nomeEstadoSelecionado = estado.find(e => e.sigla === siglaSelecionada)?.nome || "";
@@ -189,6 +195,34 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         }
     };
 
+    const buscarUsuariosAprovadores = async (termo?: string) => {
+        if (!tokenJWT) return;
+        try {
+            const informacoesAprovadores = await objVisaoModeloPessoal.listarUsuariosAprovadores(tokenJWT, termo);
+            if (informacoesAprovadores && Array.isArray(informacoesAprovadores)) {
+                setAprovadores(informacoesAprovadores);
+            } else {
+                setAprovadores([]);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar pessoal:", error);
+        }
+    };
+
+    const buscaNomeUsuariosResponsaveis = async () => {
+        if (!tokenJWT) return;
+        const nomeResponsavel = await objVisaoModeloPessoal.listarUsuariosPorChapa(tokenJWT, editarObjeto.idResponsavel);
+        const nomeAutorizacao = await objVisaoModeloPessoal.listarUsuariosPorChapa(tokenJWT, editarObjeto.idResponsavelAutorizacao);
+
+        if (nomeResponsavel) {
+            setNomeResponsavel(nomeResponsavel.nome);
+        }
+
+        if (nomeAutorizacao) {
+            setNomeAutorizador(nomeAutorizacao.nome);
+        }
+    }
+
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
             fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
@@ -198,7 +232,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                     setCidades(ordenadas);
                     setTimeout(() => { setValue("localizacao", editarObjeto.localizacao); }, 0);
                 });
-
+                
             setValue("km_final_veiculo", editarObjeto.km_final_veiculo);
             setValue("idResponsavelAutorizacao", editarObjeto.idResponsavelAutorizacao);
             setValue("idResponsavel", editarObjeto.idResponsavel);
@@ -206,6 +240,8 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             setValue("idVeiculo", editarObjeto.idVeiculo);
             setValue("destino", editarObjeto.destino);
             setValue("condicao_saida", editarObjeto.condicao_saida);
+
+            buscaNomeUsuariosResponsaveis();
         }
     }, [ehEdicao, editarObjeto, setValue]);
 
@@ -237,6 +273,12 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         estado,
         cidades,
         nomeEstadoSelecionado,
-        siglaSelecionada
+        siglaSelecionada,
+        buscarUsuariosAprovadores,
+        aprovadores,
+        nomeResponsavel,
+        setNomeResponsavel,
+        nomeAutorizador,
+        setNomeAutorizador
     };
 }

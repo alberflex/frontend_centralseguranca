@@ -7,7 +7,6 @@ import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar"
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 
 export default function FormularioSaidaVeiculo() {
-
     const {
         veiculo,
         porteiro,
@@ -33,8 +32,14 @@ export default function FormularioSaidaVeiculo() {
         estado,
         cidades,
         siglaSelecionada,
-        nomeEstadoSelecionado
+        nomeEstadoSelecionado, aprovadores, buscarUsuariosAprovadores,
+        nomeResponsavel,
+        setNomeResponsavel,
+        nomeAutorizador,
+        setNomeAutorizador
     } = useVisaoControllerFormularioSolicitacaoVeiculo();
+
+    const autoBuscar = campoSelecionado === "idResponsavelAutorizacao";
 
     useEffect(() => {
         buscarVeiculos();
@@ -44,17 +49,13 @@ export default function FormularioSaidaVeiculo() {
     return (
         <Fragment>
             <MenuSuperiorIniciar />
-            <SpinnerComponente
-                estado={carregando}
-            />
+            <SpinnerComponente estado={carregando} />
 
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="mb-4 text-center">Solicitação de veículo</h4>
 
                 <Form onSubmit={handleSubmit(abrirConfirmacaoSalvar)}>
-
                     <fieldset disabled={carregando}>
-
                         <input type="hidden" {...register("idVeiculo", { required: true })} />
                         <input type="hidden" {...register("idPorteiroSaida", { required: true })} />
                         <input type="hidden" {...register("idPorteiroEntrada")} />
@@ -65,11 +66,7 @@ export default function FormularioSaidaVeiculo() {
                                     <Form.Label>Veículo solicitado:</Form.Label>
 
                                     <Dropdown className="w-100">
-                                        <Dropdown.Toggle
-                                            className="w-100 text-start"
-                                            variant="outline-secondary"
-                                            disabled={ehEdicao}
-                                        >
+                                        <Dropdown.Toggle className="w-100 text-start" variant="outline-secondary" disabled={ehEdicao}>
                                             {veiculo.find(v => v.id === watch("idVeiculo"))?.placa || "Selecionar veículo"}
                                         </Dropdown.Toggle>
 
@@ -103,16 +100,16 @@ export default function FormularioSaidaVeiculo() {
                         </Row>
 
                         <Row className="mb-3">
-
                             <Col md={6}>
                                 <Form.Group>
                                     <Form.Label>Motorista responsável:</Form.Label>
-
                                     <div className="d-flex">
                                         <Form.Control
                                             disabled
-                                            {...register("idResponsavel", { required: true })}
+                                            value={nomeResponsavel || ""}
+                                            placeholder="Selecione um responsável"
                                         />
+                                        <input type="hidden" {...register("idResponsavel", { required: true })} />
 
                                         <Button
                                             className="ms-2"
@@ -135,8 +132,10 @@ export default function FormularioSaidaVeiculo() {
                                     <div className="d-flex">
                                         <Form.Control
                                             disabled
-                                            {...register("idResponsavelAutorizacao", { required: true })}
+                                            value={nomeAutorizador || ""}
+                                            placeholder="Selecione um autorizador"
                                         />
+                                        <input type="hidden" {...register("idResponsavelAutorizacao", { required: true })} />
 
                                         <Button
                                             className="ms-2"
@@ -161,7 +160,7 @@ export default function FormularioSaidaVeiculo() {
                                     <Form.Control
                                         as="select"
                                         {...register("destino", { required: true })}
-                                        value={siglaSelecionada} // React Hook Form já controla isso
+                                        value={siglaSelecionada}
                                     >
                                         <option value="">{siglaSelecionada ? nomeEstadoSelecionado : "Selecione um estado"}</option>
                                         {estado.map((estadoItem) => (
@@ -290,7 +289,6 @@ export default function FormularioSaidaVeiculo() {
                             "Enviar informações"
                         )}
                     </Button>
-
                 </Form>
             </Container>
 
@@ -299,16 +297,24 @@ export default function FormularioSaidaVeiculo() {
                 onFechar={() => setModalAberto(false)}
                 termo={termoPesquisa}
                 onTermoChange={setTermoPesquisa}
-                usuarios={pessoal}
-                onPesquisar={() => buscarPessoal(termoPesquisa)}
+                usuarios={campoSelecionado === "idResponsavelAutorizacao" ? aprovadores : pessoal}
+                onPesquisar={() => {
+                    if (campoSelecionado === "idResponsavelAutorizacao") {
+                        buscarUsuariosAprovadores(termoPesquisa);
+                    } else {
+                        buscarPessoal(termoPesquisa);
+                    }
+                }}
+                autoBuscar={autoBuscar}
                 onSelecionar={(usuario) => {
-
                     if (campoSelecionado === "idResponsavel") {
                         setValue("idResponsavel", String(usuario.chapa));
+                        setNomeResponsavel(usuario.nome);
                     }
 
                     if (campoSelecionado === "idResponsavelAutorizacao") {
                         setValue("idResponsavelAutorizacao", String(usuario.chapa));
+                        setNomeAutorizador(usuario.nome);
                     }
 
                     setModalAberto(false);
@@ -325,7 +331,6 @@ export default function FormularioSaidaVeiculo() {
                     { label: "Cancelar", variant: "danger", onClick: () => setToast({ ...toast, show: false }) }
                 ]}
             />
-
         </Fragment>
     );
 }

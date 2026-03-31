@@ -12,6 +12,7 @@ import ListagemVeiculo from '../telas/app/gerenciarVeiculos/gerenciarVeiculo';
 import FormularioVeiculo from '../telas/app/gerenciarVeiculos/formularioVeiculos';
 import GerenciarPontos from '../telas/app/gerenciarPonto/gerenciarPontos';
 import FormularioPontos from '../telas/app/gerenciarPonto/formularioPontos';
+import GerenciarLog from '../telas/app/gerenciarLogs/gerenciarLogs';
 
 const rotaConfig = [
   { path: '/', element: <TelaLogin />, title: 'Login - Central de segurança.' },
@@ -22,6 +23,7 @@ const rotaConfig = [
   { path: '/GerenciamentoUsuarios', element: <GerenciamentoUsuarios />, title: 'Gerenciamento de usuários - Alberflex' },
   { path: '/FormularioUsuarios', element: <FormularioUsuario />, title: 'Formulário de usuários - Alberflex' },
   { path: '/ControleVeiculo', element: <ListagemVeiculo />, title: 'Listagem de veículo - Alberflex' },
+  { path: '/GerenciarLog', element: <GerenciarLog />, title: 'Listagem de LOGs - Alberflex' },
   { path: '/FormularioVeiculo', element: <FormularioVeiculo />, title: 'Formulário de veículo - Alberflex' },
   { path: '/ControlePonto', element: <GerenciarPontos />, title: 'Listagem de pontos - Alberflex' },
   { path: '/FormularioPonto', element: <FormularioPontos />, title: 'Formulário de pontos - Alberflex' },

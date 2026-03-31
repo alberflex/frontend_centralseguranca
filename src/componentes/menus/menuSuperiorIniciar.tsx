@@ -9,7 +9,7 @@ export default function MenuSuperiorIniciar() {
   const menuVisivel = menuItens.filter(item => item.permissoes.includes(permissao));
 
   return (
-    <Navbar expand={false} style={{ height: "100px" }}>
+    <Navbar expand={false} style={{ height: "100px", marginBottom: '2vh' }}>
       <Container fluid className="justify-content-between align-items-center px-4">
         <Navbar.Brand onClick={vaiParaIntroducao}><img src="/assets/alberflex_titulo.png" alt="Alberflex" height="50" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="offcanvasNavbar" />

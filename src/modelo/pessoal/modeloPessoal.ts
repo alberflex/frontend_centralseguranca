@@ -13,4 +13,27 @@ export class ModeloPessoal {
             throw error;
         }
     }
+
+    async listarUsuariosAprovadores(tokenJWT: string, nome?: string): Promise<IPessoal | null> {
+        try {
+            const controlePontosListadosJSON = await conexaoAPI.get<IPessoal>(`/pessoal/listarUsuariosAprovadores`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` },
+                params: { nome }
+            });
+            return controlePontosListadosJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async listarUsuariosPorChapa(tokenJWT: string, chapa: string): Promise<IPessoal | null> {
+        try {
+            const usuarioPorChapaJSON = await conexaoAPI.get<IPessoal>(`/pessoal/listarPorChapa/${chapa}`, {
+                headers: { Authorization: `Bearer ${tokenJWT}` }
+            });
+            return usuarioPorChapaJSON.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

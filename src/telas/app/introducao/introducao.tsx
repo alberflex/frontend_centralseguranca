@@ -25,9 +25,9 @@ export const TelaConsolidador = () => {
   }
 
   return (
-    <Container fluid>
+    <Container fluid >
       <MenuSuperiorIniciar />
-      <Row xs={1} md={3} className="g-4 mb-4">
+      <Row xs={1} md={3} className="g-4 mb-4" >
         <Col>
           <Card className="shadow-sm border-0 text-center h-100">
             <Card.Body>

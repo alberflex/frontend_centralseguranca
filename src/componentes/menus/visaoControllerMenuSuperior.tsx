@@ -12,6 +12,7 @@ export const useVisaoControllerMenuSuperior = () => {
     const vaiParaGerenciamentoVeiculos = () => navigate("/ControleVeiculo");
     const vaiParaGerenciamentoSolicitacaoVeiculos = () => navigate("/ControleSolicitacaoVeiculo");
     const vaiParaGerenciamentoPontos = () => navigate("/ControlePonto")
+    const vaiParaGerenciarLogs = () => navigate("/GerenciarLog");
 
     const menuItens = [
         { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
@@ -20,6 +21,7 @@ export const useVisaoControllerMenuSuperior = () => {
         { label: "Gerenciar pontos", onClick: vaiParaGerenciamentoPontos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
         { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
         { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar LOGs de sistema", onClick: vaiParaGerenciarLogs, permissoes: [EPapel.ADMINISTRADOR] },
     ];
 
     return {

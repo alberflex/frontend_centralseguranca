@@ -13,6 +13,7 @@ interface TabelaProps<T> {
     aoDeletar?: (linha: number) => void;
     aoEditar?: (linha: number) => void;
     podeDeletar?: boolean;
+    podeEditar?: boolean;
 }
 
 export default function Tabela<T extends Record<string, any>>({
@@ -20,7 +21,8 @@ export default function Tabela<T extends Record<string, any>>({
     dados,
     aoDeletar,
     aoEditar,
-    podeDeletar = true
+    podeDeletar = true,
+    podeEditar = true,
 }: TabelaProps<T>) {
     const IconeLixeira = GoTrash as unknown as React.FC<{ size?: number, className?: string; onClick?: () => void; }>;
     const IconeLapis = HiOutlinePencil as unknown as React.FC<{ size?: number, className?: string; onClick?: () => void; }>;
@@ -33,7 +35,7 @@ export default function Tabela<T extends Record<string, any>>({
                         {colunas.map((col, index) => (
                             <th key={index}>{col.label}</th>
                         ))}
-                        <th>Editar</th>
+                        {podeEditar && <th>Editar</th>}
                         {podeDeletar && <th>Excluir</th>}
                     </tr>
                 </thead>
@@ -46,13 +48,17 @@ export default function Tabela<T extends Record<string, any>>({
                                 </td>
                             ))}
 
-                            <td style={{ cursor: 'pointer' }}>
-                                <IconeLapis
-                                    size={20}
-                                    className='d-flex mx-auto'
-                                    onClick={() => aoEditar?.(linha.id)}
-                                />
-                            </td>
+
+                            {podeEditar && (
+                                <td style={{ cursor: 'pointer' }}>
+                                    <IconeLapis
+                                        size={20}
+                                        className='d-flex mx-auto'
+                                        onClick={() => aoEditar?.(linha.id)}
+                                    />
+                                </td>
+                            )
+                            }
 
                             {podeDeletar && (
                                 <td style={{ cursor: 'pointer' }}>
