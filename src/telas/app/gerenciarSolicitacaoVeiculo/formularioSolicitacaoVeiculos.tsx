@@ -325,11 +325,29 @@ export default function FormularioSaidaVeiculo() {
                 show={toast.show}
                 title={toast.title}
                 message={toast.message}
-                onClose={() => setToast({ ...toast, show: false })}
-                buttons={[
-                    { label: "Confirmar", variant: "success", onClick: toast.onConfirm },
-                    { label: "Cancelar", variant: "danger", onClick: () => setToast({ ...toast, show: false }) }
-                ]}
+                onClose={() => setToast(prev => ({ ...prev, show: false }))}
+                buttons={
+                    toast.onConfirm
+                        ? [
+                            {
+                                label: "Confirmar",
+                                variant: "success",
+                                onClick: () => toast.onConfirm?.()
+                            },
+                            {
+                                label: "Cancelar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                        : [
+                            {
+                                label: "Fechar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                }
             />
         </Fragment>
     );

@@ -78,10 +78,28 @@ export default function ControleSolicitacaoVeiculo() {
                 onClose={() => setToast({ ...toast, show: false })}
                 title={toast.title}
                 message={toast.message}
-                buttons={[
-                    { label: "Confirmar", onClick: toast.onConfirm, variant: "success" },
-                    { label: "Cancelar", onClick: () => setToast({ ...toast, show: false }), variant: "danger" },
-                ]}
+                buttons={
+                    toast.onConfirm
+                        ? [
+                            {
+                                label: "Confirmar",
+                                variant: "success",
+                                onClick: () => toast.onConfirm?.()
+                            },
+                            {
+                                label: "Cancelar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                        : [
+                            {
+                                label: "Fechar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                }
             />
         </Container>
     );

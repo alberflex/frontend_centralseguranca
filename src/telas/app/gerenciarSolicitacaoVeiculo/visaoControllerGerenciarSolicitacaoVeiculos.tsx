@@ -10,6 +10,7 @@ import { extrairHoraISO } from "../../../utils/FormataHora";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
+import { ToastEstado } from "../../../type/TToast";
 
 export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
     const { tokenJWT, informacoesUsuario } = useAutenticacao();
@@ -40,7 +41,22 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                 setSolicitacaoVeiculo([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar veiculos cadastrados:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -146,12 +162,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
 
     useEffect(() => { if (tokenJWT) buscarSolicitacaoVeiculo() }, [tokenJWT]);
 
-    const [toast, setToast] = useState({
-        show: false,
-        title: "",
-        message: "",
-        onConfirm: () => { },
-    });
+    const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
 
     const abrirConfirmacaoExclusao = (id: number) => {
         setToast({

@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Estado } from "../../../types/Estado";
 import { Cidade } from "../../../types/Cidade";
 import { VisaoModeloPessoal } from "../../../modelo/pessoal/visaoModeloPessoal";
+import { ToastEstado } from "../../../type/TToast";
 
 export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const { control, handleSubmit, register, setValue, formState: { errors }, watch } = useForm<IControleVeiculo>({
@@ -41,7 +42,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const [carregando, setCarregando] = useState(false);
     const [estado, setEstados] = useState<Estado[]>([]);
     const [cidades, setCidades] = useState<Cidade[]>([]);
-    const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
+    const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
 
     const [nomeResponsavel, setNomeResponsavel] = useState("");
     const [nomeAutorizador, setNomeAutorizador] = useState("");
@@ -132,7 +133,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             if (veiculoSelecionado) { dadosFormulario.km_inicial_veiculo = veiculoSelecionado.km_atual; }
             if (await objVisaoModeloSolicitacaoVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario)) vaiParaSolicitacoesVeiculos();
         } catch (error) {
-            alert("Erro ao cadastrar noticia")
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         } finally {
             setCarregando(false);
         }
@@ -147,7 +163,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                 vaiParaSolicitacoesVeiculos();
             }
         } catch (error) {
-            alert("Erro ao editar noticia");
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         } finally {
             setCarregando(false);
         }
@@ -163,7 +194,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                 setVeiculo([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar veiculos cadastrados:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -177,7 +223,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                 setPorteiro([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar porteiros cadastrados:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -191,7 +252,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                 setPessoal([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar pessoal:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -205,7 +281,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                 setAprovadores([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar pessoal:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -232,7 +323,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                     setCidades(ordenadas);
                     setTimeout(() => { setValue("localizacao", editarObjeto.localizacao); }, 0);
                 });
-                
+
             setValue("km_final_veiculo", editarObjeto.km_final_veiculo);
             setValue("idResponsavelAutorizacao", editarObjeto.idResponsavelAutorizacao);
             setValue("idResponsavel", editarObjeto.idResponsavel);

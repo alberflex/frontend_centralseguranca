@@ -11,6 +11,7 @@ import { VisaoModeloPorteiro } from "../../../modelo/porteiro/visaoModeloPorteir
 import { IPorteiro } from "../../../interfaces/IPorteiro";
 import { useLocation, useNavigate } from "react-router-dom";
 import { base64ParaArquivo } from "../../../utils/converteBase64ParaArquivo";
+import { ToastEstado } from "../../../type/TToast";
 import Webcam from "react-webcam";
 
 export const useVisaoControllerFormularioAcesso = () => {
@@ -31,7 +32,7 @@ export const useVisaoControllerFormularioAcesso = () => {
     const [porteiros, setPorteiros] = useState<IPorteiro[]>([]);
     const [cameraAberta, setCameraAberta] = useState(false);
     const [foto, setFoto] = useState<string | null>(null);
-    const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { }, });
+    const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
     const [carregando, setCarregando] = useState(false);
 
     const objVisaoModeloPorteiro = new VisaoModeloPorteiro();
@@ -139,7 +140,6 @@ const tirarFoto = () => {
                 idVisitante: visitante?.id!
             };
 
-            // Adiciona apenas campos preenchidos
             if (data.porteiroSaida) objEdicaoBase.idPorteiroSaida = Number(data.porteiroSaida);
             if (data.porteiroEntrada) objEdicaoBase.idPorteiroEntrada = Number(data.porteiroEntrada);
             if (data.motivo) objEdicaoBase.objetivo = data.motivo;
@@ -164,8 +164,22 @@ const tirarFoto = () => {
 
             vaiParaGerenciarAcessos();
         } catch (error) {
-            console.error("Erro ao editar acesso:", error);
-            alert("Erro ao processar a edição");
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         } finally {
             setCarregando(false);
         }
@@ -190,8 +204,22 @@ const tirarFoto = () => {
                 vaiParaGerenciarAcessos();
             }
         } catch (error) {
-            console.error("Erro no cadastro:", error);
-            alert("Erro ao processar o cadastro");
+           let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         } finally {
             setCarregando(false);
         }
@@ -245,8 +273,22 @@ const tirarFoto = () => {
             }
 
         } catch (error) {
-            console.error("Erro ao verificar visitante:", error);
-            alert("Erro ao processar visitante");
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -295,7 +337,22 @@ const tirarFoto = () => {
             defineValoresPreenchidosParaVisitante(visitante);
 
         } catch (error) {
-            console.error("Erro ao buscar visitante", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -355,7 +412,22 @@ const tirarFoto = () => {
                 }
 
             } catch (error) {
-                console.error("Erro ao carregar dados de edição:", error);
+                let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
             }
         };
 
@@ -374,7 +446,22 @@ const tirarFoto = () => {
                 setPessoal([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar pessoal:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -388,7 +475,22 @@ const tirarFoto = () => {
                 setPorteiros([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar porteiros:", error);
+           let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 

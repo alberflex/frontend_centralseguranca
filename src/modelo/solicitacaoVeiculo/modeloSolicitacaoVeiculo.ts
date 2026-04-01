@@ -11,8 +11,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` },
             });
             return solicitacaoVeiculoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -22,8 +22,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return listagemRotasMaisAcessadas.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -39,8 +39,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoVeiculoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -50,8 +50,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoVeiculoPorIDJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -61,8 +61,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return cadastroSolicitacaoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -73,8 +73,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return edicaoSolicitacaoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -84,8 +84,8 @@ export class ModeloSolicitacaoVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoVeiculosAbertoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 

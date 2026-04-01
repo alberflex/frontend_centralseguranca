@@ -11,8 +11,8 @@ export class ModeloVeiculo {
             });
 
             return informacoesVeiculo.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -22,8 +22,8 @@ export class ModeloVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` },
             });
             return veiculoDeletadoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -39,8 +39,8 @@ export class ModeloVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return veiculosListadosJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -50,8 +50,8 @@ export class ModeloVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return veiculoListadoPorID.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -70,8 +70,8 @@ export class ModeloVeiculo {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return cadastroVeiculoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -89,9 +89,7 @@ export class ModeloVeiculo {
 
             return response.data;
         } catch (error: any) {
-            console.error("Erro completo:", error);
-            console.error("Erro backend:", error.response?.data);
-            throw error;
+            throw new Error(error?.response?.data?.erro);
         }
     }
 }

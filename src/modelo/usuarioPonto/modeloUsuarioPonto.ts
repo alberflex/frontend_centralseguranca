@@ -8,8 +8,8 @@ export class ModeloUsuarioPonto {
                 headers: { Authorization: `Bearer ${tokenJWT}` },
             });
             return controleUsuarioPonto.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 }

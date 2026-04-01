@@ -9,8 +9,8 @@ export class ModeloSolicitacaoAcesso {
                 headers: { Authorization: `Bearer ${tokenJWT}` },
             });
             return solicitacaoAcessoDeletadoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -23,8 +23,8 @@ export class ModeloSolicitacaoAcesso {
             const solicitacaoAcessosJSON = await conexaoAPI.get<IControleAcesso>(url, { headers: { Authorization: `Bearer ${tokenJWT}` } });
 
             return solicitacaoAcessosJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -34,8 +34,8 @@ export class ModeloSolicitacaoAcesso {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoAcessoPorIDJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -43,8 +43,8 @@ export class ModeloSolicitacaoAcesso {
         try {
             const response = await conexaoAPI.put<IEdicaoControleAcesso>(`/controleAcesso/editarControleAcesso/${id}`, dados, { headers: { Authorization: `Bearer ${tokenJWT}` } });
             return response.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -55,8 +55,8 @@ export class ModeloSolicitacaoAcesso {
             });
 
             return cadastroSolicitacaoAcessoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
@@ -66,18 +66,22 @@ export class ModeloSolicitacaoAcesso {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return solicitacaoAcessoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
         }
     }
 
     async descobreVisitanteID(tokenJWT: string, id: number): Promise<number | null> {
-        const response = await conexaoAPI.get<{ idVisitante: number }>(
-            `controleAcesso/descobreVisitanteID/${id}`,
-            {
-                headers: { Authorization: `Bearer ${tokenJWT}` }
-            }
-        );
-        return response.data?.idVisitante ?? null;
+        try {
+            const response = await conexaoAPI.get<{ idVisitante: number }>(
+                `controleAcesso/descobreVisitanteID/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${tokenJWT}` }
+                }
+            );
+            return response.data?.idVisitante ?? null;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro);
+        }
     }
 }

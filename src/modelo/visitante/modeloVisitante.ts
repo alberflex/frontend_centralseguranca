@@ -11,8 +11,8 @@ export class ModeloVisitante {
                 });
     
                 return informacoesVisitantes.data;
-            } catch (error) {
-                throw error;
+            } catch (error: any) {
+                throw new Error(error?.response?.data?.erro );
             }
         }
 
@@ -22,8 +22,8 @@ export class ModeloVisitante {
                 headers: { Authorization: `Bearer ${tokenJWT}` },
             });
             return visitanteDeletadoJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 
@@ -33,8 +33,8 @@ export class ModeloVisitante {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return visitanteListadosJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 
@@ -44,8 +44,8 @@ export class ModeloVisitante {
                 headers: { Authorization: `Bearer ${tokenJWT}` }
             });
             return visitanteListadoPorID.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 
@@ -56,8 +56,8 @@ export class ModeloVisitante {
             });
             
             return visitanteSelecionadoPorCPF.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 
@@ -72,8 +72,8 @@ export class ModeloVisitante {
 
             const cadastroVisitanteJSON = await conexaoAPI.post<IVisitante>(`/visitante/cadastroVisitante`, formData, { headers: { Authorization: `Bearer ${tokenJWT}`, "Content-Type": "multipart/form-data" } });
             return cadastroVisitanteJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 
@@ -88,8 +88,8 @@ export class ModeloVisitante {
 
             const cadastroVisitanteJSON = await conexaoAPI.put<IVisitante>(`/visitante/editarVisitante/${id}`, formData, { headers: { Authorization: `Bearer ${tokenJWT}`, "Content-Type": "multipart/form-data" } });
             return cadastroVisitanteJSON.data;
-        } catch (error) {
-            throw error;
+        } catch (error: any) {
+            throw new Error(error?.response?.data?.erro );
         }
     }
 }

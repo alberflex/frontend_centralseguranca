@@ -10,6 +10,7 @@ import { extrairHoraISO } from '../../../utils/FormataHora';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
+import { ToastEstado } from '../../../type/TToast';
 
 export const useVisaoControllerGerenciarAcessos = () => {
     const { tokenJWT, informacoesUsuario } = useAutenticacao();
@@ -38,7 +39,22 @@ export const useVisaoControllerGerenciarAcessos = () => {
                 setAcessos([]);
             }
         } catch (error) {
-            console.error("Erro ao buscar acessos:", error);
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     };
 
@@ -121,7 +137,22 @@ export const useVisaoControllerGerenciarAcessos = () => {
             const acesso = await objVisaoModeloAcessos.listarSolicitacaoAcessoPorID(tokenJWT, id);
             navegacao('/FormularioControleAcesso', { state: { ehEdicao: true, editarObjeto: acesso } });
         } catch (error) {
-            alert("Erro ao selecionar a solicitacao acesso.");
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         }
     }
 
@@ -140,12 +171,8 @@ export const useVisaoControllerGerenciarAcessos = () => {
         { key: 'numeroCartao', label: 'Numero cartão' },
         { key: 'responsavel', label: 'Responsável' }
     ];
-    const [toast, setToast] = useState({
-        show: false,
-        title: "",
-        message: "",
-        onConfirm: () => { },
-    });
+    const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
+
 
     const abrirConfirmacaoExclusao = (id: number) => {
         setToast({
