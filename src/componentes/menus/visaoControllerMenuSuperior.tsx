@@ -14,6 +14,13 @@ export const useVisaoControllerMenuSuperior = () => {
     const vaiParaGerenciamentoPontos = () => navigate("/ControlePonto")
     const vaiParaGerenciarLogs = () => navigate("/GerenciarLog");
 
+    const limparDados = () => {
+        logout();
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+    };
+
     const menuItens = [
         { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
         { label: "Gerenciar usuários", onClick: vaiParaGerenciamentoUsuarios, permissoes: [EPapel.ADMINISTRADOR] },
@@ -22,6 +29,7 @@ export const useVisaoControllerMenuSuperior = () => {
         { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
         { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
         { label: "Gerenciar LOGs de sistema", onClick: vaiParaGerenciarLogs, permissoes: [EPapel.ADMINISTRADOR] },
+        { label: "Limpar dados em cache", onClick: limparDados, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
     ];
 
     return {
