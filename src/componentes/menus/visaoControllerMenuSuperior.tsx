@@ -22,14 +22,14 @@ export const useVisaoControllerMenuSuperior = () => {
     };
 
     const menuItens = [
-        { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
-        { label: "Gerenciar usuários", onClick: vaiParaGerenciamentoUsuarios, permissoes: [EPapel.ADMINISTRADOR] },
-        { label: "Gerenciar veículos", onClick: vaiParaGerenciamentoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Dashboard", onClick: vaiParaIntroducao, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO, EPapel.COORDENACAO, EPapel.FROTAS] },
+        { label: "Gerenciar usuários", onClick: vaiParaGerenciamentoUsuarios, permissoes: [EPapel.ADMINISTRADOR,] },
+        { label: "Gerenciar veículos", onClick: vaiParaGerenciamentoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO, EPapel.COORDENACAO, EPapel.FROTAS] },
         { label: "Gerenciar pontos", onClick: vaiParaGerenciamentoPontos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
-        { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
-        { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Gerenciar solicitações de acessos", onClick: vaiParaGerenciamentoAcesso, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO, EPapel.COORDENACAO] },
+        { label: "Gerenciar solicitações de veiculos", onClick: vaiParaGerenciamentoSolicitacaoVeiculos, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO, EPapel.COORDENACAO, EPapel.FROTAS] },
         { label: "Gerenciar LOGs de sistema", onClick: vaiParaGerenciarLogs, permissoes: [EPapel.ADMINISTRADOR] },
-        { label: "Limpar dados em cache", onClick: limparDados, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO] },
+        { label: "Limpar dados em cache", onClick: limparDados, permissoes: [EPapel.ADMINISTRADOR, EPapel.PORTEIRO, EPapel.COORDENACAO, EPapel.FROTAS] },
     ];
 
     return {

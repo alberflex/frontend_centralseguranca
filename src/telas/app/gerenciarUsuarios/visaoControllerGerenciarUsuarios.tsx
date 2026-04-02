@@ -5,24 +5,28 @@ import { VisaoModeloPorteiro } from "../../../modelo/porteiro/visaoModeloPorteir
 import { useEffect, useState } from "react";
 import { useAutenticacao } from "../../../contextos/useAutenticacao";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { VisaoModeloUsuario } from "../../../modelo/usuario/visaoModeloUsuario";
 
 export const useVisaoControllerGerenciarUsuarios = () => {
-    const objVisaoModeloPorteiro = new VisaoModeloPorteiro();
-    const { tokenJWT, informacoesUsuario } = useAutenticacao();
     const [porteiro, setPorteiro] = useState<IPorteiro[]>([]);
+    const [dataFim, setDataFim] = useState("");
+    const [dataInicio, setDataInicio] = useState("");
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
+    const objVisaoModeloPorteiro = new VisaoModeloPorteiro();
+    const objVisaoModeloUsuario = new VisaoModeloUsuario();
+    
+    const { tokenJWT, informacoesUsuario } = useAutenticacao();
+
     const colunasTabela: ILayoutTabela<IPorteiro>[] = [{ key: 'id', label: 'ID' }, { key: 'cpf', label: 'CPF' }, { key: 'nome', label: 'Nome' }, { key: 'papel', label: 'Papel' }];
     const navegacao = useNavigate();
     const IconeAdicionar = IoAddCircleOutline as unknown as React.FC<{ size?: number, className?: string; }>;
 
-    const vaiParaFormularioPortaria = () => {
-        navegacao("/FormularioUsuarios");
-    }
+    const vaiParaFormularioPortaria = () => { navegacao("/FormularioUsuarios"); }
 
-    const buscarPorteiros = async () => {
+    const buscarUsuarios = async () => {
         if (!tokenJWT) return;
         try {
-            const informacoesUsuarios = await objVisaoModeloPorteiro.listarTodosPorteiros(tokenJWT);
+            const informacoesUsuarios = await objVisaoModeloUsuario.listarTodosUsuariosPontos(tokenJWT);
             if (informacoesUsuarios && Array.isArray(informacoesUsuarios)) {
                 setPorteiro(informacoesUsuarios);
             } else {
@@ -36,7 +40,7 @@ export const useVisaoControllerGerenciarUsuarios = () => {
     const deletarPorteiro = async (id: number) => {
         if (!tokenJWT) return;
         try {
-            if (await objVisaoModeloPorteiro.deletarPorteiro(tokenJWT, id)) buscarPorteiros();
+            if (await objVisaoModeloPorteiro.deletarPorteiro(tokenJWT, id)) buscarUsuarios();
         } catch (error) {
             console.error("Erro ao remover porteiro:", error);
         }
@@ -54,7 +58,7 @@ export const useVisaoControllerGerenciarUsuarios = () => {
         }
     }
 
-    useEffect(() => { if (tokenJWT) buscarPorteiros() }, [tokenJWT]);
+    useEffect(() => { if (tokenJWT) buscarUsuarios() }, [tokenJWT]);
 
     const abrirConfirmacaoExclusao = (id: number) => {
         setToast({
@@ -67,7 +71,11 @@ export const useVisaoControllerGerenciarUsuarios = () => {
             },
         });
     };
-
+    const limparFiltro = async () => {
+        setDataInicio("");
+        setDataFim("");
+        await buscarUsuarios();
+    };
     return {
         selecionarPorteiro,
         abrirConfirmacaoExclusao,
@@ -75,6 +83,12 @@ export const useVisaoControllerGerenciarUsuarios = () => {
         porteiro,
         IconeAdicionar,
         vaiParaFormularioPortaria,
-        informacoesUsuario
+        informacoesUsuario,
+        buscarUsuarios,
+        dataFim,
+        setDataFim,
+        limparFiltro,
+        dataInicio,
+        setDataInicio
     }
 }

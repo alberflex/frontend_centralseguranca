@@ -33,9 +33,7 @@ export default function ControleAcesso() {
             <MenuSuperiorIniciar />
 
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
-                <h4 className="text-center text-md-start mb-3 mb-md-0">
-                    Gerenciar solicitações de acesso.
-                </h4>
+                <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar solicitações de acesso.</h4>
 
                 <div
                     className="d-flex text-center px-2 mb-2 mb-md-0"

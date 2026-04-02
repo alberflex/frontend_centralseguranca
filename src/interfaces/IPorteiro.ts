@@ -6,3 +6,5 @@ export interface IPorteiro {
     senha: string;
     papel: string;
 }
+
+export interface IUsuario extends IPorteiro{};
