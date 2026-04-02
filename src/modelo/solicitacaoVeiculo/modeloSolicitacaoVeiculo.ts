@@ -56,6 +56,7 @@ export class ModeloSolicitacaoVeiculo {
     }
 
     async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IControleVeiculo): Promise<IControleVeiculo | null> {
+        console.log(dadosFormulario)
         try {
             const cadastroSolicitacaoJSON = await conexaoAPI.post<IControleVeiculo>(`/controleVeiculo/cadastroControleVeiculo`, dadosFormulario, {
                 headers: { Authorization: `Bearer ${tokenJWT}` }

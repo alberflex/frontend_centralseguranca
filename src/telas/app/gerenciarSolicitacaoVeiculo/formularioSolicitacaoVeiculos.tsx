@@ -36,7 +36,8 @@ export default function FormularioSaidaVeiculo() {
         nomeResponsavel,
         setNomeResponsavel,
         nomeAutorizador,
-        setNomeAutorizador
+        setNomeAutorizador,
+        nomeResponsavelEntrada, setNomeResponsavelEntrada
     } = useVisaoControllerFormularioSolicitacaoVeiculo();
 
     const autoBuscar = campoSelecionado === "idResponsavelAutorizacao";
@@ -102,7 +103,7 @@ export default function FormularioSaidaVeiculo() {
                         <Row className="mb-3">
                             <Col md={6}>
                                 <Form.Group>
-                                    <Form.Label>Motorista responsável:</Form.Label>
+                                    <Form.Label>Motorista responsável (Saída):</Form.Label>
                                     <div className="d-flex">
                                         <Form.Control
                                             disabled
@@ -127,6 +128,34 @@ export default function FormularioSaidaVeiculo() {
 
                             <Col md={6}>
                                 <Form.Group>
+                                    <Form.Label>Motorista responsável (Entrada):</Form.Label>
+                                    <div className="d-flex">
+                                        <Form.Control
+                                            disabled
+                                            value={nomeResponsavelEntrada || ""}
+                                            placeholder={ehEdicao ? "Selecione um motorista de entrada" : "Campo liberado apenas na edição"}
+                                        />
+                                        <input type="hidden" {...register("idResponsavelEntrada", { required: ehEdicao })} />
+
+                                        <Button
+                                            className="ms-2"
+                                            variant="outline-secondary"
+                                            disabled={ehEdicao ? false : true}
+                                            onClick={() => {
+                                                setCampoSelecionado("idResponsavelEntrada");
+                                                setModalAberto(true);
+                                            }}
+                                        >
+                                            Buscar
+                                        </Button>
+                                    </div>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Row className="mb-3">
+                            <Col md={12}>
+                                <Form.Group>
                                     <Form.Label>Responsável autorização:</Form.Label>
 
                                     <div className="d-flex">
@@ -150,7 +179,6 @@ export default function FormularioSaidaVeiculo() {
                                     </div>
                                 </Form.Group>
                             </Col>
-
                         </Row>
 
                         <Row className="mb-3">
@@ -315,6 +343,11 @@ export default function FormularioSaidaVeiculo() {
                     if (campoSelecionado === "idResponsavelAutorizacao") {
                         setValue("idResponsavelAutorizacao", String(usuario.chapa));
                         setNomeAutorizador(usuario.nome);
+                    }
+
+                    if (campoSelecionado === "idResponsavelEntrada") {
+                        setValue("idResponsavelEntrada", String(usuario.chapa));
+                        setNomeResponsavelEntrada(usuario.nome);
                     }
 
                     setModalAberto(false);

@@ -38,13 +38,14 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const [aprovadores, setAprovadores] = useState<IUsuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [termoPesquisa, setTermoPesquisa] = useState("");
-    const [campoSelecionado, setCampoSelecionado] = useState<"idResponsavel" | "idResponsavelAutorizacao" | "idVeiculo" | null>(null);
+    const [campoSelecionado, setCampoSelecionado] = useState<"idResponsavel" | "idResponsavelAutorizacao" | "idVeiculo" | "idResponsavelEntrada" | null>(null);
     const [carregando, setCarregando] = useState(false);
     const [estado, setEstados] = useState<Estado[]>([]);
     const [cidades, setCidades] = useState<Cidade[]>([]);
     const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
 
     const [nomeResponsavel, setNomeResponsavel] = useState("");
+    const [nomeResponsavelEntrada, setNomeResponsavelEntrada] = useState("");
     const [nomeAutorizador, setNomeAutorizador] = useState("");
 
     const siglaSelecionada = watch("destino");
@@ -303,6 +304,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const buscaNomeUsuariosResponsaveis = async () => {
         if (!tokenJWT) return;
         const nomeResponsavel = await objVisaoModeloPessoal.listarUsuariosPorChapa(tokenJWT, editarObjeto.idResponsavel);
+        const nomeResponsavelEntrada = await objVisaoModeloPessoal.listarUsuariosPorChapa(tokenJWT, editarObjeto.idResponsavelEntrada);
         const nomeAutorizacao = await objVisaoModeloPessoal.listarUsuariosPorChapa(tokenJWT, editarObjeto.idResponsavelAutorizacao);
 
         if (nomeResponsavel) {
@@ -311,6 +313,10 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
         if (nomeAutorizacao) {
             setNomeAutorizador(nomeAutorizacao.nome);
+        }
+
+        if (nomeResponsavelEntrada) {
+            setNomeResponsavelEntrada(nomeResponsavelEntrada.nome);
         }
     }
 
@@ -370,6 +376,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         nomeResponsavel,
         setNomeResponsavel,
         nomeAutorizador,
-        setNomeAutorizador
+        setNomeAutorizador,
+        nomeResponsavelEntrada, setNomeResponsavelEntrada
     };
 }
