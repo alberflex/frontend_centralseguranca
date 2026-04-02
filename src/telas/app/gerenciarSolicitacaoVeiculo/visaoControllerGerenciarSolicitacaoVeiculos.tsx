@@ -27,6 +27,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         if (!tokenJWT) return;
         try {
             const informacoesSolicitacoesVeiculo = await objVisaoModeloSolicitacaoVeiculo.listarTodosVeiculos(tokenJWT, inicio, fim);
+            console.log(informacoesSolicitacoesVeiculo)
             if (informacoesSolicitacoesVeiculo && Array.isArray(informacoesSolicitacoesVeiculo)) {
                 const informacoesFormatadas = informacoesSolicitacoesVeiculo.map(item => ({
                     ...item,
@@ -81,7 +82,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
             const colunas = ["ID", "Placa", "Data Solicitação",
                 "Hora Saída", "Km Inicial", "Data Chegada",
                 "Hora Chegada", "Cond. Entrada", "Cond. Saída", "Km Final", "Solicitante",
-                "Responsável", "Localização", "Porteiro Saída",
+                "Resp (Saída)", "Resp (Entrada)","Localização", "Porteiro Saída",
                 "Porteiro Entrada"
             ];
 
@@ -97,6 +98,7 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
                 d.condicao_saida,
                 d.km_final_veiculo || "",
                 d.nome_responsavel,
+                d.nome_responsavel_entrada,
                 d.nome_responsavel_autorizacao,
                 d.localizacao,
                 d.nome_porteiro_saida,
@@ -154,7 +156,8 @@ export const useVisaoControllerListagemSolicitacaoVeiculo = () => {
         { key: 'condicao_saida', label: 'Cond. Saída' },
         { key: 'km_final_veiculo', label: 'KM Final' },
         { key: 'nome_porteiro_saida', label: 'Porteiro saída' },
-        { key: 'nome_responsavel', label: 'Responsável' },
+        { key: 'nome_responsavel', label: 'Responsável (Saída)' },
+        { key: 'nome_responsavel_entrada', label: 'Responsável (Entrada)' },
         { key: 'localizacao', label: 'Localização' },
         { key: 'nome_porteiro_entrada', label: 'Porteiro entrada' },
         { key: 'nome_responsavel_autorizacao', label: 'Responsável' },

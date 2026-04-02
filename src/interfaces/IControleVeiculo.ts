@@ -40,6 +40,7 @@ export interface IControleVeiculoTabela {
     km_final_veiculo: number;
     nome_porteiro_saida: string;
     nome_responsavel: string;
+    nome_responsavel_entrada: string;
     localizacao: string;
     nome_porteiro_entrada: string;
     nome_responsavel_autorizacao: string;

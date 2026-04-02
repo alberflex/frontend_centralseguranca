@@ -70,13 +70,7 @@ export default function MenuSuperiorIniciar() {
                   }}>
                     TOTVS Protheus
                   </Dropdown.Item>
-                  <Dropdown.Item href="https://portal.alberflex.com.br/login" style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}>
-                    Força de vendas 2.0
-                  </Dropdown.Item>
+                  
                   <Dropdown.Item href="http://help.alberflex.com.br:8080/helpdesk/login" style={{
                     color: "#8a8a8a",
                     cursor: "pointer",
@@ -84,13 +78,14 @@ export default function MenuSuperiorIniciar() {
                   }}>
                     Helpdesk
                   </Dropdown.Item>
-                  <Dropdown.Item href="https://app10.ploomes.com/login" style={{
+                  <Dropdown.Item href="http://intranet-alberflex.com.br/" style={{
                     color: "#8a8a8a",
                     cursor: "pointer",
                     textDecoration: "none"
                   }}>
-                    Ploomes
+                    Intranet Alberflex
                   </Dropdown.Item>
+
                   <Dropdown.Item href="https://www.alberflex.com.br/" style={{
                     color: "#8a8a8a",
                     cursor: "pointer",
