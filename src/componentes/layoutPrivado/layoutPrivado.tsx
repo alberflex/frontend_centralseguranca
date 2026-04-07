@@ -13,7 +13,7 @@ export const LayoutPrivado = ({ children }: LayoutProps) => {
         <div style={{ display: "flex", minHeight: "100vh" }}>
             <Sidebar logoSrc="/images/logo_light.png" />
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                <Topbar userPhoto="https://avatars.githubusercontent.com/u/87160095?s=48&v=4" username={`${informacoesUsuario?.nome}`} />
+                <Topbar userPhoto="https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar-padrao-imagem-de-usuario-de-midia-social-icone-de-avatar-cinza-silhueta-de-perfil-em-branco-ilustracao-vetorial_561158-3383.jpg?semt=ais_hybrid&w=740&q=80" username={`${informacoesUsuario?.nome}`} />
                 <div style={{ flex: 1, overflow: "auto" }}>{children}</div>
             </div>
         </div>
