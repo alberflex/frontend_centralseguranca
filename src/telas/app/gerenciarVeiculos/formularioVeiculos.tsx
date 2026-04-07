@@ -5,7 +5,19 @@ import { GenericToast } from "../../../componentes/toast/toast";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioVeiculo() {
-    const { toast, setToast, handleSubmit, register, errors, abrirConfirmacaoSalvar, editarObjeto, ehEdicao, carregando, setCarregando } = useVisaoControllerFormularioVeiculo();
+    const { toast,
+        setToast,
+        handleSubmit,
+        register,
+        errors,
+        abrirConfirmacaoSalvar,
+        editarObjeto,
+        ehEdicao,
+        carregando,
+        setCarregando,
+        previewImagem,
+        setPreviewImagem
+    } = useVisaoControllerFormularioVeiculo();
 
     return (
         <Fragment>
@@ -73,21 +85,30 @@ export default function FormularioVeiculo() {
                                     {...register("caminho_imagem_veiculo")}
                                 />
                             </Form.Group>
-                            {ehEdicao && editarObjeto?.caminho_imagem_veiculo && (
-                                <div className="mb-2">
-                                    <small className="text-muted">
-                                        Imagem atual: {editarObjeto.caminho_imagem_veiculo}
-                                    </small>
+                        </Col>
+                        <Col md={12}>
+                            {previewImagem && (
+                                <div className="mt-3">
+                                    <img
+                                        src={previewImagem}
+                                        alt="Preview do veículo"
+                                        className="img-fluid w-100 rounded shadow"
+                                        style={{
+                                            height: "50vh",
+                                            objectFit: "cover"
+                                        }}
+                                    />
                                 </div>
                             )}
                         </Col>
                     </Row>
 
-                    <Button type="submit" variant="primary" className="w-100 mb-2" disabled={carregando}>
+                    <Button type="submit" variant="success" className="w-100 mb-2" disabled={carregando}>
                         {carregando ? (<><Spinner animation="border" size="sm" className="me-2" />Enviando...</>) : ("Salvar informações")}
                     </Button>
                 </Form>
             </Container>
+
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}
@@ -98,6 +119,7 @@ export default function FormularioVeiculo() {
                     { label: "Cancelar", onClick: () => setToast({ ...toast, show: false }), variant: "danger" },
                 ]}
             />
+
         </Fragment>
     );
 }

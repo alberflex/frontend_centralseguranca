@@ -5,7 +5,7 @@ import { EPapel } from "../../enum/EPapel";
 export default function MenuSuperiorIniciar() {
   const { informacoesUsuario, menuItens, logout, vaiParaIntroducao } = useVisaoControllerMenuSuperior();
 
-  const permissao = (informacoesUsuario?.papel as EPapel) ?? EPapel.PORTEIRO; 
+  const permissao = (informacoesUsuario?.papel as EPapel) ?? EPapel.PORTEIRO;
   const menuVisivel = menuItens.filter(item => item.permissoes.includes(permissao));
 
   return (
@@ -24,73 +24,38 @@ export default function MenuSuperiorIniciar() {
                 alt="Foto do usuário"
                 style={{ objectFit: "cover" }}
               />
-              <p className="fs-6 mb-0"
-                style={{ color: "#5f5e5eff", fontWeight: 'bolder' }}>
+              <p className="fs-6 mb-0" style={{ color: "#5f5e5eff", fontWeight: 'bolder' }}>
                 {`Seja bem-vindo, ${informacoesUsuario?.nome}.`}
               </p>
             </div>
           </Offcanvas.Header>
 
-          <Offcanvas.Body
-            className="d-flex flex-column justify-content-between"
-            style={{ height: "100%" }}
-          >
+          <Offcanvas.Body className="d-flex flex-column justify-content-between" style={{ height: "100%" }} >
             <Nav className="flex-column">
-
-
               {menuVisivel.map((item) => (
-                <Nav.Link
-                  key={item.label}
-                  className="fs-6"
-                  style={{ color: "#8a8a8a" }}
-                  onClick={item.onClick}
-                >
+                <Nav.Link key={item.label} className="fs-6" style={{ color: "#8a8a8a" }} onClick={item.onClick} >
                   {item.label}
                 </Nav.Link>
               ))}
 
               <Dropdown className="py-1">
-                <Dropdown.Toggle
-                  as="a"
-                  className="fs-6"
-                  style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}
-                >
+                <Dropdown.Toggle as="a" className="fs-6" style={{ color: "#8a8a8a", cursor: "pointer", textDecoration: "none" }} >
                   Ferramentas de trabalho
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu >
-                  <Dropdown.Item href="http://srv-app-prot.alberflex.corp:8081/" style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}>
+                  <Dropdown.Item href="http://srv-app-prot.alberflex.corp:8081/" style={{ color: "#8a8a8a", cursor: "pointer", textDecoration: "none" }}>
                     TOTVS Protheus
                   </Dropdown.Item>
-                  
-                  <Dropdown.Item href="http://help.alberflex.com.br:8080/helpdesk/login" style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}>
+
+                  <Dropdown.Item href="http://help.alberflex.com.br:8080/helpdesk/login" style={{ color: "#8a8a8a", cursor: "pointer", textDecoration: "none" }}>
                     Helpdesk
                   </Dropdown.Item>
-                  <Dropdown.Item href="http://intranet-alberflex.com.br/" style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}>
+                  <Dropdown.Item href="http://intranet-alberflex.com.br/" style={{ color: "#8a8a8a", cursor: "pointer", textDecoration: "none" }}>
                     Intranet Alberflex
                   </Dropdown.Item>
 
-                  <Dropdown.Item href="https://www.alberflex.com.br/" style={{
-                    color: "#8a8a8a",
-                    cursor: "pointer",
-                    textDecoration: "none"
-                  }}>
+                  <Dropdown.Item href="https://www.alberflex.com.br/" style={{ color: "#8a8a8a", cursor: "pointer", textDecoration: "none" }}>
                     Site institucional
                   </Dropdown.Item>
                 </Dropdown.Menu>

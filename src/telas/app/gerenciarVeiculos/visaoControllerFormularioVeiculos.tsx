@@ -15,6 +15,7 @@ export const useVisaoControllerFormularioVeiculo = () => {
     const visaoModeloVeiculo = new VisaoModeloVeiculo();
     const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
     const [carregando, setCarregando] = useState(false);
+    const [previewImagem, setPreviewImagem] = useState<string | null>(null);
 
     const abrirConfirmacaoSalvar = (data: any) => {
         setToast({
@@ -79,6 +80,7 @@ export const useVisaoControllerFormularioVeiculo = () => {
             setValue("placa", editarObjeto.placa);
             setValue("km_atual", editarObjeto.km_atual);
             setValue("modelo", editarObjeto.modelo);
+            setPreviewImagem(editarObjeto.caminho_imagem_veiculo);
         }
     }, [ehEdicao, editarObjeto?.id, setValue]);
 
@@ -92,6 +94,8 @@ export const useVisaoControllerFormularioVeiculo = () => {
         ehEdicao,
         editarObjeto,
         carregando,
-        setCarregando
+        setCarregando,
+        previewImagem,
+        setPreviewImagem
     }
 }   
