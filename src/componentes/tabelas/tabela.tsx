@@ -14,6 +14,7 @@ interface TabelaProps<T> {
     aoEditar?: (linha: number) => void;
     podeDeletar?: boolean;
     podeEditar?: boolean;
+    onRowClick?: (row: T) => void;
 }
 
 export default function Tabela<T extends Record<string, any>>({
@@ -21,6 +22,7 @@ export default function Tabela<T extends Record<string, any>>({
     dados,
     aoDeletar,
     aoEditar,
+    onRowClick,
     podeDeletar = true,
     podeEditar = true,
 }: TabelaProps<T>) {
@@ -41,7 +43,7 @@ export default function Tabela<T extends Record<string, any>>({
                 </thead>
                 <tbody>
                     {dados?.map((linha, i) => (
-                        <tr key={i}>
+                        <tr key={i} onClick={() => onRowClick?.(linha)} style={{ cursor: 'pointer' }}>
                             {colunas?.map((col, j) => (
                                 <td key={j}>
                                     {String(linha[col.key] ?? '')}

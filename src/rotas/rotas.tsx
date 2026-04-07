@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { TelaConsolidador } from '../telas/app/introducao/introducao';
+import { LayoutPrivado } from '../componentes/layoutPrivado/layoutPrivado';
+import { LayoutPublico } from '../componentes/layoutPublico/layoutPublico';
 import TelaLogin from '../telas/login/login';
 import ControleAcesso from '../telas/app/gerenciarAcesso/gerenciarAcessos';
 import FormularioAcesso from '../telas/app/gerenciarAcesso/formularioAcessos';
@@ -15,19 +17,83 @@ import FormularioPontos from '../telas/app/gerenciarPonto/formularioPontos';
 import GerenciarLog from '../telas/app/gerenciarLogs/gerenciarLogs';
 
 const rotaConfig = [
-  { path: '/', element: <TelaLogin />, title: 'Login - Central de segurança.' },
-  { path: '/ControleAcesso', element: <ControleAcesso />, title: 'Controle de acesso - Alberflex' },
-  { path: '/FormularioControleAcesso', element: <FormularioAcesso />, title: 'Formulário de acesso - Alberflex' },
-  { path: '/ControleSolicitacaoVeiculo', element: <ControleVeiculos />, title: 'Controle de veículo - Alberflex' },
-  { path: '/FormularioSolicitacaoVeiculo', element: <FormularioSolicitacaoVeiculo />, title: 'Formulário de veículo - Alberflex' },
-  { path: '/GerenciamentoUsuarios', element: <GerenciamentoUsuarios />, title: 'Gerenciamento de usuários - Alberflex' },
-  { path: '/FormularioUsuarios', element: <FormularioUsuario />, title: 'Formulário de usuários - Alberflex' },
-  { path: '/ControleVeiculo', element: <ListagemVeiculo />, title: 'Listagem de veículo - Alberflex' },
-  { path: '/GerenciarLog', element: <GerenciarLog />, title: 'Listagem de LOGs - Alberflex' },
-  { path: '/FormularioVeiculo', element: <FormularioVeiculo />, title: 'Formulário de veículo - Alberflex' },
-  { path: '/ControlePonto', element: <GerenciarPontos />, title: 'Listagem de pontos - Alberflex' },
-  { path: '/FormularioPonto', element: <FormularioPontos />, title: 'Formulário de pontos - Alberflex' },
-  { path: '/Introducao', element: <TelaConsolidador />, title: 'Introdução - Alberflex' }
+  {
+    path: '/',
+    element: <LayoutPublico> <TelaLogin /></LayoutPublico>,
+    title: 'Login - Central de segurança.'
+  },
+
+  {
+    path: '/ControleAcesso',
+    element: <LayoutPrivado><ControleAcesso /></LayoutPrivado>,
+    title: 'Controle de acesso - Alberflex'
+  },
+
+  {
+    path: '/FormularioControleAcesso',
+    element: <LayoutPrivado><FormularioAcesso /></LayoutPrivado>,
+    title: 'Formulário de acesso - Alberflex'
+  },
+
+  {
+    path: '/ControleSolicitacaoVeiculo',
+    element: <LayoutPrivado><ControleVeiculos /></LayoutPrivado>,
+    title: 'Controle de veículo - Alberflex'
+  },
+
+  {
+    path: '/FormularioSolicitacaoVeiculo',
+    element: <LayoutPrivado><FormularioSolicitacaoVeiculo /></LayoutPrivado>,
+    title: 'Formulário de veículo - Alberflex'
+  },
+
+  {
+    path: '/GerenciamentoUsuarios',
+    element: <LayoutPrivado><GerenciamentoUsuarios /></LayoutPrivado>,
+    title: 'Gerenciamento de usuários - Alberflex'
+  },
+
+  {
+    path: '/FormularioUsuarios',
+    element: <LayoutPrivado><FormularioUsuario /></LayoutPrivado>,
+    title: 'Formulário de usuários - Alberflex'
+  },
+
+  {
+    path: '/ControleVeiculo',
+    element: <LayoutPrivado><ListagemVeiculo /></LayoutPrivado>,
+    title: 'Listagem de veículo - Alberflex'
+  },
+
+  {
+    path: '/GerenciarLog',
+    element: <LayoutPrivado><GerenciarLog /></LayoutPrivado>,
+    title: 'Listagem de LOGs - Alberflex'
+  },
+
+  {
+    path: '/FormularioVeiculo',
+    element: <LayoutPrivado><FormularioVeiculo /></LayoutPrivado>,
+    title: 'Formulário de veículo - Alberflex'
+  },
+
+  {
+    path: '/ControlePonto',
+    element: <LayoutPrivado><GerenciarPontos /></LayoutPrivado>,
+    title: 'Listagem de pontos - Alberflex'
+  },
+
+  {
+    path: '/FormularioPonto',
+    element: <LayoutPrivado><FormularioPontos /></LayoutPrivado>,
+    title: 'Formulário de pontos - Alberflex'
+  },
+
+  {
+    path: '/Introducao',
+    element: <LayoutPrivado><TelaConsolidador /></LayoutPrivado>,
+    title: 'Introdução - Alberflex'
+  }
 ];
 
 export default function Rotas() {

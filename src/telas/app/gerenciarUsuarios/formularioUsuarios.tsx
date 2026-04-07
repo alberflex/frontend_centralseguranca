@@ -3,14 +3,12 @@ import { Controller } from "react-hook-form";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useVisaoControllerFormularioUsuario } from "./visaoControllerFormularioUsuarios";
 import { GenericToast } from "../../../componentes/toast/toast";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioUsuario() {
     const { control, handleSubmit, register, errors, abrirConfirmacaoSalvar, ehEdicao, toast, setToast, } = useVisaoControllerFormularioUsuario();
     const papel = [{ id: "ADMINISTRADOR", papelUsuario: "Administrador" },{ id: "PORTEIRO", papelUsuario: "Porteiro" }, { id: "SUPERVISOR", papelUsuario: "Supervisor" }];
     return (
         <Fragment>
-            <MenuSuperiorIniciar />
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="mb-4 text-center">Formulário de porteiros</h4>
                 <Form onSubmit={handleSubmit(abrirConfirmacaoSalvar)}>

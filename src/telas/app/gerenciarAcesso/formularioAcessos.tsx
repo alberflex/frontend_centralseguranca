@@ -4,7 +4,6 @@ import { useVisaoControllerFormularioAcesso } from "./visaoControllerFormularioA
 import { GenericToast } from "../../../componentes/toast/toast";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 import { Controller } from "react-hook-form";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 import Webcam from "react-webcam";
 
@@ -21,7 +20,6 @@ export default function FormularioAcesso() {
 
     return (
         <Fragment>
-            <MenuSuperiorIniciar />
             <SpinnerComponente estado={carregando} />
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="text-center mb-4">Solicitação de acesso</h4>

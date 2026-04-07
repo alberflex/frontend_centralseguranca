@@ -3,7 +3,6 @@ import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-boot
 import { useVisaoControllerFormularioSolicitacaoVeiculo } from "./visaoControllerFormularioSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 
 export default function FormularioSaidaVeiculo() {
@@ -49,7 +48,6 @@ export default function FormularioSaidaVeiculo() {
 
     return (
         <Fragment>
-            <MenuSuperiorIniciar />
             <SpinnerComponente estado={carregando} />
 
             <Container className="my-4 border rounded-4 bg-light p-4">

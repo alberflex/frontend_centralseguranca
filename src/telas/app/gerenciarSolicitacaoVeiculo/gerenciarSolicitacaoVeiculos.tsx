@@ -3,7 +3,6 @@ import { useVisaoControllerListagemSolicitacaoVeiculo } from "./visaoControllerG
 import { GenericToast } from "../../../componentes/toast/toast";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import { EPapel } from "../../../enum/EPapel";
 
 export default function ControleSolicitacaoVeiculo() {
@@ -27,7 +26,6 @@ export default function ControleSolicitacaoVeiculo() {
     } = useVisaoControllerListagemSolicitacaoVeiculo();
     return (
         <Container fluid>
-            <MenuSuperiorIniciar />
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
                 <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar solicitação de veículo.</h4>
                 <div className="d-flex text-center px-2 mb-2 mb-md-0" onClick={vaiParaFormularioSolicitacaoVeiculo} style={{ display: 'flex', cursor: "pointer", alignItems: 'center', justifyContent: 'center' }}>

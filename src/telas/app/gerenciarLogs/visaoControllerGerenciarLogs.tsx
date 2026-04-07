@@ -1,7 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAutenticacao } from '../../../contextos/useAutenticacao';
-import { IControleAcessoTabela } from '../../../interfaces/IControleAcesso';
 import { ILayoutTabela } from '../../../componentes/tabelas/tabela';
 import { VisaoModeloLog } from '../../../modelo/logs/visaoModeloLog';
 import { ILogTabela } from '../../../interfaces/ILog';
@@ -12,7 +10,8 @@ export const useVisaoControllerGerenciarLogs = () => {
     const [logs, setLogs] = useState<ILogTabela[]>([]);
     const [dataInicio, setDataInicio] = useState("");
     const [dataFim, setDataFim] = useState("");
-    const navegacao = useNavigate();
+    const [logSelecionado, setLogSelecionado] = useState<any>(null);
+    const [mostrarModal, setMostrarModal] = useState(false);
     const objVisaoModeloLog = new VisaoModeloLog();
 
     const buscarLogs = async (inicio?: string, fim?: string) => {
@@ -49,11 +48,21 @@ export const useVisaoControllerGerenciarLogs = () => {
         await buscarLogs();
     };
 
+    const formatarJson = (jsonString: string) => {
+        try {
+            const obj = JSON.parse(jsonString);
+            return JSON.stringify(obj, null, 2);
+        } catch {
+            return jsonString;
+        }
+    };
 
     const selecionarLogPorID = async (id: number) => {
         if (!tokenJWT) return;
         try {
             const log = await objVisaoModeloLog.listarLogPorID(tokenJWT, id);
+            setLogSelecionado(log);
+            setMostrarModal(true);
         } catch (error) {
             alert("Erro ao selecionar a log por id.");
         }
@@ -76,6 +85,11 @@ export const useVisaoControllerGerenciarLogs = () => {
         setDataInicio,
         buscarLogs,
         limparFiltro,
-        informacoesUsuario
+        informacoesUsuario,
+        selecionarLogPorID,
+        logSelecionado,
+        mostrarModal,
+        setMostrarModal,
+        formatarJson
     }
 }   

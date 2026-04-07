@@ -4,7 +4,6 @@ import { GenericToast } from "../../../componentes/toast/toast";
 import { EPapel } from "../../../enum/EPapel";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function ListagemVeiculo() {
     const {
@@ -26,7 +25,6 @@ export default function ListagemVeiculo() {
 
     return (
         <Container fluid>
-            <MenuSuperiorIniciar />
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
                 <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar veículos</h4>
                 <div className="d-flex text-center px-2 mb-2 mb-md-0" onClick={vaiParaFormularioVeiculo} style={{ display: 'flex', cursor: "pointer", alignItems: 'center', justifyContent: 'center' }}>

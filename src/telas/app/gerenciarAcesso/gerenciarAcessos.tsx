@@ -2,9 +2,7 @@ import { Container } from 'react-bootstrap';
 import { useVisaoControllerGerenciarAcessos } from './visaoControllerGerenciarAcessos';
 import { GenericToast } from '../../../componentes/toast/toast';
 import { Row, Col, Form, Button } from "react-bootstrap";
-import MenuSuperiorIniciar from '../../../componentes/menus/menuSuperiorIniciar';
 import Tabela from '../../../componentes/tabelas/tabela';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { EPapel } from '../../../enum/EPapel';
 
 export default function ControleAcesso() {
@@ -30,8 +28,6 @@ export default function ControleAcesso() {
 
     return (
         <Container fluid>
-            <MenuSuperiorIniciar />
-
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
                 <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar solicitações de acesso.</h4>
 

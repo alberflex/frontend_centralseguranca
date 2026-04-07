@@ -1,8 +1,7 @@
 import { Container } from 'react-bootstrap';
+import { Modal } from "react-bootstrap";
 import { useVisaoControllerGerenciarLogs } from './visaoControllerGerenciarLogs';
 import { Row, Col, Form, Button } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import MenuSuperiorIniciar from '../../../componentes/menus/menuSuperiorIniciar';
 import Tabela from '../../../componentes/tabelas/tabela';
 
 export default function GerenciarLog() {
@@ -15,12 +14,15 @@ export default function GerenciarLog() {
         setDataInicio,
         buscarLogs,
         limparFiltro,
-        informacoesUsuario
+        selecionarLogPorID,
+        logSelecionado,
+        mostrarModal,
+        setMostrarModal,
+        formatarJson
     } = useVisaoControllerGerenciarLogs();
 
     return (
         <Container fluid>
-            <MenuSuperiorIniciar />
 
             <div className="d-flex flex-column flex-md-row justify-content-between px-4">
                 <h4 className="text-center text-md-start mb-3 mb-md-0">
@@ -83,7 +85,42 @@ export default function GerenciarLog() {
                 dados={logs}
                 podeDeletar={false}
                 podeEditar={false}
+                onRowClick={(row) => selecionarLogPorID(row.id)}
             />
+
+            <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} size="lg">
+                <Modal.Header closeButton><Modal.Title>Gerenciamento de LOG's</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    {logSelecionado && (
+                        <>
+                            <p><strong>ID de LOG's:</strong> {logSelecionado.id}</p>
+                            <p><strong>Mensagem de ação:</strong> {logSelecionado.mensagem}</p>
+
+                            <h6>Dados Antes:</h6>
+                            <pre style={{
+                                background: "#f4f4f4",
+                                padding: "10px",
+                                borderRadius: "5px",
+                                maxHeight: "300px",
+                                overflow: "auto"
+                            }}>
+                                {formatarJson(logSelecionado.dadosAntes)}
+                            </pre>
+
+                            <h6>Dados Depois:</h6>
+                            <pre style={{
+                                background: "#f4f4f4",
+                                padding: "10px",
+                                borderRadius: "5px",
+                                maxHeight: "300px",
+                                overflow: "auto"
+                            }}>
+                                {formatarJson(logSelecionado.dadosDepois)}
+                            </pre>
+                        </>
+                    )}
+                </Modal.Body>
+            </Modal>
         </Container>
     );
 }

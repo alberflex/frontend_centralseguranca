@@ -4,7 +4,6 @@ import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioPontos } from "./visaoControllerFormularioPontos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioPontos() {
   const {
@@ -21,7 +20,6 @@ export default function FormularioPontos() {
 
   return (
     <Fragment>
-      <MenuSuperiorIniciar />
 
       <SpinnerComponente
         estado={carregando}

@@ -4,7 +4,6 @@ import { useVisaoControllerFormularioVeiculo } from "./visaoControllerFormulario
 import { GenericToast } from "../../../componentes/toast/toast";
 import { Controller } from "react-hook-form";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioVeiculo() {
     const { 
@@ -23,7 +22,6 @@ export default function FormularioVeiculo() {
 
     return (
         <Fragment>
-            <MenuSuperiorIniciar />
             <SpinnerComponente estado={carregando} />
 
             <Container className="my-4 border rounded-4 bg-light p-4">

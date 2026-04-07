@@ -1,6 +1,5 @@
 import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import { useVisaoControllerIntroducao } from "./visaoControllerIntroducao";
-import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 import { BarChart } from "../../../componentes/graficos/graficoBarras";
 
 export const TelaConsolidador = () => {
@@ -26,7 +25,6 @@ export const TelaConsolidador = () => {
 
   return (
     <Container fluid >
-      <MenuSuperiorIniciar />
       <Row xs={1} md={3} className="g-4 mb-4" >
         <Col>
           <Card className="shadow-sm border-0 text-center h-100">

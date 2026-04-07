@@ -3,7 +3,7 @@ import { useVisaoControllerMenuSuperior } from "./visaoControllerMenuSuperior";
 import { EPapel } from "../../enum/EPapel";
 
 export default function MenuSuperiorIniciar() {
-  const { informacoesUsuario, menuItens, logout, vaiParaIntroducao } = useVisaoControllerMenuSuperior();
+  /*const { informacoesUsuario, menuItens, logout, vaiParaIntroducao } = useVisaoControllerMenuSuperior();
 
   const permissao = (informacoesUsuario?.papel as EPapel) ?? EPapel.PORTEIRO;
   const menuVisivel = menuItens.filter(item => item.permissoes.includes(permissao));
@@ -72,5 +72,5 @@ export default function MenuSuperiorIniciar() {
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
-  );
+  );*/
 };
