@@ -58,17 +58,33 @@ export class ModeloVeiculo {
     async cadastrarVeiculo(tokenJWT: string, dadosFormulario: IVeiculo): Promise<IVeiculo | null> {
         try {
             const formData = new FormData();
+
             formData.append("placa", dadosFormulario.placa);
             formData.append("modelo", dadosFormulario.modelo);
             formData.append("km_atual", String(dadosFormulario.km_atual));
 
-            if (dadosFormulario.caminho_imagem_veiculo instanceof FileList) {
-                formData.append("caminho_imagem_veiculo", dadosFormulario.caminho_imagem_veiculo);
+            const fileField = dadosFormulario.caminho_imagem_veiculo;
+
+            let file: File | null = null;
+            if (fileField instanceof FileList && fileField.length > 0) {
+                file = fileField[0];
+            } else if (fileField instanceof File) {
+                file = fileField;
             }
 
-            const cadastroVeiculoJSON = await conexaoAPI.post<IVeiculo>(`/veiculo/cadastroVeiculo`, dadosFormulario, {
-                headers: { Authorization: `Bearer ${tokenJWT}` }
-            });
+            if (file) {
+                formData.append("caminho_imagem_veiculo", file);
+            }
+
+            const cadastroVeiculoJSON = await conexaoAPI.post<IVeiculo>(`/veiculo/cadastroVeiculo`, formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenJWT}`,
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+
             return cadastroVeiculoJSON.data;
         } catch (error: any) {
             throw new Error(error?.response?.data?.erro);

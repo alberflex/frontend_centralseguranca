@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioVeiculo } from "./visaoControllerFormularioVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
+import { Controller } from "react-hook-form";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioVeiculo() {
@@ -16,7 +17,7 @@ export default function FormularioVeiculo() {
         carregando,
         setCarregando,
         previewImagem,
-        setPreviewImagem
+        setPreviewImagem, control
     } = useVisaoControllerFormularioVeiculo();
 
     return (
@@ -34,6 +35,7 @@ export default function FormularioVeiculo() {
                                     placeholder="Ex: ETX-0425"
                                     {...register("placa", { required: "A placa é obrigatória" })}
                                     isInvalid={!!errors.placa}
+                                    disabled={ehEdicao}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {errors.placa?.message}
@@ -77,14 +79,28 @@ export default function FormularioVeiculo() {
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group controlId="formImagemVeiculo">
-                                <Form.Label>Imagem do Veículo:</Form.Label>
-                                <Form.Control
-                                    type="file"
-                                    accept="image/*"
-                                    {...register("caminho_imagem_veiculo")}
-                                />
-                            </Form.Group>
+                            <Form.Label>Imagem do veículo:</Form.Label>
+                            <Controller
+                                name="caminho_imagem_veiculo"
+                                control={control}
+                                render={({ field }) => (
+                                    <Form.Control
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const target = e.target as HTMLInputElement;
+                                            const files = target.files;
+
+                                            field.onChange(files);
+
+                                            if (files && files[0]) {
+                                                const url = URL.createObjectURL(files[0]);
+                                                setPreviewImagem(url);
+                                            }
+                                        }}
+                                    />
+                                )}
+                            />
                         </Col>
                         <Col md={12}>
                             {previewImagem && (

@@ -6,7 +6,7 @@ import { useAutenticacao } from "../../../contextos/useAutenticacao";
 import { VisaoModeloVeiculo } from "../../../modelo/veiculo/visaoModeloVeiculo";
 
 export const useVisaoControllerFormularioVeiculo = () => {
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<IVeiculo>({ defaultValues: { placa: "", caminho_imagem_veiculo: "", km_atual: 0, modelo: "" }, });
+    const { register, handleSubmit, formState: { errors }, setValue, control  } = useForm<IVeiculo>({ defaultValues: { placa: "", caminho_imagem_veiculo: "", km_atual: 0, modelo: "" }, });
     const estadoFormulario = useLocation();
     const { ehEdicao, editarObjeto } = estadoFormulario.state || {};
     const { tokenJWT } = useAutenticacao();
@@ -40,17 +40,9 @@ export const useVisaoControllerFormularioVeiculo = () => {
 
             const file = data.caminho_imagem_veiculo?.[0];
 
-            const objEdicao = {
-                modelo: data.modelo,
-                km_atual: data.km_atual,
-                caminho_imagem_veiculo: file
-            };
+            const objEdicao = { modelo: data.modelo, km_atual: data.km_atual, caminho_imagem_veiculo: file };
 
-            const veiculoEditado = await visaoModeloVeiculo.editarVeiculo(
-                tokenJWT,
-                objEdicao,
-                editarObjeto.id,
-            );
+            const veiculoEditado = await visaoModeloVeiculo.editarVeiculo( tokenJWT, objEdicao, editarObjeto.id, );
 
             if (!veiculoEditado) {
                 alert("Erro ao editar acesso");
@@ -96,6 +88,6 @@ export const useVisaoControllerFormularioVeiculo = () => {
         carregando,
         setCarregando,
         previewImagem,
-        setPreviewImagem
+        setPreviewImagem, control
     }
 }   
