@@ -3,26 +3,29 @@ import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useVisaoControllerFormularioVeiculo } from "./visaoControllerFormularioVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { Controller } from "react-hook-form";
+import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 import MenuSuperiorIniciar from "../../../componentes/menus/menuSuperiorIniciar";
 
 export default function FormularioVeiculo() {
-    const { toast,
+    const { 
+        toast,
         setToast,
         handleSubmit,
         register,
         errors,
         abrirConfirmacaoSalvar,
-        editarObjeto,
         ehEdicao,
         carregando,
-        setCarregando,
         previewImagem,
-        setPreviewImagem, control
+        setPreviewImagem, 
+        control
     } = useVisaoControllerFormularioVeiculo();
 
     return (
         <Fragment>
             <MenuSuperiorIniciar />
+            <SpinnerComponente estado={carregando} />
+
             <Container className="my-4 border rounded-4 bg-light p-4">
                 <h4 className="mb-4 text-center">Formulário de veículo</h4>
                 <Form onSubmit={handleSubmit(abrirConfirmacaoSalvar)}>
@@ -130,10 +133,28 @@ export default function FormularioVeiculo() {
                 onClose={() => setToast({ ...toast, show: false })}
                 title={toast.title}
                 message={toast.message}
-                buttons={[
-                    { label: "Confirmar", onClick: toast.onConfirm, variant: "success" },
-                    { label: "Cancelar", onClick: () => setToast({ ...toast, show: false }), variant: "danger" },
-                ]}
+                buttons={
+                    toast.onConfirm
+                        ? [
+                            {
+                                label: "Confirmar",
+                                variant: "success",
+                                onClick: () => toast.onConfirm?.()
+                            },
+                            {
+                                label: "Cancelar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                        : [
+                            {
+                                label: "Fechar",
+                                variant: "danger",
+                                onClick: () => setToast(prev => ({ ...prev, show: false }))
+                            }
+                        ]
+                }
             />
 
         </Fragment>

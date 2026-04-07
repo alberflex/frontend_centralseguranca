@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAutenticacao } from "../../../contextos/useAutenticacao";
 import { VisaoModeloVeiculo } from "../../../modelo/veiculo/visaoModeloVeiculo";
+import { ToastEstado } from "../../../type/TToast";
 
 export const useVisaoControllerFormularioVeiculo = () => {
-    const { register, handleSubmit, formState: { errors }, setValue, control  } = useForm<IVeiculo>({ defaultValues: { placa: "", caminho_imagem_veiculo: "", km_atual: 0, modelo: "" }, });
+    const { register, handleSubmit, formState: { errors }, setValue, control } = useForm<IVeiculo>({ defaultValues: { placa: "", caminho_imagem_veiculo: "", km_atual: 0, modelo: "" }, });
     const estadoFormulario = useLocation();
     const { ehEdicao, editarObjeto } = estadoFormulario.state || {};
     const { tokenJWT } = useAutenticacao();
     const navegacao = useNavigate()
     const vaiParaVeiculos = () => { navegacao("/ControleVeiculo") }
     const visaoModeloVeiculo = new VisaoModeloVeiculo();
-    const [toast, setToast] = useState({ show: false, title: "", message: "", onConfirm: () => { } });
+    const [toast, setToast] = useState<ToastEstado>({ show: false, title: "", message: "", onConfirm: () => { }, });
     const [carregando, setCarregando] = useState(false);
     const [previewImagem, setPreviewImagem] = useState<string | null>(null);
 
@@ -39,20 +40,26 @@ export const useVisaoControllerFormularioVeiculo = () => {
             setCarregando(true);
 
             const file = data.caminho_imagem_veiculo?.[0];
-
             const objEdicao = { modelo: data.modelo, km_atual: data.km_atual, caminho_imagem_veiculo: file };
-
-            const veiculoEditado = await visaoModeloVeiculo.editarVeiculo( tokenJWT, objEdicao, editarObjeto.id, );
-
-            if (!veiculoEditado) {
-                alert("Erro ao editar acesso");
-                return;
-            }
-
+            await visaoModeloVeiculo.editarVeiculo(tokenJWT, objEdicao, editarObjeto.id,);
             vaiParaVeiculos();
         } catch (error) {
-            console.error("Erro ao editar acesso:", error);
-            alert("Erro ao processar a edição");
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
         } finally {
             setCarregando(false);
         }
@@ -61,9 +68,28 @@ export const useVisaoControllerFormularioVeiculo = () => {
     const cadastrarVeiculo = async (dadosFormulario: IVeiculo) => {
         if (!tokenJWT) return;
         try {
+            if (carregando) return;
+            setCarregando(true);
             if (await visaoModeloVeiculo.cadastrarVeiculo(tokenJWT, dadosFormulario)) vaiParaVeiculos();
         } catch (error) {
-            alert("Erro ao cadastrar ponto")
+            let mensagem = "";
+            if (error instanceof Error) {
+                mensagem = error.message;
+            }
+            setToast({
+                show: true,
+                title: "Erro",
+                message: mensagem,
+                buttons: [
+                    {
+                        label: "Fechar",
+                        variant: "danger",
+                        onClick: () => setToast(prev => ({ ...prev, show: false }))
+                    }
+                ]
+            });
+        } finally {
+            setCarregando(false);
         }
     }
 
