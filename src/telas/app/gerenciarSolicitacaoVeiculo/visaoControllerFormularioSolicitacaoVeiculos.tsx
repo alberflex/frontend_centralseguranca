@@ -13,6 +13,22 @@ import { Cidade } from "../../../types/Cidade";
 import { VisaoModeloPessoal } from "../../../modelo/pessoal/visaoModeloPessoal";
 import { ToastEstado } from "../../../type/TToast";
 
+const buscarIBGE = async <T,>(caminho: string): Promise<T> => {
+    const resposta = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/${caminho}`);
+    if (!resposta.ok) throw new Error(`IBGE respondeu ${resposta.status}`);
+    return resposta.json();
+};
+
+// Usada quando a API do IBGE nao responde
+const ESTADOS_RESERVA = [
+    ["AC", "Acre"], ["AL", "Alagoas"], ["AP", "Amapá"], ["AM", "Amazonas"], ["BA", "Bahia"], ["CE", "Ceará"],
+    ["DF", "Distrito Federal"], ["ES", "Espírito Santo"], ["GO", "Goiás"], ["MA", "Maranhão"], ["MT", "Mato Grosso"],
+    ["MS", "Mato Grosso do Sul"], ["MG", "Minas Gerais"], ["PA", "Pará"], ["PB", "Paraíba"], ["PR", "Paraná"],
+    ["PE", "Pernambuco"], ["PI", "Piauí"], ["RJ", "Rio de Janeiro"], ["RN", "Rio Grande do Norte"],
+    ["RS", "Rio Grande do Sul"], ["RO", "Rondônia"], ["RR", "Roraima"], ["SC", "Santa Catarina"],
+    ["SP", "São Paulo"], ["SE", "Sergipe"], ["TO", "Tocantins"],
+].map(([sigla, nome], i) => ({ id: i + 1, sigla, nome }) as unknown as Estado);
+
 export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
     const { control, handleSubmit, register, setValue, formState: { errors }, watch } = useForm<IControleVeiculo>({
         defaultValues: {
@@ -59,11 +75,22 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         navegacao("/ControleSolicitacaoVeiculo")
     };
 
+    // Sem internet ou com a API do IBGE fora do ar, a lista de cidades fica vazia
+    // e cidade selecionada na edicao continua aparecendo
+    const avisarFalhaCidades = (): Cidade[] => {
+        setToast({
+            show: true,
+            title: "Cidades indisponíveis",
+            message: "Não foi possível carregar a lista de cidades do IBGE. Verifique a conexão com a internet e tente novamente.",
+        });
+        return editarObjeto?.localizacao ? [{ id: 0, nome: editarObjeto.localizacao } as Cidade] : [];
+    };
+
     useEffect(() => {
-        fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
-            .then(res => res.json())
-            .then((data: Estado[]) => {
-                const ordenados = data.sort((a, b) => a.nome.localeCompare(b.nome));
+        buscarIBGE<Estado[]>("estados")
+            .catch(() => ESTADOS_RESERVA)
+            .then((data) => {
+                const ordenados = [...data].sort((a, b) => a.nome.localeCompare(b.nome));
                 setEstados(ordenados);
 
                 if (ehEdicao && editarObjeto) {
@@ -76,8 +103,8 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
         if (ehEdicao && editarObjeto) {
             setValue("destino", editarObjeto.destino);
 
-            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
-                .then(res => res.json())
+            buscarIBGE<Cidade[]>(`estados/${editarObjeto.destino}/municipios`)
+                .catch(avisarFalhaCidades)
                 .then((data: Cidade[]) => {
                     const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
                     setCidades(ordenadas);
@@ -94,8 +121,8 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             return;
         }
 
-        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${siglaEstado}/municipios`)
-            .then(res => res.json())
+        buscarIBGE<Cidade[]>(`estados/${siglaEstado}/municipios`)
+            .catch(avisarFalhaCidades)
             .then((data: Cidade[]) => {
                 const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
                 setCidades(ordenadas);
@@ -322,8 +349,8 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
-            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${editarObjeto.destino}/municipios`)
-                .then(res => res.json())
+            buscarIBGE<Cidade[]>(`estados/${editarObjeto.destino}/municipios`)
+                .catch(avisarFalhaCidades)
                 .then((data: Cidade[]) => {
                     const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
                     setCidades(ordenadas);

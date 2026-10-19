@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ logoSrc }) => {
                 height: "100vh",
                 transition: "width 0.3s",
                 justifyContent: "space-between",
-                backgroundColor: "#1b0644",
+                background: "linear-gradient(135deg, rgb(44, 62, 80), rgb(74, 100, 145))",
                 position: "sticky",
                 top: 0
             }}
@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ logoSrc }) => {
                         }}
                         onClick={item.onClick}
                         onMouseEnter={(e) =>
-                            (e.currentTarget.style.backgroundColor = "rgb(61, 58, 236)")
+                            (e.currentTarget.style.backgroundColor = "rgba(114, 137, 218, 0.35)")
                         }
                         onMouseLeave={(e) =>
                             (e.currentTarget.style.backgroundColor = "transparent")
@@ -109,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ logoSrc }) => {
                 position: "fixed",
                 bottom: 0,
                 width: "100%",
-                backgroundColor: "#1b0644",
+                background: "linear-gradient(135deg, rgb(44, 62, 80), rgb(74, 100, 145))",
                 padding: "0.5rem 0",
                 zIndex: 1000
             }}
@@ -118,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ logoSrc }) => {
                 <Nav.Link
                     key={idx}
                     as="div"
-                    className="d-flex flex-column align-items-center mx-2"
+                    className="text-white d-flex flex-column align-items-center mx-2"
                     onClick={item.onClick}
                     style={{ cursor: "pointer", minWidth: 60 }}
                 >

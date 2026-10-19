@@ -1,5 +1,6 @@
 import { Fragment, useEffect } from "react";
-import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-bootstrap";
+import { Form, Row, Col, Container } from "react-bootstrap";
+import { BotaoSalvar, CabecalhoFormulario, CampoBusca, Secao, estiloCampo as campo, estiloRotulo as rotulo } from "../../../componentes/formulario/formulario";
 import { useVisaoControllerFormularioSolicitacaoVeiculo } from "./visaoControllerFormularioSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
@@ -50,271 +51,171 @@ export default function FormularioSaidaVeiculo() {
         <Fragment>
             <SpinnerComponente estado={carregando} />
 
-            <Container className="my-4 border rounded-4 bg-light p-4">
-                <h4 className="mb-4 text-center">Solicitação de veículo</h4>
+            <Container fluid className="p-3 p-md-4">
+                <CabecalhoFormulario titulo="Solicitação de veículo" descricao="Preencha os campos abaixo. Campos desabilitados são liberados apenas na edição." />
 
                 <Form onSubmit={handleSubmit(abrirConfirmacaoSalvar)}>
                     <fieldset disabled={carregando}>
                         <input type="hidden" {...register("idVeiculo", { required: true })} />
                         <input type="hidden" {...register("idPorteiroSaida", { required: true })} />
                         <input type="hidden" {...register("idPorteiroEntrada")} />
+                        <input type="hidden" {...register("idResponsavel", { required: true })} />
+                        <input type="hidden" {...register("idResponsavelEntrada", { required: ehEdicao })} />
+                        <input type="hidden" {...register("idResponsavelAutorizacao", { required: true })} />
 
-                        <Row className="mb-3">
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label>Veículo solicitado:</Form.Label>
+                        <Secao titulo="1. Veículo">
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-veiculo">
+                                        <Form.Label className={rotulo}>Veículo solicitado</Form.Label>
+                                        <Form.Select
+                                            size="lg"
+                                            className={campo}
+                                            disabled={ehEdicao}
+                                            value={String(watch("idVeiculo") ?? "")}
+                                            onChange={(e) => {
+                                                const item = veiculo.find(v => String(v.id) === e.target.value);
+                                                if (item) setValue("idVeiculo", item.id);
+                                            }}
+                                        >
+                                            <option value="">Selecionar veículo</option>
+                                            {veiculo.map(item => <option key={item.id} value={String(item.id)}>{item.placa}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-km">
+                                        <Form.Label className={rotulo}>Quilometragem final do veículo</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            size="lg"
+                                            className={campo}
+                                            inputMode="numeric"
+                                            placeholder={ehEdicao ? "Informe a quilometragem" : "Liberado apenas na edição"}
+                                            readOnly={!ehEdicao}
+                                            {...register("km_final_veiculo")}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-cond-saida">
+                                        <Form.Label className={rotulo}>Condição de saída</Form.Label>
+                                        <Form.Select size="lg" className={campo} {...register("condicao_saida", { required: true })} defaultValue="LIMPO">
+                                            <option value="LIMPO">Limpo</option>
+                                            <option value="SUJO">Sujo</option>
+                                            <option value="MUITO_SUJO">Muito sujo</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-cond-entrada">
+                                        <Form.Label className={rotulo}>Condição de entrada</Form.Label>
+                                        <Form.Select size="lg" className={campo} {...register("condicao_entrada", { required: true })} defaultValue="LIMPO" disabled={!ehEdicao}>
+                                            <option value="LIMPO">Limpo</option>
+                                            <option value="SUJO">Sujo</option>
+                                            <option value="MUITO_SUJO">Muito sujo</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
 
-                                    <Dropdown className="w-100">
-                                        <Dropdown.Toggle className="w-100 text-start" variant="outline-secondary" disabled={ehEdicao}>
-                                            {veiculo.find(v => v.id === watch("idVeiculo"))?.placa || "Selecionar veículo"}
-                                        </Dropdown.Toggle>
-
-                                        <Dropdown.Menu className="w-100">
-                                            {veiculo.map(item => (
-                                                <Dropdown.Item
-                                                    key={item.id}
-                                                    onClick={() => setValue("idVeiculo", item.id)}
-                                                >
-                                                    {item.placa}
-                                                </Dropdown.Item>
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label>Kilometragem final do veículo:</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder={ehEdicao ? "Informe a kilometragem do veículo" : "Desabilitado para cadastro"}
-                                        readOnly={!ehEdicao}
-                                        {...register("km_final_veiculo")}
+                        <Secao titulo="2. Responsáveis">
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <CampoBusca
+                                        texto="Motorista responsável (saída)"
+                                        valor={nomeResponsavel}
+                                        placeholder="Nenhum motorista selecionado"
+                                        onBuscar={() => { setCampoSelecionado("idResponsavel"); setModalAberto(true); }}
                                     />
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                                </Col>
+                                <Col md={6}>
+                                    <CampoBusca
+                                        texto="Motorista responsável (entrada)"
+                                        valor={nomeResponsavelEntrada}
+                                        placeholder={ehEdicao ? "Nenhum motorista selecionado" : "Liberado apenas na edição"}
+                                        desabilitado={!ehEdicao}
+                                        onBuscar={() => { setCampoSelecionado("idResponsavelEntrada"); setModalAberto(true); }}
+                                    />
+                                </Col>
+                                <Col md={12}>
+                                    <CampoBusca
+                                        texto="Responsável pela autorização"
+                                        valor={nomeAutorizador}
+                                        placeholder="Nenhum autorizador selecionado"
+                                        onBuscar={() => { setCampoSelecionado("idResponsavelAutorizacao"); setModalAberto(true); }}
+                                    />
+                                </Col>
+                            </Row>
+                        </Secao>
 
-                        <Row className="mb-3">
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Motorista responsável (Saída):</Form.Label>
-                                    <div className="d-flex">
-                                        <Form.Control
-                                            disabled
-                                            value={nomeResponsavel || ""}
-                                            placeholder="Selecione um responsável"
-                                        />
-                                        <input type="hidden" {...register("idResponsavel", { required: true })} />
+                        <Secao titulo="3. Destino">
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-estado">
+                                        <Form.Label className={rotulo}>Estado</Form.Label>
+                                        <Form.Select size="lg" className={campo} {...register("destino", { required: true })} value={siglaSelecionada}>
+                                            <option value="">{siglaSelecionada ? nomeEstadoSelecionado : "Selecione um estado"}</option>
+                                            {estado.map((estadoItem) => <option key={estadoItem.id} value={estadoItem.sigla}>{estadoItem.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-cidade">
+                                        <Form.Label className={rotulo}>Cidade</Form.Label>
+                                        <Form.Select size="lg" className={campo} {...register("localizacao", { required: true })} disabled={!watch("destino")}>
+                                            <option value="">{watch("destino") ? "Selecione uma cidade" : "Escolha o estado primeiro"}</option>
+                                            {cidades.map((cidadeItem) => <option key={cidadeItem.id} value={cidadeItem.nome}>{cidadeItem.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
 
-                                        <Button
-                                            className="ms-2"
-                                            variant="outline-secondary"
-                                            onClick={() => {
-                                                setCampoSelecionado("idResponsavel");
-                                                setModalAberto(true);
+                        <Secao titulo="4. Portaria">
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-porteiro-saida">
+                                        <Form.Label className={rotulo}>Porteiro da saída</Form.Label>
+                                        <Form.Select
+                                            size="lg"
+                                            className={campo}
+                                            disabled={ehEdicao}
+                                            value={String(watch("idPorteiroSaida") ?? "")}
+                                            onChange={(e) => {
+                                                const item = porteiro.find(p => String(p.id) === e.target.value);
+                                                if (item) setValue("idPorteiroSaida", item.id);
                                             }}
                                         >
-                                            Buscar
-                                        </Button>
-                                    </div>
-                                </Form.Group>
-                            </Col>
-
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Motorista responsável (Entrada):</Form.Label>
-                                    <div className="d-flex">
-                                        <Form.Control
-                                            disabled
-                                            value={nomeResponsavelEntrada || ""}
-                                            placeholder={ehEdicao ? "Selecione um motorista de entrada" : "Campo liberado apenas na edição"}
-                                        />
-                                        <input type="hidden" {...register("idResponsavelEntrada", { required: ehEdicao })} />
-
-                                        <Button
-                                            className="ms-2"
-                                            variant="outline-secondary"
-                                            disabled={ehEdicao ? false : true}
-                                            onClick={() => {
-                                                setCampoSelecionado("idResponsavelEntrada");
-                                                setModalAberto(true);
-                                            }}
-                                        >
-                                            Buscar
-                                        </Button>
-                                    </div>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label>Responsável autorização:</Form.Label>
-
-                                    <div className="d-flex">
-                                        <Form.Control
-                                            disabled
-                                            value={nomeAutorizador || ""}
-                                            placeholder="Selecione um autorizador"
-                                        />
-                                        <input type="hidden" {...register("idResponsavelAutorizacao", { required: true })} />
-
-                                        <Button
-                                            className="ms-2"
-                                            variant="outline-secondary"
-                                            onClick={() => {
-                                                setCampoSelecionado("idResponsavelAutorizacao");
-                                                setModalAberto(true);
-                                            }}
-                                        >
-                                            Buscar
-                                        </Button>
-                                    </div>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Estado:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        {...register("destino", { required: true })}
-                                        value={siglaSelecionada}
-                                    >
-                                        <option value="">{siglaSelecionada ? nomeEstadoSelecionado : "Selecione um estado"}</option>
-                                        {estado.map((estadoItem) => (
-                                            <option key={estadoItem.id} value={estadoItem.sigla}>
-                                                {estadoItem.nome}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Localização (Cidade):</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        {...register("localizacao", { required: true })}
-                                        disabled={!watch("destino")}
-                                    >
-                                        <option value="">Selecione uma cidade</option>
-                                        {cidades.map((cidadeItem) => (
-                                            <option key={cidadeItem.id} value={cidadeItem.nome}>
-                                                {cidadeItem.nome}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Condição de saída do veículo:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        {...register("condicao_saida", { required: true })}
-                                        defaultValue={"LIMPO"}
-                                    >
-                                        <option value="LIMPO">Limpo</option>
-                                        <option value="SUJO">Sujo</option>
-                                        <option value="MUITO_SUJO">Muito Sujo</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label>Condição de entrada do veículo:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        {...register("condicao_entrada", { required: true })}
-                                        defaultValue={"LIMPO"}
-                                        disabled={ehEdicao ? false : true}
-                                    >
-                                        <option value="LIMPO">Limpo</option>
-                                        <option value="SUJO">Sujo</option>
-                                        <option value="MUITO_SUJO">Muito Sujo</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label>Porteiro saída:</Form.Label>
-                                    <Dropdown className="w-100">
-                                        <Dropdown.Toggle className="w-100 text-start" variant="outline-secondary" disabled={ehEdicao}>
-                                            {porteiro.find(p => p.id === watch("idPorteiroSaida"))?.nome || "Selecionar porteiro"}
-                                        </Dropdown.Toggle>
-
-                                        <Dropdown.Menu className="w-100">
-                                            {porteiro.map(item => (
-                                                <Dropdown.Item
-                                                    key={item.id}
-                                                    onClick={() => setValue("idPorteiroSaida", item.id)}
-                                                >
-                                                    {item.nome}
-                                                </Dropdown.Item>
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row className="mb-3">
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label>Porteiro entrada:</Form.Label>
-
-                                    <Dropdown className="w-100">
-                                        <Dropdown.Toggle
-                                            className="w-100 text-start"
-                                            variant="outline-secondary"
+                                            <option value="">Selecionar porteiro</option>
+                                            {porteiro.map(item => <option key={item.id} value={String(item.id)}>{item.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="sv-porteiro-entrada">
+                                        <Form.Label className={rotulo}>Porteiro da entrada</Form.Label>
+                                        <Form.Select
+                                            size="lg"
+                                            className={campo}
                                             disabled={!ehEdicao}
+                                            value={String(watch("idPorteiroEntrada") ?? "")}
+                                            onChange={(e) => {
+                                                const item = porteiro.find(p => String(p.id) === e.target.value);
+                                                if (item) setValue("idPorteiroEntrada", item.id);
+                                            }}
                                         >
-                                            {porteiro.find(p => p.id === watch("idPorteiroEntrada"))?.nome || "Selecionar porteiro"}
-                                        </Dropdown.Toggle>
-
-                                        <Dropdown.Menu className="w-100">
-                                            {porteiro.map(item => (
-                                                <Dropdown.Item
-                                                    key={item.id}
-                                                    onClick={() => setValue("idPorteiroEntrada", item.id)}
-                                                >
-                                                    {item.nome}
-                                                </Dropdown.Item>
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
+                                            <option value="">{ehEdicao ? "Selecionar porteiro" : "Liberado apenas na edição"}</option>
+                                            {porteiro.map(item => <option key={item.id} value={String(item.id)}>{item.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
                     </fieldset>
 
-                    <Button type="submit" variant="success" className="w-100" disabled={carregando}>
-                        {carregando ? (
-                            <>
-                                <Spinner animation="border" size="sm" className="me-2" />
-                                Enviando...
-                            </>
-                        ) : (
-                            "Enviar informações"
-                        )}
-                    </Button>
+                    <BotaoSalvar carregando={carregando} texto="Enviar informações" />
                 </Form>
             </Container>
 

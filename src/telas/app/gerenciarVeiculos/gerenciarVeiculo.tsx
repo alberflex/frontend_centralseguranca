@@ -1,9 +1,9 @@
-import { Container } from "react-bootstrap";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useVisaoControllerGerenciarVeiculo } from "./visaoControllerGerenciarVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { EPapel } from "../../../enum/EPapel";
-import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
+import { CabecalhoListagem, CardFiltro, CardRegistros, estiloBotao, estiloCampo, estiloRotulo } from "../../../componentes/listagem/listagem";
 
 export default function ListagemVeiculo() {
     const {
@@ -24,39 +24,47 @@ export default function ListagemVeiculo() {
     } = useVisaoControllerGerenciarVeiculo();
 
     return (
-        <Container fluid>
-            <div className="d-flex flex-column flex-md-row justify-content-between px-4">
-                <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar veículos</h4>
-                <div className="d-flex text-center px-2 mb-2 mb-md-0" onClick={vaiParaFormularioVeiculo} style={{ display: 'flex', cursor: "pointer", alignItems: 'center', justifyContent: 'center' }}>
-                    <IconeAdicionar size={22} />
-                    <span>Formulário de veículo</span>
-                </div>
-            </div>
-
-            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
-                <Col xs={12} md={3}>
-                    <Form.Group>
-                        <Form.Label>Filtrar veiculo</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Filtrar veículo"
-                            value={placa}
-                            onChange={(texto) => setPlaca(texto.target.value)}
-                        />
-                    </Form.Group>
-                </Col>
-            </Row>
-
-            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
-                <Col xs={12} md={3} className="d-flex gap-2">
-                    <Button variant="primary" className="flex-fill" onClick={() => buscarVeiculos(placa)}>Filtrar dados</Button>
-                    <Button variant="primary" className="flex-fill" onClick={gerarPDF}>Gerar relatório</Button>
-                    <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>Limpar filtro</Button>
-                </Col>
-            </Row>
-
-            <Tabela colunas={colunasTabela} dados={veiculo} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarVeiculo} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}
+        <Container fluid className="p-3 p-md-4">
+            <CabecalhoListagem
+                titulo="Veículos"
+                descricao="Consulte, edite ou cadastre veículos da frota."
+                textoBotao="Novo veículo"
+                icone={<IconeAdicionar size={26} />}
+                onNovo={vaiParaFormularioVeiculo}
             />
+
+            <CardFiltro titulo="Filtrar por placa">
+                <Row className="g-3 align-items-end">
+                    <Col xs={12} xl={6}>
+                        <Form.Group controlId="filtro-placa">
+                            <Form.Label className={estiloRotulo}>Placa do veículo</Form.Label>
+                            <Form.Control
+                                type="text"
+                                size="lg"
+                                className={estiloCampo}
+                                placeholder="Digite a placa"
+                                value={placa}
+                                onChange={(texto) => setPlaca(texto.target.value)}
+                                onKeyDown={(e) => { if (e.key === "Enter") buscarVeiculos(placa); }}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="primary" size="lg" className={estiloBotao} onClick={() => buscarVeiculos(placa)}>Filtrar</Button>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="outline-secondary" size="lg" className={`${estiloBotao} border-2`} onClick={limparFiltro}>Limpar filtro</Button>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="outline-primary" size="lg" className={`${estiloBotao} border-2`} onClick={gerarPDF}>Gerar relatório</Button>
+                    </Col>
+                </Row>
+            </CardFiltro>
+
+            <CardRegistros total={veiculo?.length ?? 0}>
+                <Tabela colunas={colunasTabela} dados={veiculo} aoDeletar={abrirConfirmacaoExclusao} aoEditar={selecionarVeiculo} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR} />
+            </CardRegistros>
+
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}
@@ -67,6 +75,6 @@ export default function ListagemVeiculo() {
                     { label: "Cancelar", onClick: () => setToast({ ...toast, show: false }), variant: "danger" },
                 ]}
             />
-        </Container >
+        </Container>
     );
 }

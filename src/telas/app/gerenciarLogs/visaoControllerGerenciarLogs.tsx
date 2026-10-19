@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import { useAutenticacao } from '../../../contextos/useAutenticacao';
 import { ILayoutTabela } from '../../../componentes/tabelas/tabela';
 import { VisaoModeloLog } from '../../../modelo/logs/visaoModeloLog';
@@ -12,6 +12,8 @@ export const useVisaoControllerGerenciarLogs = () => {
     const [dataFim, setDataFim] = useState("");
     const [logSelecionado, setLogSelecionado] = useState<any>(null);
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const itensPorPagina = 15;
     const objVisaoModeloLog = new VisaoModeloLog();
 
     const buscarLogs = async (inicio?: string, fim?: string) => {
@@ -33,6 +35,7 @@ export const useVisaoControllerGerenciarLogs = () => {
                 }));
 
                 setLogs(informacoesFormatada);
+                setPaginaAtual(1);
             } else {
                 setLogs([]);
             }
@@ -76,7 +79,14 @@ export const useVisaoControllerGerenciarLogs = () => {
         { key: 'dadosDepois', label: 'Dados Depois' },
     ];
 
+    const totalPaginas = Math.max(1, Math.ceil(logs.length / itensPorPagina));
+    const logsPaginados = useMemo(() => logs.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina), [logs, paginaAtual]);
+
     return {
+        logsPaginados,
+        paginaAtual,
+        setPaginaAtual,
+        totalPaginas,
         logs,
         colunasTabela,
         dataInicio,

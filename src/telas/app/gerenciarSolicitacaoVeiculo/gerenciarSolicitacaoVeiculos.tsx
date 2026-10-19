@@ -1,9 +1,9 @@
-import { Container } from "react-bootstrap";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useVisaoControllerListagemSolicitacaoVeiculo } from "./visaoControllerGerenciarSolicitacaoVeiculos";
 import { GenericToast } from "../../../componentes/toast/toast";
-import { Row, Col, Form, Button } from "react-bootstrap";
 import Tabela from "../../../componentes/tabelas/tabela";
 import { EPapel } from "../../../enum/EPapel";
+import { CabecalhoListagem, CardFiltro, CardRegistros, estiloBotao, estiloCampo, estiloRotulo } from "../../../componentes/listagem/listagem";
 
 export default function ControleSolicitacaoVeiculo() {
     const {
@@ -24,53 +24,47 @@ export default function ControleSolicitacaoVeiculo() {
         gerarPDF,
         informacoesUsuario
     } = useVisaoControllerListagemSolicitacaoVeiculo();
+
     return (
-        <Container fluid>
-            <div className="d-flex flex-column flex-md-row justify-content-between px-4">
-                <h4 className="text-center text-md-start mb-3 mb-md-0">Gerenciar solicitação de veículo.</h4>
-                <div className="d-flex text-center px-2 mb-2 mb-md-0" onClick={vaiParaFormularioSolicitacaoVeiculo} style={{ display: 'flex', cursor: "pointer", alignItems: 'center', justifyContent: 'center' }}>
-                    <IconeAdicionar size={22} />
-                    <span>Formulário solicitação de veículos</span>
-                </div>
+        <Container fluid className="p-3 p-md-4">
+            <CabecalhoListagem
+                titulo="Solicitações de veículo"
+                descricao="Consulte, edite ou cadastre saídas de veículos."
+                textoBotao="Nova solicitação"
+                icone={<IconeAdicionar size={26} />}
+                onNovo={vaiParaFormularioSolicitacaoVeiculo}
+            />
 
-            </div>
-            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
-                <Col xs={12} md={3}>
-                    <Form.Group>
-                        <Form.Label>Data Início</Form.Label>
-                        <Form.Control
-                            type="date"
-                            value={dataInicio}
-                            onChange={(e) => setDataInicio(e.target.value)}
-                        />
-                    </Form.Group>
-                </Col>
+            <CardFiltro>
+                <Row className="g-3 align-items-end">
+                    <Col xs={12} md={6} xl={3}>
+                        <Form.Group controlId="filtro-data-inicio">
+                            <Form.Label className={estiloRotulo}>Data início</Form.Label>
+                            <Form.Control type="date" size="lg" className={estiloCampo} value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} />
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12} md={6} xl={3}>
+                        <Form.Group controlId="filtro-data-fim">
+                            <Form.Label className={estiloRotulo}>Data fim</Form.Label>
+                            <Form.Control type="date" size="lg" className={estiloCampo} value={dataFim} onChange={(e) => setDataFim(e.target.value)} />
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="primary" size="lg" className={estiloBotao} onClick={() => buscarSolicitacaoVeiculo(dataInicio, dataFim)}>Filtrar</Button>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="outline-secondary" size="lg" className={`${estiloBotao} border-2`} onClick={limparFiltro}>Limpar filtro</Button>
+                    </Col>
+                    <Col xs={12} md={4} xl={2}>
+                        <Button variant="outline-primary" size="lg" className={`${estiloBotao} border-2`} onClick={gerarPDF}>Gerar relatório</Button>
+                    </Col>
+                </Row>
+            </CardFiltro>
 
-                <Col xs={12} md={3}>
-                    <Form.Group>
-                        <Form.Label>Data Fim</Form.Label>
-                        <Form.Control
-                            type="date"
-                            value={dataFim}
-                            onChange={(e) => setDataFim(e.target.value)}
-                        />
-                    </Form.Group>
-                </Col>
-            </Row>
-            <Row className="px-4 mt-3 mb-3 align-items-end g-2">
-                <Col xs={12} md={3} className="d-flex gap-2">
-                    <Button variant="primary" className="flex-fill" onClick={() => buscarSolicitacaoVeiculo(dataInicio, dataFim)}>
-                        Filtrar dados
-                    </Button>
-                    <Button variant="primary" className="flex-fill" onClick={gerarPDF}>
-                        Gerar relatório
-                    </Button>
-                    <Button variant="secondary" className="flex-fill" onClick={limparFiltro}>
-                        Limpar filtro
-                    </Button>
-                </Col>
-            </Row>
-            <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR}/>
+            <CardRegistros total={solicitacaoVeiculo?.length ?? 0}>
+                <Tabela colunas={colunasTabela} dados={solicitacaoVeiculo} aoEditar={selecionarSolicitacaoVeiculo} aoDeletar={abrirConfirmacaoExclusao} podeDeletar={informacoesUsuario?.papel === EPapel.ADMINISTRADOR} />
+            </CardRegistros>
+
             <GenericToast
                 show={toast.show}
                 onClose={() => setToast({ ...toast, show: false })}

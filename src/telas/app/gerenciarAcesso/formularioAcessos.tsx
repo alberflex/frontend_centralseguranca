@@ -1,11 +1,14 @@
 import { Fragment, useEffect } from "react";
-import { Form, Button, Row, Col, Container, Dropdown, Spinner } from "react-bootstrap";
+import { Form, Button, Row, Col, Container, InputGroup } from "react-bootstrap";
 import { useVisaoControllerFormularioAcesso } from "./visaoControllerFormularioAcessos";
 import { GenericToast } from "../../../componentes/toast/toast";
 import { SpinnerComponente } from "../../../componentes/spinner/Spinner";
 import { Controller } from "react-hook-form";
 import ModalBuscarUsuario from "../../../componentes/modal/modal";
 import Webcam from "react-webcam";
+import { BotaoSalvar, CabecalhoFormulario, CampoBusca, Secao, estiloCampo, estiloRotulo } from "../../../componentes/formulario/formulario";
+
+const estiloImagem = { width: "100%", height: "100%", objectFit: "cover" as const };
 
 export default function FormularioAcesso() {
     const {
@@ -21,212 +24,164 @@ export default function FormularioAcesso() {
     return (
         <Fragment>
             <SpinnerComponente estado={carregando} />
-            <Container className="my-4 border rounded-4 bg-light p-4">
-                <h4 className="text-center mb-4">Solicitação de acesso</h4>
+
+            <Container fluid className="p-3 p-md-4">
+                <CabecalhoFormulario titulo="Solicitação de acesso" descricao="Informe o CPF do visitante e clique em Buscar. Campos desabilitados são liberados apenas na edição." />
 
                 <Form onSubmit={handleSubmit(abrirConfirmacaoSalvar)}>
-                    <Row className="mb-3">
-                        <Col md={9}>
-                            <Form.Label>CPF do visitante:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="000.000.000-00"
-                                disabled={ehEdicao ? true : false}
-                                {...register("cpf")}
-                                onChange={(e) =>
-                                    setValue("cpf", formatarCPF(e.target.value))
-                                }
-                            />
-                        </Col>
-                        <Col md={3} className="d-flex align-items-end">
-                            <Button className="w-100" onClick={buscarVisitantePorCPF} disabled={ehEdicao ? true : false}>
-                                Buscar
-                            </Button>
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Label>Nome do visitante:</Form.Label>
-                            <Form.Control
-                                {...register("nome")}
-                                disabled={camposBloqueados}
-                            />
+                    <fieldset disabled={carregando}>
+                        <input type="hidden" {...register("responsavel")} />
 
-                        </Col>
+                        <Secao titulo="1. Visitante">
+                            <Row className="g-4">
+                                <Col md={12}>
+                                    <Form.Group controlId="ac-cpf">
+                                        <Form.Label className={estiloRotulo}>CPF do visitante</Form.Label>
+                                        <InputGroup size="lg">
+                                            <Form.Control
+                                                type="text"
+                                                inputMode="numeric"
+                                                className={estiloCampo}
+                                                placeholder="000.000.000-00"
+                                                disabled={ehEdicao}
+                                                {...register("cpf")}
+                                                onChange={(e) => setValue("cpf", formatarCPF(e.target.value))}
+                                            />
+                                            <Button variant="primary" className="px-4 fs-5 fw-semibold" onClick={buscarVisitantePorCPF} disabled={ehEdicao}>Buscar</Button>
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-nome">
+                                        <Form.Label className={estiloRotulo}>Nome do visitante</Form.Label>
+                                        <Form.Control size="lg" className={estiloCampo} {...register("nome")} disabled={camposBloqueados} />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-empresa">
+                                        <Form.Label className={estiloRotulo}>Empresa</Form.Label>
+                                        <Form.Control size="lg" className={estiloCampo} {...register("empresa")} disabled={camposBloqueados} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
 
-                        <Col md={6}>
-                            <Form.Label>Empresa:</Form.Label>
-                            <Form.Control
-                                {...register("empresa")}
-                                disabled={camposBloqueados}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col md={12}>
-                            <Form.Label>Imagem do visitante:</Form.Label>
-                            <div style={{ width: "100%", height: "450px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "#f8f9fa", marginBottom: "15px", borderStyle: 'solid', borderWidth: '0.1px', borderColor: '#e0e0e0ff' }} >
+                        <Secao titulo="2. Foto do visitante">
+                            <div
+                                className="d-flex align-items-center justify-content-center overflow-hidden bg-light border border-2 rounded-3 mb-3 mx-auto"
+                                style={{ width: "100%", maxWidth: 640, height: 400 }}
+                            >
                                 {cameraAberta ? (
-                                    <Webcam
-                                        ref={webcamRef}
-                                        audio={false}
-                                        screenshotFormat="image/jpeg"
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                        videoConstraints={{ facingMode: "user" }}
-                                    />
+                                    <Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" style={estiloImagem} videoConstraints={{ facingMode: "user" }} />
                                 ) : foto ? (
-                                    <img
-                                        src={foto}
-                                        alt="Foto capturada"
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                    />
+                                    <img src={foto} alt="Foto capturada" style={estiloImagem} />
                                 ) : watch("caminho_foto_visitante") ? (
-                                    <img
-                                        src={watch("caminho_foto_visitante") as string}
-                                        alt="Foto do visitante"
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                    />
+                                    <img src={watch("caminho_foto_visitante") as string} alt="Foto do visitante" style={estiloImagem} />
                                 ) : (
-                                    <span className="text-muted">Nenhuma imagem</span>
+                                    <span className="fs-5 text-muted">Nenhuma imagem</span>
                                 )}
                             </div>
-
-                            <Row className="g-2">
-                                <Col><Button variant="primary" className="w-100" onClick={abrirCamera} disabled={ehEdicao ? true : false}>Abrir câmera</Button></Col>
-                                <Button
-                                    type="button"
-                                    variant="success"
-                                    className="w-100"
-                                    onClick={tirarFoto}
-                                    disabled={!cameraAberta}
-                                >
-                                    Tirar foto
-                                </Button>
+                            <Row className="g-3 mx-auto" style={{ maxWidth: 640 }}>
+                                <Col xs={12} md={6}>
+                                    <Button variant="primary" size="lg" className="w-100 py-3 fs-5 fw-semibold" onClick={abrirCamera} disabled={ehEdicao}>Abrir câmera</Button>
+                                </Col>
+                                <Col xs={12} md={6}>
+                                    <Button variant="success" size="lg" className="w-100 py-3 fs-5 fw-semibold" onClick={tirarFoto} disabled={!cameraAberta}>Tirar foto</Button>
+                                </Col>
                             </Row>
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col md={6}>
-                            <Form.Label>Placa do veículo:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Exemplo: ABC-1234"
-                                {...register("placa")}
-                            />
-                        </Col>
-                        <Col md={6}>
-                            <Form.Label>Placa do veículo:</Form.Label>
-                            <Controller
-                                name="numeroCartao"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <Form.Select {...field}>
-                                        <option value="">Selecione</option>
-                                        <option value="01">001</option>
-                                        <option value="02">002</option>
-                                        <option value="03">003</option>
-                                        <option value="04">004</option>
-                                        <option value="05">005</option>
-                                    </Form.Select>
-                                )}
-                            />
-                        </Col>
-                    </Row>
+                        </Secao>
 
-                    <Row className="mb-3">
-                        <Col md={12}>
-                            <Form.Label>Motivo da visita:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={4}
-                                type="text"
-                                placeholder="Exemplo: Entrega de materiais da empresa de metal"
-                                {...register("motivo")}
-                            />
-                        </Col>
-                    </Row>
+                        <Secao titulo="3. Visita">
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-placa">
+                                        <Form.Label className={estiloRotulo}>Placa do veículo</Form.Label>
+                                        <Form.Control type="text" size="lg" className={estiloCampo} placeholder="Exemplo: ABC-1234" {...register("placa")} />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-cartao">
+                                        <Form.Label className={estiloRotulo}>Número do cartão</Form.Label>
+                                        <Controller
+                                            name="numeroCartao"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <Form.Select size="lg" className={estiloCampo} {...field}>
+                                                    <option value="">Selecione</option>
+                                                    <option value="01">001</option>
+                                                    <option value="02">002</option>
+                                                    <option value="03">003</option>
+                                                    <option value="04">004</option>
+                                                    <option value="05">005</option>
+                                                </Form.Select>
+                                            )}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={12}>
+                                    <Form.Group controlId="ac-motivo">
+                                        <Form.Label className={estiloRotulo}>Motivo da visita</Form.Label>
+                                        <Form.Control as="textarea" rows={4} className={estiloCampo} placeholder="Exemplo: Entrega de materiais da empresa de metal" {...register("motivo")} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
 
-                    <Row className="mb-3 align-items-end">
-                        <Col md={9}>
-                            <Form.Label>Responsável pelo visitante:</Form.Label>
-                            <Form.Control {...register("responsavel")} readOnly={true} disabled={true} />
-                        </Col>
-                        <Col md={3}>
-                            <Button
-                                className="w-100"
-                                variant="primary"
-                                onClick={() => {
-                                    setCampoSelecionado("responsavel");
-                                    setModalAberto(true);
-                                }}
-                            >
-                                Buscar
-                            </Button>
-                        </Col>
-                    </Row>
-
-                    <Row className="mb-3 align-items-end">
-                        <Col>
-                            <Form.Label>Responsável pela liberação de entrada:</Form.Label>
-                            <Form.Group>
-                                <Dropdown className="w-100">
-                                    <Dropdown.Toggle
-                                        className="w-100 text-start"
-                                        variant="outline-secondary"
-                                        disabled={ehEdicao ? true : false}
-                                    >
-                                        {porteiros.find(p => p.id === watch("porteiroEntrada"))?.nome
-                                            || "Selecionar porteiro"}
-                                    </Dropdown.Toggle>
-
-                                    <Dropdown.Menu className="w-100">
-                                        {porteiros.map(item => (
-                                            <Dropdown.Item
-                                                key={item.id}
-                                                onClick={() => setValue("porteiroEntrada", item.id)}
-                                            >
-                                                {item.nome}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
-                    <Row className="mb-3 align-items-end">
-                        <Col >
-                            <Form.Label>Responsável pela liberação de saída:</Form.Label>
-                            <Dropdown className="w-100">
-                                <Dropdown.Toggle
-                                    className="w-100 text-start"
-                                    variant="outline-secondary"
-                                    disabled={ehEdicao ? false : true}
-                                >
-                                    {porteiros.find(p => p.id === watch("porteiroSaida"))?.nome
-                                        || "Selecionar porteiro"}
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu className="w-100">
-                                    {porteiros.map(item => (
-                                        <Dropdown.Item
-                                            key={item.id}
-                                            onClick={() => setValue("porteiroSaida", item.id)}
+                        <Secao titulo="4. Responsáveis">
+                            <Row className="g-4">
+                                <Col md={12}>
+                                    <CampoBusca
+                                        texto="Responsável pelo visitante"
+                                        valor={watch("responsavel") as string}
+                                        placeholder="Nenhum responsável selecionado"
+                                        onBuscar={() => { setCampoSelecionado("responsavel"); setModalAberto(true); }}
+                                    />
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-porteiro-entrada">
+                                        <Form.Label className={estiloRotulo}>Liberação de entrada (porteiro)</Form.Label>
+                                        <Form.Select
+                                            size="lg"
+                                            className={estiloCampo}
+                                            disabled={ehEdicao}
+                                            value={String(watch("porteiroEntrada") ?? "")}
+                                            onChange={(e) => {
+                                                const item = porteiros.find(p => String(p.id) === e.target.value);
+                                                if (item) setValue("porteiroEntrada", item.id);
+                                            }}
                                         >
-                                            {item.nome}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </Col>
-                    </Row>
+                                            <option value="">Selecionar porteiro</option>
+                                            {porteiros.map(item => <option key={item.id} value={String(item.id)}>{item.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="ac-porteiro-saida">
+                                        <Form.Label className={estiloRotulo}>Liberação de saída (porteiro)</Form.Label>
+                                        <Form.Select
+                                            size="lg"
+                                            className={estiloCampo}
+                                            disabled={!ehEdicao}
+                                            value={String(watch("porteiroSaida") ?? "")}
+                                            onChange={(e) => {
+                                                const item = porteiros.find(p => String(p.id) === e.target.value);
+                                                if (item) setValue("porteiroSaida", item.id);
+                                            }}
+                                        >
+                                            <option value="">{ehEdicao ? "Selecionar porteiro" : "Liberado apenas na edição"}</option>
+                                            {porteiros.map(item => <option key={item.id} value={String(item.id)}>{item.nome}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Secao>
+                    </fieldset>
 
-                    <Button type="submit" variant="primary" className="w-100 mb-2" disabled={carregando}>
-                        {carregando ? (<><Spinner animation="border" size="sm" className="me-2" />Enviando...</>) : ("Salvar informações")}
-                    </Button>
+                    <BotaoSalvar carregando={carregando} />
                 </Form>
             </Container>
+
             <ModalBuscarUsuario
                 mostrar={modalAberto}
                 onFechar={() => setModalAberto(false)}
@@ -271,5 +226,4 @@ export default function FormularioAcesso() {
             />
         </Fragment>
     );
-
 }
