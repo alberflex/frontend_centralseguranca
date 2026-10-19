@@ -12,14 +12,16 @@ import { Estado } from "../../../types/Estado";
 import { Cidade } from "../../../types/Cidade";
 import { VisaoModeloPessoal } from "../../../modelo/pessoal/visaoModeloPessoal";
 import { ToastEstado } from "../../../type/TToast";
+import { conexaoAPI } from "../../../servicos/API";
 
-const buscarIBGE = async <T,>(caminho: string): Promise<T> => {
-    const resposta = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/${caminho}`);
-    if (!resposta.ok) throw new Error(`IBGE respondeu ${resposta.status}`);
-    return resposta.json();
+// Estados e cidades vem do backend, que consulta o IBGE (o navegador nao acessa o IBGE direto)
+const buscarIBGE = async <T,>(tokenJWT: string | null | undefined, caminho: string): Promise<T> => {
+    if (!tokenJWT) throw new Error("Usuário não autenticado");
+    const resposta = await conexaoAPI.get<T>(`/localidades/${caminho}`, { headers: { Authorization: `Bearer ${tokenJWT}` } });
+    return resposta.data;
 };
 
-// Usada quando a API do IBGE nao responde
+// Usada quando o backend nao consegue consultar o IBGE
 const ESTADOS_RESERVA = [
     ["AC", "Acre"], ["AL", "Alagoas"], ["AP", "Amapá"], ["AM", "Amazonas"], ["BA", "Bahia"], ["CE", "Ceará"],
     ["DF", "Distrito Federal"], ["ES", "Espírito Santo"], ["GO", "Goiás"], ["MA", "Maranhão"], ["MT", "Mato Grosso"],
@@ -77,17 +79,18 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
     // Sem internet ou com a API do IBGE fora do ar, a lista de cidades fica vazia
     // e cidade selecionada na edicao continua aparecendo
-    const avisarFalhaCidades = (): Cidade[] => {
+    const avisarFalhaCidades = (erro: unknown): Cidade[] => {
+        console.error("Falha ao buscar cidades no IBGE:", erro);
         setToast({
             show: true,
             title: "Cidades indisponíveis",
-            message: "Não foi possível carregar a lista de cidades do IBGE. Verifique a conexão com a internet e tente novamente.",
+            message: "Não foi possível carregar a lista de cidades. Tente novamente em instantes ou contate a equipe de TI.",
         });
         return editarObjeto?.localizacao ? [{ id: 0, nome: editarObjeto.localizacao } as Cidade] : [];
     };
 
     useEffect(() => {
-        buscarIBGE<Estado[]>("estados")
+        buscarIBGE<Estado[]>(tokenJWT, "estados")
             .catch(() => ESTADOS_RESERVA)
             .then((data) => {
                 const ordenados = [...data].sort((a, b) => a.nome.localeCompare(b.nome));
@@ -97,13 +100,13 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
                     setValue("destino", editarObjeto.destino);
                 }
             });
-    }, [ehEdicao, editarObjeto, setValue]);
+    }, [tokenJWT, ehEdicao, editarObjeto, setValue]);
 
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
             setValue("destino", editarObjeto.destino);
 
-            buscarIBGE<Cidade[]>(`estados/${editarObjeto.destino}/municipios`)
+            buscarIBGE<Cidade[]>(tokenJWT, `estados/${editarObjeto.destino}/municipios`)
                 .catch(avisarFalhaCidades)
                 .then((data: Cidade[]) => {
                     const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
@@ -121,7 +124,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
             return;
         }
 
-        buscarIBGE<Cidade[]>(`estados/${siglaEstado}/municipios`)
+        buscarIBGE<Cidade[]>(tokenJWT, `estados/${siglaEstado}/municipios`)
             .catch(avisarFalhaCidades)
             .then((data: Cidade[]) => {
                 const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
@@ -349,7 +352,7 @@ export const useVisaoControllerFormularioSolicitacaoVeiculo = () => {
 
     useEffect(() => {
         if (ehEdicao && editarObjeto) {
-            buscarIBGE<Cidade[]>(`estados/${editarObjeto.destino}/municipios`)
+            buscarIBGE<Cidade[]>(tokenJWT, `estados/${editarObjeto.destino}/municipios`)
                 .catch(avisarFalhaCidades)
                 .then((data: Cidade[]) => {
                     const ordenadas = data.sort((a, b) => a.nome.localeCompare(b.nome));
